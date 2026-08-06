@@ -4,10 +4,11 @@ Your to-do list to get the app from "built code" to "running on my phone with
 push alerts". Tick each box as you complete it. Everything already finished in
 the code is marked **DONE**.
 
-**The short version:** you never install Android Studio and you never keep your
-PC on. The APK is built in the cloud, the scanning runs 24/7 on a free Google
-Cloud backend, and your phone gets pinged the moment the cloud finds a new
-70%+ signal — even with the app closed.
+**The short version:** Android Studio is already installed and the repo is
+already on GitHub, so you can build the APK on your own machine whenever you
+want. For "works with your PC off" mode, the scanning runs 24/7 on a free
+Google Cloud backend, and your phone gets pinged the moment the cloud finds a
+new 70%+ signal — even with the app closed.
 
 **How it fits together:**
 ```
@@ -24,6 +25,7 @@ Google Cloud backend (scans Reddit + news + Telegram, scores vs Binance)
 ---
 
 ## ✅ Already done (in the code)
+- **Android Studio installed** on your machine — local builds ready
 - Full Flutter app written (5 screens: Home, Signals, Portfolio, Learn, Settings)
 - Live market data (Binance), 3 signal sources (Reddit, News, Telegram), rightness % scoring
 - Paper trading with win-rate / accuracy tracking
@@ -33,8 +35,8 @@ Google Cloud backend (scans Reddit + news + Telegram, scores vs Binance)
 - **Cloud APK build** (`.github/workflows/build-apk.yml` at the repo root — builds
   on every push, APK downloadable from the **Actions → Artifacts** section)
 - **Browser IDE config** (`.devcontainer` for GitHub Codespaces)
-- `flutter analyze`: 0 issues · 8 Flutter tests pass · 14 backend tests pass
-- Code is already pushed to **GitHub** (Task 1 — nothing to do)
+- `flutter analyze`: 0 issues · 8 Flutter tests pass · 16 backend tests pass
+- Code is already pushed to **GitHub** — nothing to do
 
 ---
 
