@@ -10,6 +10,15 @@ class MarketSnapshot {
   final double avgVolume;
   final double support;
   final double resistance;
+
+  /// Average True Range (14) over recent 1h candles, as % of price. How much
+  /// the market actually swings, used to judge whether a target is reachable.
+  final double atrPct;
+
+  /// Average volume of the most recent ~6 hours vs the 24h baseline. Spiking
+  /// volume confirms a move is real; shrinking volume signals it is fading.
+  final double recentVolumeRatio;
+
   final DateTime at;
 
   const MarketSnapshot({
@@ -24,6 +33,8 @@ class MarketSnapshot {
     required this.avgVolume,
     required this.support,
     required this.resistance,
+    this.atrPct = 0,
+    this.recentVolumeRatio = 1.0,
     required this.at,
   });
 
@@ -47,6 +58,8 @@ class MarketSnapshot {
         'avgVolume': avgVolume,
         'support': support,
         'resistance': resistance,
+        'atrPct': atrPct,
+        'recentVolumeRatio': recentVolumeRatio,
         'at': at.toIso8601String(),
       };
 
@@ -62,6 +75,8 @@ class MarketSnapshot {
         avgVolume: (json['avgVolume'] as num).toDouble(),
         support: (json['support'] as num).toDouble(),
         resistance: (json['resistance'] as num).toDouble(),
+        atrPct: (json['atrPct'] as num?)?.toDouble() ?? 0,
+        recentVolumeRatio: (json['recentVolumeRatio'] as num?)?.toDouble() ?? 1.0,
         at: DateTime.parse(json['at'] as String),
       );
 }

@@ -1,9 +1,16 @@
 import http from 'node:http';
 import { resolve } from 'node:path';
 
+import { ALL_SYMBOLS } from './lib/pairs.js';
 import { fetchSnapshots } from './lib/market.js';
 import { PushNotifier, pushConfigured, pushStatus } from './lib/push.js';
-import { fetchNews, fetchReddit, fetchTelegram } from './lib/sources.js';
+import {
+  fetchNews,
+  fetchReddit,
+  fetchRssNews,
+  fetchTelegram,
+  generatePulseSignals,
+} from './lib/sources.js';
 import { validateSignal } from './lib/validator.js';
 
 const PORT = Number(process.env.PORT || 8080);
@@ -24,7 +31,7 @@ const TELEGRAM_CHANNELS = splitEnv(process.env.TELEGRAM_CHANNELS, [
   'binancesignals',
 ]);
 const ENABLED_SOURCES = new Set(
-  splitEnv(process.env.ENABLED_SOURCES, ['reddit', 'news', 'telegram']),
+  splitEnv(process.env.ENABLED_SOURCES, ['reddit', 'news', 'rss', 'telegram', 'pulse']),
 );
 
 let cache = { generatedAt: null, validated: [], markets: {}, signals: [], running: false };
@@ -45,6 +52,7 @@ async function scan() {
       const fetchers = [];
       if (ENABLED_SOURCES.has('reddit')) fetchers.push(fetchReddit());
       if (ENABLED_SOURCES.has('news')) fetchers.push(fetchNews());
+      if (ENABLED_SOURCES.has('rss')) fetchers.push(fetchRssNews());
       if (ENABLED_SOURCES.has('telegram')) fetchers.push(fetchTelegram(TELEGRAM_CHANNELS));
 
       const batches = await Promise.allSettled(fetchers);
@@ -61,24 +69,36 @@ async function scan() {
       }
       signals.sort((a, b) => new Date(b.postedAt) - new Date(a.postedAt));
 
-      const symbolSet = new Set(WATCHLIST);
-      for (const s of signals) {
-        for (const sym of s.symbols) symbolSet.add(sym);
+      // Cover the whole universe so every market has live data and the
+      // market pulse can evaluate all of them, not only coins with chatter.
+      const markets = await fetchSnapshots(ALL_SYMBOLS);
+
+      const allSignals = [...signals];
+      if (ENABLED_SOURCES.has('pulse')) {
+        allSignals.push(...generatePulseSignals(markets));
       }
-      const markets = await fetchSnapshots([...symbolSet].slice(0, 20));
 
       const validated = [];
-      for (const signal of signals) {
+      for (const signal of allSignals) {
         const vs = validateSignal(signal, markets);
         if (vs) validated.push(vs);
       }
-      validated.sort((a, b) => b.probability - a.probability);
+      // Keep the single best signal per market so the feed reads one strong
+      // move per coin instead of Bitcoin spam.
+      const bySymbol = new Map();
+      for (const vs of validated) {
+        const existing = bySymbol.get(vs.symbol);
+        if (!existing || vs.probability > existing.probability) {
+          bySymbol.set(vs.symbol, vs);
+        }
+      }
+      const deduped = [...bySymbol.values()].sort((a, b) => b.probability - a.probability);
 
       cache = {
         generatedAt: new Date().toISOString(),
-        validated,
+        validated: deduped,
         markets,
-        signals,
+        signals: allSignals,
         running: false,
       };
 

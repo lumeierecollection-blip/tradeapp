@@ -120,16 +120,33 @@ function nextMinute(t) {
 
 function sellOffsetMs(m, bias, entry, target) {
   const distance = Math.abs(target - entry);
-  const aligned5 = ((bias === 'buy' ? m.change5m : -m.change5m) / 100);
-  const aligned15 = ((bias === 'buy' ? m.change15m : -m.change15m) / 100);
-  const aligned1h = ((bias === 'buy' ? m.change1h : -m.change1h) / 100);
+  const aligned5 = (bias === 'buy' ? m.change5m : -m.change5m) / 100;
+  const aligned15 = (bias === 'buy' ? m.change15m : -m.change15m) / 100;
+  const aligned1h = (bias === 'buy' ? m.change1h : -m.change1h) / 100;
 
   let perMinute = (entry * aligned5) / 5;
   if (perMinute <= 0) perMinute = (entry * aligned15) / 15;
   if (perMinute <= 0) perMinute = (entry * aligned1h) / 60;
-  if (perMinute <= 0) perMinute = (entry * 0.003) / 60;
 
-  const minutes = clamp(distance / perMinute, 45, 8 * 60);
+  // Volatility floor: how far price tends to travel per minute based on
+  // recent 1h candle ranges. Never promise a faster target than the
+  // market's own choppiness supports.
+  const atrPct = m.atrPct > 0 ? m.atrPct : 0.6;
+  const volPerMinute = (entry * atrPct) / 100 / 60;
+  if (perMinute <= 0) perMinute = volPerMinute * 0.5;
+
+  let minutes = distance / perMinute;
+  const volFloor = distance / volPerMinute;
+  if (minutes < volFloor) minutes = volFloor;
+  if (minutes > 4 * 60) minutes = 4 * 60;
+
+  // Volume confirms pace: participation makes targets arrive sooner,
+  // thin volume means moves stall and take longer.
+  if (m.volumeRatio >= 1.2) minutes *= 0.85;
+  if (m.volumeRatio < 0.8) minutes *= 1.25;
+  if (m.recentVolumeRatio >= 1.3) minutes *= 0.9;
+
+  minutes = clamp(minutes, 25, 12 * 60);
   return minutes * 60 * 1000;
 }
 

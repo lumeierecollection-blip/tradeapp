@@ -1,6 +1,8 @@
 import '../../models/signal.dart';
+import 'market_pulse_source.dart';
 import 'news_source.dart';
 import 'reddit_source.dart';
+import 'rss_news_source.dart';
 import 'signal_source.dart';
 import 'telegram_source.dart';
 
@@ -11,7 +13,9 @@ class SourceRegistry {
       : _sources = [
           RedditSource(),
           NewsSource(),
+          RssNewsSource(),
           TelegramSource(channels: telegramChannels),
+          const MarketPulseSource(),
         ];
 
   List<SignalSource> get all => List.unmodifiable(_sources);

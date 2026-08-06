@@ -106,20 +106,39 @@ class Validator {
   }
 
   /// Exact duration from buy to sell, derived from how fast price is actually
-  /// moving toward the target right now — not an arbitrary window.
+  /// moving toward the target right now — not an arbitrary window. Uses the
+  /// market's own volatility (ATR) as a reality check and volume to confirm
+  /// the pace.
   Duration _sellOffset(MarketSnapshot m, Direction bias, double entry, double target) {
     final distance = (target - entry).abs();
     final aligned5 = (bias == Direction.buy ? m.change5m : -m.change5m) / 100;
     final aligned15 = (bias == Direction.buy ? m.change15m : -m.change15m) / 100;
     final aligned1h = (bias == Direction.buy ? m.change1h : -m.change1h) / 100;
 
-    // Price change per minute, from the fastest interval that is moving the right way.
+    // Price change per minute, from the fastest interval moving the right way.
     var perMinute = entry * aligned5 / 5;
     if (perMinute <= 0) perMinute = entry * aligned15 / 15;
     if (perMinute <= 0) perMinute = entry * aligned1h / 60;
-    if (perMinute <= 0) perMinute = entry * 0.003 / 60;
 
-    final minutes = (distance / perMinute).clamp(45.0, 8 * 60.0);
+    // Volatility floor: how far price tends to travel per minute based on
+    // recent 1h candle ranges. Never promise a faster target than the
+    // market's own choppiness supports.
+    final atrPct = m.atrPct > 0 ? m.atrPct : 0.6;
+    final volPerMinute = entry * atrPct / 100 / 60;
+    if (perMinute <= 0) perMinute = volPerMinute * 0.5;
+
+    var minutes = distance / perMinute;
+    final volFloor = distance / volPerMinute;
+    if (minutes < volFloor) minutes = volFloor;
+    if (minutes > 4 * 60) minutes = 4 * 60;
+
+    // Volume confirms pace: participation makes targets arrive sooner,
+    // thin volume means moves stall and take longer.
+    if (m.volumeRatio >= 1.2) minutes *= 0.85;
+    if (m.volumeRatio < 0.8) minutes *= 1.25;
+    if (m.recentVolumeRatio >= 1.3) minutes *= 0.9;
+
+    minutes = minutes.clamp(25.0, 12 * 60.0);
     return Duration(minutes: minutes.round());
   }
 

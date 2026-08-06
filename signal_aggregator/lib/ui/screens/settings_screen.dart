@@ -92,6 +92,20 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 ),
                 const Divider(height: 1, color: Color(0xFF222B3A)),
                 _SourceTile(
+                  title: 'CoinDesk news',
+                  subtitle: 'Second free news feed (RSS) for broader altcoin coverage.',
+                  value: appState.sourcesEnabled['rss'] ?? true,
+                  onChanged: (v) => appState.setSourceEnabled('rss', v),
+                ),
+                const Divider(height: 1, color: Color(0xFF222B3A)),
+                _SourceTile(
+                  title: 'Market pulse',
+                  subtitle: 'Technical setups from all markets — signals even for coins with no social chatter.',
+                  value: appState.sourcesEnabled['pulse'] ?? true,
+                  onChanged: (v) => appState.setSourceEnabled('pulse', v),
+                ),
+                const Divider(height: 1, color: Color(0xFF222B3A)),
+                _SourceTile(
                   title: 'Telegram channels',
                   subtitle: 'Public channels only. No private groups or encrypted chats.',
                   value: appState.sourcesEnabled['telegram'] ?? false,

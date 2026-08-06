@@ -24,3 +24,5 @@ const SYMBOL_TO_PAIR = {
 export function toPair(symbol) {
   return SYMBOL_TO_PAIR[String(symbol || '').toUpperCase()] || null;
 }
+
+export const ALL_SYMBOLS = Object.keys(SYMBOL_TO_PAIR);

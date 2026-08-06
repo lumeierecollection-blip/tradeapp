@@ -13,6 +13,11 @@ class RedditSource implements SignalSource {
     'altcoin',
     'Bitcoin',
     'ethtrader',
+    'ethereum',
+    'Solana',
+    'Chainlink',
+    'dogecoin',
+    'Tronix',
   ];
 
   final http.Client _client = http.Client();

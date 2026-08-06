@@ -34,15 +34,35 @@ class MarketService {
 
   static String? toPair(String symbol) => symbolToPair[symbol.toUpperCase()];
 
+  /// The whole supported universe — every coin the app can surface and trade.
+  static List<String> get allSymbols => symbolToPair.keys.toList();
+
+  final Map<String, MarketSnapshot> _cache = {};
+  final Map<String, DateTime> _cacheAt = {};
+  static const Duration _cacheTtl = Duration(seconds: 20);
+
   Future<Map<String, MarketSnapshot>> fetchSnapshots(List<String> symbols) async {
     final results = <String, MarketSnapshot>{};
     for (final symbol in symbols) {
       final pair = toPair(symbol);
       if (pair == null) continue;
+      final cached = _cache[symbol];
+      final cachedAt = _cacheAt[symbol];
+      if (cached != null &&
+          cachedAt != null &&
+          DateTime.now().difference(cachedAt) < _cacheTtl) {
+        results[symbol] = cached;
+        continue;
+      }
       try {
-        results[symbol] = await fetchSnapshot(symbol, pair);
+        final snap = await fetchSnapshot(symbol, pair);
+        _cache[symbol] = snap;
+        _cacheAt[symbol] = DateTime.now();
+        results[symbol] = snap;
       } catch (_) {
-        // Skip coins we cannot get data for.
+        // Skip coins we cannot get data for; keep any previous value.
+        final previous = _cache[symbol];
+        if (previous != null) results[symbol] = previous;
       }
     }
     return results;
@@ -70,6 +90,11 @@ class MarketService {
     final resistance = highs.reduce(max);
 
     final avgVolume = candles1h.isEmpty ? 1.0 : candles1h.map((c) => c.volume).reduce((a, b) => a + b) / candles1h.length;
+    final atrPct = _atrPct(candles1h, lastPrice);
+    final recentVolumeRatio =
+        candles1h.length >= 6 && avgVolume > 0
+            ? candles1h.sublist(candles1h.length - 6).map((c) => c.volume).reduce((a, b) => a + b) / 6 / avgVolume
+            : 1.0;
 
     return MarketSnapshot(
       symbol: symbol,
@@ -83,8 +108,20 @@ class MarketService {
       avgVolume: avgVolume,
       support: support,
       resistance: resistance,
+      atrPct: atrPct,
+      recentVolumeRatio: recentVolumeRatio,
       at: DateTime.now(),
     );
+  }
+
+  /// ATR(14) on 1h candles as a % of price — how much price swings per hour.
+  double _atrPct(List<Candle> candles, double price) {
+    if (candles.length < 15 || price <= 0) return 0;
+    var sum = 0.0;
+    for (var i = candles.length - 14; i < candles.length; i++) {
+      sum += candles[i].high - candles[i].low;
+    }
+    return sum / 14 / price * 100;
   }
 
   double _percentChange(List<Candle> candles) {

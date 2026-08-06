@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../models/market_snapshot.dart';
 import '../../models/paper_trade.dart';
+import '../../models/signal.dart';
+import '../../services/market_insights.dart';
 import '../../state/app_state.dart';
 import '../theme.dart';
 import '../widgets/probability_gauge.dart';
@@ -254,6 +257,14 @@ class _OpenTradeCard extends StatelessWidget {
                 Text('Target ${AppTheme.fmtPrice(trade.takeProfit)}', style: const TextStyle(fontSize: 12, color: Colors.white54)),
               ],
             ),
+            const SizedBox(height: 8),
+            _WhyMovingPanel(
+              symbol: trade.symbol,
+              entry: trade.entry,
+              market: appState.markets[trade.symbol],
+              all: appState.markets,
+              signals: appState.rawSignals,
+            ),
             const SizedBox(height: 14),
             Row(
               children: [
@@ -276,6 +287,72 @@ class _OpenTradeCard extends StatelessWidget {
                 ),
               ],
             ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _WhyMovingPanel extends StatelessWidget {
+  final String symbol;
+  final double entry;
+  final MarketSnapshot? market;
+  final Map<String, MarketSnapshot> all;
+  final List<Signal> signals;
+
+  const _WhyMovingPanel({
+    required this.symbol,
+    required this.entry,
+    required this.market,
+    required this.all,
+    required this.signals,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: AppTheme.surface.withValues(alpha: 0.5),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: AppTheme.line),
+      ),
+      child: Theme(
+        data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+        child: ExpansionTile(
+          tilePadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 2),
+          childrenPadding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
+          leading: const Icon(Icons.school_outlined, size: 19, color: AppTheme.accent),
+          title: const Text(
+            'Why is it moving? · Learn',
+            style: TextStyle(fontSize: 13.5, fontWeight: FontWeight.w700, color: AppTheme.textSecondary),
+          ),
+          children: [
+            ...MarketInsights.explainPosition(
+              symbol: symbol,
+              entry: entry,
+              market: market,
+              all: all,
+              signals: signals,
+            ).map((line) => Padding(
+                  padding: const EdgeInsets.only(bottom: 8),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Padding(
+                        padding: EdgeInsets.only(top: 6),
+                        child: Icon(Icons.circle, size: 5, color: AppTheme.accent),
+                      ),
+                      const SizedBox(width: 9),
+                      Expanded(
+                        child: Text(
+                          line,
+                          style: const TextStyle(fontSize: 12.5, color: Colors.white70, height: 1.45),
+                        ),
+                      ),
+                    ],
+                  ),
+                )),
           ],
         ),
       ),

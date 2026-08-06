@@ -14,6 +14,7 @@ import '../services/market_service.dart';
 import '../services/notifications.dart';
 import '../services/paper_trader.dart';
 import '../services/push.dart';
+import '../services/sources/market_pulse_source.dart';
 import '../services/sources/signal_source.dart';
 import '../services/sources/source_registry.dart';
 import '../services/storage.dart';
@@ -50,7 +51,7 @@ class AppState extends ChangeNotifier {
   String? _error;
   Timer? _timer;
   int _updateTick = 0;
-  DateTime? _lastLocalScan;
+  DateTime? _lastFullScan;
 
   List<ValidatedSignal> get validated => List.unmodifiable(_validated);
   List<Signal> get rawSignals => List.unmodifiable(_rawSignals);
@@ -194,7 +195,7 @@ class AppState extends ChangeNotifier {
           await _notifyNewStrongSignals(result.validated);
           _rawSignals = result.signals;
           _markets = result.markets;
-          _validated = result.validated;
+          _validated = _dedupe(result.validated);
           ok = true;
         } catch (_) {
           _error = 'Cloud feed offline — using on-device scan.';
@@ -219,12 +220,13 @@ class AppState extends ChangeNotifier {
 
   Future<void> _localScan() async {
     final now = DateTime.now();
-    final throttled = _lastLocalScan != null &&
-        now.difference(_lastLocalScan!) < const Duration(seconds: 30);
+    final fullDue = _lastFullScan == null ||
+        now.difference(_lastFullScan!) >= const Duration(minutes: 1);
 
-    // With 15s polling we must not hammer Reddit/news APIs. If we scanned
-    // recently, just refresh watchlist prices and keep the current signals.
-    if (throttled) {
+    // Full scans hit Reddit/news/telegram and every market; do them at most
+    // once a minute. In between, just refresh watchlist prices so the 15s
+    // quiet updates stay cheap and don't hammer third-party APIs.
+    if (!fullDue) {
       final markets = await _marketService.fetchSnapshots(_watchlist);
       if (markets.isNotEmpty) {
         final merged = Map<String, MarketSnapshot>.from(_markets)..addAll(markets);
@@ -233,30 +235,57 @@ class AppState extends ChangeNotifier {
       }
       return;
     }
-    _lastLocalScan = now;
+    _lastFullScan = now;
 
     final active = _activeSources;
     final rawSignals = await _sourceRegistry.fetchAll(active);
 
-    final allSymbols = <String>{};
-    allSymbols.addAll(_watchlist);
-    for (final s in rawSignals) {
-      allSymbols.addAll(s.symbols);
+    // Cover the whole universe so every market has live data and the market
+    // pulse can evaluate all of them, not just coins with social chatter.
+    final markets = await _marketService.fetchSnapshots(MarketService.allSymbols);
+
+    final allSignals = List<Signal>.from(rawSignals);
+    if (_sourcesEnabled['pulse'] ?? true) {
+      allSignals.addAll(const MarketPulseSource().generate(markets));
     }
 
-    final markets = await _marketService.fetchSnapshots(allSymbols.take(20).toList());
-
-    final validated = <ValidatedSignal>[];
-    for (final signal in rawSignals) {
-      final vs = _validator.validate(signal, markets);
-      if (vs != null) validated.add(vs);
-    }
-    validated.sort((a, b) => b.probability.compareTo(a.probability));
+    final validated = _validate(allSignals, markets);
 
     await _notifyNewStrongSignals(validated);
-    _rawSignals = rawSignals;
+    _rawSignals = allSignals;
     _markets = markets;
     _validated = validated;
+  }
+
+  /// Validates every signal and keeps only the best one per market so the
+  /// signals list reads one strong move per coin instead of Bitcoin spam.
+  List<ValidatedSignal> _validate(
+      List<Signal> signals, Map<String, MarketSnapshot> markets) {
+    final best = <String, ValidatedSignal>{};
+    for (final signal in signals) {
+      final vs = _validator.validate(signal, markets);
+      if (vs == null) continue;
+      final existing = best[vs.symbol];
+      if (existing == null || vs.probability > existing.probability) {
+        best[vs.symbol] = vs;
+      }
+    }
+    final validated = best.values.toList()
+      ..sort((a, b) => b.probability.compareTo(a.probability));
+    return validated;
+  }
+
+  List<ValidatedSignal> _dedupe(List<ValidatedSignal> signals) {
+    final best = <String, ValidatedSignal>{};
+    for (final vs in signals) {
+      final existing = best[vs.symbol];
+      if (existing == null || vs.probability > existing.probability) {
+        best[vs.symbol] = vs;
+      }
+    }
+    final validated = best.values.toList()
+      ..sort((a, b) => b.probability.compareTo(a.probability));
+    return validated;
   }
 
   Future<void> _notifyNewStrongSignals(List<ValidatedSignal> next) async {

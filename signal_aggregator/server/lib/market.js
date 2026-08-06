@@ -54,6 +54,16 @@ export async function fetchSnapshot(symbol, pair) {
       ? 1
       : candles1h.reduce((a, c) => a + c.volume, 0) / candles1h.length;
 
+  const atrPct = atrOf(candles1h, lastPrice);
+  const recentVolumeRatio =
+    candles1h.length >= 6 && avgVolume > 0
+      ? candles1h
+          .slice(candles1h.length - 6)
+          .reduce((a, c) => a + c.volume, 0) /
+        6 /
+        avgVolume
+      : 1.0;
+
   return {
     symbol,
     price: lastPrice,
@@ -66,8 +76,19 @@ export async function fetchSnapshot(symbol, pair) {
     avgVolume,
     support,
     resistance,
+    atrPct,
+    recentVolumeRatio,
     at: new Date().toISOString(),
   };
+}
+
+function atrOf(candles, price) {
+  if (candles.length < 15 || price <= 0) return 0;
+  let sum = 0;
+  for (let i = candles.length - 14; i < candles.length; i++) {
+    sum += candles[i].high - candles[i].low;
+  }
+  return (sum / 14 / price) * 100;
 }
 
 async function fetchKlines(pair, interval, limit) {
