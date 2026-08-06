@@ -1,0 +1,18 @@
+{
+  "name": "signal-aggregator-backend",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Cloud backend for Signal Aggregator: scans public signal sources, validates against live Binance market data, and serves the results to the Flutter app.",
+  "type": "module",
+  "main": "server.js",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "test": "node --test test/"
+  },
+  "dependencies": {
+    "firebase-admin": "^14.2.0"
+  }
+}
