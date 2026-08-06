@@ -40,6 +40,7 @@ dependencies:
   shared_preferences: ^2.3.3
   url_launcher: ^6.3.1
   flutter_local_notifications: ^18.0.1
+  timezone: ^0.10.1
   workmanager: ^0.10.7
   firebase_core: ^4.13.0
   firebase_messaging: ^16.5.0

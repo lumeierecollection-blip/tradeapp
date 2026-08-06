@@ -46,10 +46,24 @@ class PaperTrader extends ChangeNotifier {
     return sum;
   }
 
-  String openTrade(ValidatedSignal vs, double amount) {
+  static const int convictionPerDay = 2;
+
+  /// Wider reward target used for accumulation stacks: 3x risk instead of 1.5x.
+  static const double accumulateRewardMultiple = 3.0;
+
+  String openTrade(ValidatedSignal vs, double amount,
+      {PositionType type = PositionType.accumulate}) {
     if (amount <= 0) return 'Choose an amount larger than 0.';
     if (amount > _balance) return 'Not enough paper balance.';
     if (vs.direction != Direction.buy) return 'Only BUY signals open trades.';
+    if (type == PositionType.conviction && convictionUsedToday >= convictionPerDay) {
+      return 'Conviction cap reached ($convictionPerDay per day). Use Accumulate for smaller stacks.';
+    }
+
+    final risk = (vs.entry - vs.stopLoss).abs();
+    final target = type == PositionType.conviction
+        ? vs.takeProfit
+        : vs.entry + risk * accumulateRewardMultiple;
 
     final qty = amount / vs.entry;
     final trade = PaperTrade(
@@ -59,16 +73,30 @@ class PaperTrader extends ChangeNotifier {
       quantity: qty,
       amount: amount,
       stopLoss: vs.stopLoss,
-      takeProfit: vs.takeProfit,
+      takeProfit: target,
       probability: vs.probability,
       reason: vs.summary,
       openedAt: DateTime.now(),
+      sellAt: vs.sellAt,
+      positionType: type,
     );
     _balance -= amount;
     _trades.insert(0, trade);
     _persist();
     notifyListeners();
     return '';
+  }
+
+  /// How many conviction positions were opened today (local time).
+  int get convictionUsedToday {
+    final now = DateTime.now();
+    return _trades
+        .where((t) =>
+            t.isConviction &&
+            t.openedAt.year == now.year &&
+            t.openedAt.month == now.month &&
+            t.openedAt.day == now.day)
+        .length;
   }
 
   void closeTrade(String id, {String? closedBy}) {

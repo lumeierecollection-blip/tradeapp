@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../models/market_snapshot.dart';
 import '../../models/validated_signal.dart';
 import '../../state/app_state.dart';
 import '../theme.dart';
@@ -38,7 +39,13 @@ class DashboardScreen extends StatelessWidget {
           children: [
             if (appState.isLoading) const _LoadingBar(),
             if (appState.error != null) _ErrorBanner(message: appState.error!),
-            const SizedBox(height: 8),
+            if (appState.markets.isNotEmpty) ...[
+              _MarketsStrip(
+                snapshots: appState.markets.values.toList(),
+                order: appState.watchlist,
+              ),
+              const SizedBox(height: 18),
+            ],
             if (hero == null)
               _NoSignal(hasScanned: appState.lastUpdated != null, onRefresh: appState.refresh)
             else
@@ -47,6 +54,7 @@ class DashboardScreen extends StatelessWidget {
             _Footer(
               onSeeAll: onSeeAll,
               updated: appState.lastUpdated,
+              tick: appState.updateTick,
             ),
           ],
         ),
@@ -94,6 +102,92 @@ class _GreetingTitle extends StatelessWidget {
         ),
         const SizedBox(height: 4),
       ],
+    );
+  }
+}
+
+class _MarketsStrip extends StatelessWidget {
+  final List<MarketSnapshot> snapshots;
+  final List<String> order;
+
+  const _MarketsStrip({required this.snapshots, required this.order});
+
+  @override
+  Widget build(BuildContext context) {
+    final bySymbol = {for (final s in snapshots) s.symbol: s};
+    final ordered = <MarketSnapshot>[];
+    for (final sym in order) {
+      final s = bySymbol[sym];
+      if (s != null) ordered.add(s);
+    }
+    for (final s in snapshots) {
+      if (!ordered.contains(s)) ordered.add(s);
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            const Text('Markets', style: TextStyle(fontSize: 17, fontWeight: FontWeight.w700)),
+            const Spacer(),
+            Text(
+              'refreshes every 15s',
+              style: const TextStyle(fontSize: 11, color: AppTheme.textMuted),
+            ),
+          ],
+        ),
+        const SizedBox(height: 10),
+        SizedBox(
+          height: 74,
+          child: ListView.separated(
+            scrollDirection: Axis.horizontal,
+            itemCount: ordered.length,
+            separatorBuilder: (_, _) => const SizedBox(width: 10),
+            itemBuilder: (context, i) => _MarketTile(s: ordered[i]),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _MarketTile extends StatelessWidget {
+  final MarketSnapshot s;
+  const _MarketTile({required this.s});
+
+  @override
+  Widget build(BuildContext context) {
+    final up = s.change5m >= 0;
+    final color = up ? AppTheme.buy : AppTheme.sell;
+    return Container(
+      width: 112,
+      padding: const EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        color: AppTheme.surfaceAlt,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: AppTheme.line),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Row(
+            children: [
+              Text(s.symbol, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w800)),
+              const Spacer(),
+              Text(
+                '${up ? '+' : ''}${s.change5m.toStringAsFixed(1)}%',
+                style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: color),
+              ),
+            ],
+          ),
+          Text(
+            AppTheme.fmtPrice(s.price),
+            style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w800, color: AppTheme.textPrimary),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -312,8 +406,9 @@ class _NoSignal extends StatelessWidget {
 class _Footer extends StatelessWidget {
   final VoidCallback onSeeAll;
   final DateTime? updated;
+  final int tick;
 
-  const _Footer({required this.onSeeAll, required this.updated});
+  const _Footer({required this.onSeeAll, required this.updated, required this.tick});
 
   @override
   Widget build(BuildContext context) {
@@ -329,9 +424,23 @@ class _Footer extends StatelessWidget {
           child: const Text('See all signals', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
         ),
         const Spacer(),
-        Text(
-          updated == null ? 'Not scanned yet' : 'Updated ${AppTheme.timeAgo(updated!)}',
-          style: const TextStyle(fontSize: 12, color: AppTheme.textMuted),
+        AnimatedSwitcher(
+          duration: const Duration(milliseconds: 350),
+          transitionBuilder: (child, anim) => FadeTransition(opacity: anim, child: child),
+          child: Row(
+            key: ValueKey(tick),
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (tick > 0) ...[
+                const Icon(Icons.check_circle, size: 13, color: AppTheme.buy),
+                const SizedBox(width: 4),
+              ],
+              Text(
+                updated == null ? 'Not scanned yet' : 'Updated ${AppTheme.timeAgo(updated!)}',
+                style: const TextStyle(fontSize: 12, color: AppTheme.textMuted),
+              ),
+            ],
+          ),
         ),
       ],
     );

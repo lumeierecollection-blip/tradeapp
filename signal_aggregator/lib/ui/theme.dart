@@ -14,9 +14,17 @@ class AppTheme {
   static const Color textMuted = Color(0xFF5F6878);
 
   static const Color accent = Color(0xFF5EEAD4);
+  static const Color accentSoft = Color(0xFF2DD4BF);
+  static const Color accent2 = Color(0xFF38BDF8);
   static const Color buy = Color(0xFF34D399);
   static const Color sell = Color(0xFFFB7185);
   static const Color warn = Color(0xFFFBBF24);
+
+  static const LinearGradient accentGradient = LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [accent, accent2],
+  );
 
   static ThemeData dark() {
     final scheme = ColorScheme.fromSeed(
@@ -89,11 +97,12 @@ class AppTheme {
         surfaceTintColor: Colors.transparent,
         indicatorColor: accent.withValues(alpha: 0.14),
         height: 64,
+        labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
         labelTextStyle: WidgetStateProperty.resolveWith(
           (states) => TextStyle(
             fontSize: 11,
-            fontWeight: states.contains(WidgetState.selected) ? FontWeight.w600 : FontWeight.w400,
-            color: states.contains(WidgetState.selected) ? textPrimary : textMuted,
+            fontWeight: states.contains(WidgetState.selected) ? FontWeight.w700 : FontWeight.w400,
+            color: states.contains(WidgetState.selected) ? accent : textMuted,
           ),
         ),
         iconTheme: WidgetStateProperty.resolveWith(
@@ -103,12 +112,51 @@ class AppTheme {
           ),
         ),
       ),
+      segmentedButtonTheme: SegmentedButtonThemeData(
+        style: ButtonStyle(
+          foregroundColor: WidgetStateProperty.resolveWith(
+            (states) => states.contains(WidgetState.selected) ? bg : textSecondary,
+          ),
+          backgroundColor: WidgetStateProperty.resolveWith(
+            (states) => states.contains(WidgetState.selected) ? accentSoft : null,
+          ),
+          textStyle: WidgetStateProperty.all(
+            const TextStyle(fontSize: 12.5, fontWeight: FontWeight.w700),
+          ),
+          shape: WidgetStateProperty.all(
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          ),
+          side: WidgetStateProperty.all(const BorderSide(color: line)),
+        ),
+      ),
+      progressIndicatorTheme: const ProgressIndicatorThemeData(
+        color: accent,
+        linearTrackColor: line,
+        circularTrackColor: line,
+      ),
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: accentSoft.withValues(alpha: 0.16),
+          foregroundColor: accent,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+          textStyle: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700),
+        ),
+      ),
+      outlinedButtonTheme: OutlinedButtonThemeData(
+        style: OutlinedButton.styleFrom(
+          side: const BorderSide(color: line),
+          foregroundColor: textSecondary,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+          textStyle: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+        ),
+      ),
       dividerTheme: const DividerThemeData(color: line, thickness: 1, space: 1),
       filledButtonTheme: FilledButtonThemeData(
         style: FilledButton.styleFrom(
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
           textStyle: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700),
           padding: const EdgeInsets.symmetric(vertical: 15),
+          backgroundColor: accent,
         ),
       ),
       inputDecorationTheme: InputDecorationTheme(

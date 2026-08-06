@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:workmanager/workmanager.dart';
 
 import '../models/market_snapshot.dart';
+import '../models/paper_trade.dart';
 import '../models/signal.dart';
 import '../models/validated_signal.dart';
 import '../models/goal_plan.dart';
@@ -20,7 +21,7 @@ import '../services/validator.dart';
 import '../ui/theme.dart';
 
 class AppState extends ChangeNotifier {
-  static const Duration refreshInterval = Duration(minutes: 5);
+  static const Duration refreshInterval = Duration(seconds: 15);
 
   final Storage storage;
   final PaperTrader paperTrader;
@@ -48,6 +49,8 @@ class AppState extends ChangeNotifier {
   bool _isLoading = false;
   String? _error;
   Timer? _timer;
+  int _updateTick = 0;
+  DateTime? _lastLocalScan;
 
   List<ValidatedSignal> get validated => List.unmodifiable(_validated);
   List<Signal> get rawSignals => List.unmodifiable(_rawSignals);
@@ -66,6 +69,10 @@ class AppState extends ChangeNotifier {
   DateTime? get lastUpdated => _lastUpdated;
   bool get isLoading => _isLoading;
   String? get error => _error;
+
+  /// Incremented after every successful data update so the UI can play a
+  /// subtle "just refreshed" animation without a full reload.
+  int get updateTick => _updateTick;
 
   AppState(this.storage, this.paperTrader) {
     _watchlist = storage.getWatchlist();
@@ -201,6 +208,7 @@ class AppState extends ChangeNotifier {
         }
       }
       _lastUpdated = DateTime.now();
+      _updateTick++;
     } catch (e) {
       _error = e.toString();
     } finally {
@@ -210,6 +218,23 @@ class AppState extends ChangeNotifier {
   }
 
   Future<void> _localScan() async {
+    final now = DateTime.now();
+    final throttled = _lastLocalScan != null &&
+        now.difference(_lastLocalScan!) < const Duration(seconds: 30);
+
+    // With 15s polling we must not hammer Reddit/news APIs. If we scanned
+    // recently, just refresh watchlist prices and keep the current signals.
+    if (throttled) {
+      final markets = await _marketService.fetchSnapshots(_watchlist);
+      if (markets.isNotEmpty) {
+        final merged = Map<String, MarketSnapshot>.from(_markets)..addAll(markets);
+        _markets = merged;
+        notifyListeners();
+      }
+      return;
+    }
+    _lastLocalScan = now;
+
     final active = _activeSources;
     final rawSignals = await _sourceRegistry.fetchAll(active);
 
@@ -258,6 +283,31 @@ class AppState extends ChangeNotifier {
       constraints: Constraints(networkType: NetworkType.connected),
       existingWorkPolicy: ExistingPeriodicWorkPolicy.update,
     );
+  }
+
+  /// Opens a paper position and schedules close reminders (5 min, 2 min and
+  /// exactly at the signal's close time). Returns an error message, or '' on
+  /// success.
+  Future<String> openTrade(ValidatedSignal vs, double amount,
+      {PositionType type = PositionType.accumulate}) async {
+    final result = paperTrader.openTrade(vs, amount, type: type);
+    if (result.isNotEmpty) return result;
+    final trade = paperTrader.openTrades.first;
+    try {
+      await notifications.requestPermission();
+    } catch (_) {}
+    await notifications.scheduleTradeReminders(trade.id, trade.symbol, trade.sellAt);
+    return '';
+  }
+
+  void closeTrade(String id, {String? closedBy}) {
+    paperTrader.closeTrade(id, closedBy: closedBy);
+    notifications.cancelTradeReminders(id);
+  }
+
+  void closeAtMarket(String id, double price) {
+    paperTrader.closeAtMarket(id, price);
+    notifications.cancelTradeReminders(id);
   }
 
   double priceOf(String symbol) => _markets[symbol]?.price ?? 0;

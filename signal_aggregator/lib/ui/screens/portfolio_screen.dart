@@ -187,10 +187,39 @@ class _OpenTradeCard extends StatelessWidget {
             Row(
               children: [
                 Text('BUY ${trade.symbol}', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w800)),
+                const SizedBox(width: 8),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                  decoration: BoxDecoration(
+                    color: trade.positionType == PositionType.conviction
+                        ? AppTheme.warn.withValues(alpha: 0.18)
+                        : AppTheme.accent.withValues(alpha: 0.18),
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                  child: Text(
+                    trade.positionType.label,
+                    style: TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w700,
+                      color: trade.positionType == PositionType.conviction ? AppTheme.warn : AppTheme.accent,
+                    ),
+                  ),
+                ),
                 const Spacer(),
                 Text(
                   '${pnl >= 0 ? '+' : ''}\$${pnl.toStringAsFixed(2)} (${pnlPct >= 0 ? '+' : ''}${pnlPct.toStringAsFixed(1)}%)',
                   style: TextStyle(fontSize: 15, fontWeight: FontWeight.w800, color: color),
+                ),
+              ],
+            ),
+            const SizedBox(height: 6),
+            Row(
+              children: [
+                const Icon(Icons.notifications_active_outlined, size: 14, color: AppTheme.accent),
+                const SizedBox(width: 6),
+                Text(
+                  'Closes ${AppTheme.fmtClock(trade.sellAt)} · reminders at -5m, -2m, 0m',
+                  style: const TextStyle(fontSize: 12, color: Colors.white54),
                 ),
               ],
             ),
@@ -231,8 +260,7 @@ class _OpenTradeCard extends StatelessWidget {
                 Expanded(
                   child: OutlinedButton(
                     onPressed: () {
-                      final trader = context.read<AppState>().paperTrader;
-                      trader.closeAtMarket(trade.id, price);
+                      context.read<AppState>().closeAtMarket(trade.id, price);
                     },
                     child: const Text('Close now'),
                   ),
@@ -241,8 +269,7 @@ class _OpenTradeCard extends StatelessWidget {
                 Expanded(
                   child: TextButton(
                     onPressed: () {
-                      final trader = context.read<AppState>().paperTrader;
-                      trader.closeTrade(trade.id, closedBy: 'target');
+                      context.read<AppState>().closeTrade(trade.id, closedBy: 'target');
                     },
                     child: const Text('Take target'),
                   ),
