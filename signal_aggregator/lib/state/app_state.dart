@@ -250,13 +250,13 @@ class AppState extends ChangeNotifier {
   }
 
   void startBackgroundWorker() {
-    Workmanager().initialize(backgroundFetchDispatcher, isInDebugMode: false);
+    Workmanager().initialize(backgroundFetchDispatcher);
     Workmanager().registerPeriodicTask(
       'signal-fetch-15',
       'signalFetch',
       frequency: const Duration(minutes: 15),
       constraints: Constraints(networkType: NetworkType.connected),
-      existingWorkPolicy: ExistingWorkPolicy.update,
+      existingWorkPolicy: ExistingPeriodicWorkPolicy.update,
     );
   }
 
