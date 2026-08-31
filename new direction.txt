@@ -1,0 +1,1809 @@
+You are the lead engineer responsible for upgrading an existing Flutter + server-based cryptocurrency trading signal application called TradeApp.
+
+REPOSITORY:
+lumeierecollection-blip/tradeapp
+
+PRIMARY OBJECTIVE:
+
+Transform the existing application into a reliable, data-driven cryptocurrency market scanner and trading-signal analysis application.
+
+DO NOT rebuild the application from scratch.
+
+DO NOT replace the existing architecture without a compelling technical reason.
+
+DO NOT blindly modify files.
+
+DO NOT guess what the code does.
+
+DO NOT invent market data.
+
+DO NOT fabricate technical indicators.
+
+DO NOT manufacture profit targets.
+
+DO NOT add unnecessary paid APIs.
+
+DO NOT add automatic trading execution.
+
+DO NOT expose API keys or secrets in the Flutter application.
+
+The objective is to BUILD ON THE EXISTING SYSTEM and progressively improve it.
+
+============================================================
+0. MOST IMPORTANT PRINCIPLE
+============================================================
+
+This application deals with financial information.
+
+Accuracy, traceability, cost control and defensive programming are more important than adding flashy features.
+
+Every important calculation must be:
+
+1. based on real market data,
+2. deterministic,
+3. explainable,
+4. testable,
+5. reproducible,
+6. protected against missing/stale/invalid data.
+
+NEVER use:
+
+- fake prices
+- placeholder prices in production
+- random values
+- guessed volatility
+- guessed volume
+- guessed support/resistance
+- fabricated confidence
+- fabricated targets
+- silent fallback values that make a signal appear valid
+
+If required data is unavailable, the system must say that data is unavailable and either downgrade/reject the signal.
+
+A missing signal is preferable to a fabricated signal.
+
+============================================================
+1. FIRST ACTION — DO NOT MODIFY ANYTHING
+============================================================
+
+Before writing or changing code, perform a complete repository audit.
+
+Inspect:
+
+- root files
+- Flutter project
+- lib/
+- screens
+- widgets
+- models
+- services
+- repositories
+- networking
+- API clients
+- server/backend
+- signal aggregator
+- market-data code
+- indicator calculations
+- validators
+- scoring
+- setup classification
+- stop-loss calculation
+- take-profit calculation
+- symbol lists
+- configuration
+- environment variables
+- deployment
+- GitHub Actions
+- Android configuration
+- tests
+- documentation
+
+Determine exactly:
+
+A. How the Flutter app communicates with the backend.
+B. Where market data comes from.
+C. Whether market data is REST, WebSocket or both.
+D. Where candles are obtained.
+E. Where indicators are calculated.
+F. Where confidence/probability is calculated.
+G. Where support/resistance is calculated.
+H. Where ATR is calculated.
+I. Where volume is calculated.
+J. Where stop-loss is calculated.
+K. Where take-profit is calculated.
+L. Where the current 2.2% / 4.4%-type behaviour originates.
+M. How symbols are currently selected.
+N. How many markets are currently scanned.
+O. How signals are filtered.
+P. How signals are returned to Flutter.
+Q. How the UI displays signals.
+R. How the backend is currently deployed.
+
+Create an architecture audit.
+
+DO NOT implement major changes until this audit is complete.
+
+============================================================
+2. COST CONTROL IS A HARD REQUIREMENT
+============================================================
+
+The application must remain inexpensive to operate.
+
+Do not introduce an API just because it exists.
+
+The initial external-data architecture should be:
+
+PRIMARY:
+Binance public market data.
+
+OPTIONAL:
+CoinGecko free/demo tier for supplemental market metadata where useful.
+
+FUTURE OPTIONAL:
+CoinGlass or another derivatives provider.
+
+CoinGlass MUST NOT be a required dependency for the first implementation.
+
+The application must work without CoinGlass.
+
+Do not add any paid API unless explicitly authorized.
+
+============================================================
+3. BINANCE
+============================================================
+
+Use Binance as the primary market-data provider.
+
+Use public market data wherever possible.
+
+Do NOT require Binance trading/account API credentials merely to perform market analysis.
+
+The backend may consume public:
+
+- ticker information
+- exchange information
+- candles/klines
+- trades
+- order book
+- WebSocket market streams
+
+Use REST where appropriate.
+
+Use WebSockets where appropriate for live data.
+
+Do NOT poll high-frequency endpoints unnecessarily.
+
+Implement efficient data collection.
+
+Avoid downloading the same information repeatedly.
+
+Respect Binance rate limits.
+
+Never put Binance credentials in:
+
+- Flutter code
+- APK
+- source-controlled configuration
+- client-side environment variables
+
+If authentication is not required for public market data, do not add authentication.
+
+============================================================
+4. MARKET DATA ARCHITECTURE
+============================================================
+
+Create a clean provider abstraction if one does not already exist.
+
+Conceptually:
+
+MarketDataProvider
+
+with implementation:
+
+BinanceMarketDataProvider
+
+Optional:
+
+MarketMetadataProvider
+
+with implementation:
+
+CoinGeckoMarketMetadataProvider
+
+The core signal engine must not directly depend on raw HTTP calls.
+
+Instead:
+
+Data Provider
+    ↓
+Normalized Market Data
+    ↓
+Indicator Engine
+    ↓
+Signal Engine
+    ↓
+Risk Engine
+    ↓
+Setup Classification
+    ↓
+Explanation
+    ↓
+API Response
+    ↓
+Flutter
+
+This separation is mandatory unless the existing architecture already achieves the same thing.
+
+============================================================
+5. NORMALIZED MARKET DATA
+============================================================
+
+Create or improve a normalized market-data model.
+
+The signal engine should receive standardized data regardless of provider.
+
+At minimum support:
+
+symbol
+timestamp
+open
+high
+low
+close
+volume
+
+Where available:
+
+bid
+ask
+bidVolume
+askVolume
+tradeCount
+quoteVolume
+
+The data model should also support:
+
+timeframe
+candle timestamp
+data freshness
+source/provider
+
+Never mix stale candles with current candles without explicitly knowing their age.
+
+============================================================
+6. DATA FRESHNESS
+============================================================
+
+Every market-data object must have a timestamp.
+
+Before calculating a live signal, validate:
+
+- data exists
+- data is recent enough
+- candle sequence is valid
+- there are enough candles
+- prices are positive
+- high >= low
+- volume is non-negative
+
+If data is stale:
+
+DO NOT silently use it.
+
+Mark it stale or reject the signal.
+
+============================================================
+7. MARKET UNIVERSE
+============================================================
+
+BTC and ETH MUST ALWAYS be included.
+
+Initial candidate markets:
+
+BTCUSDT
+ETHUSDT
+SOLUSDT
+BNBUSDT
+XRPUSDT
+DOGEUSDT
+ADAUSDT
+AVAXUSDT
+LINKUSDT
+TRXUSDT
+SUIUSDT
+DOTUSDT
+LTCUSDT
+UNIUSDT
+NEARUSDT
+APTUSDT
+
+However:
+
+DO NOT assume all symbols are supported.
+
+Use Binance exchange metadata to verify symbols.
+
+The market universe must be configurable.
+
+Do not hard-code symbol logic throughout the application.
+
+The scanner must:
+
+1. retrieve supported markets,
+2. filter for intended quote currency,
+3. filter invalid/inactive markets,
+4. optionally filter by liquidity,
+5. scan eligible markets,
+6. rank opportunities.
+
+The goal is NOT to generate hundreds of signals.
+
+The goal is to identify the best opportunities.
+
+============================================================
+8. MARKET LIQUIDITY
+============================================================
+
+Liquidity must matter.
+
+Avoid presenting illiquid assets as premium opportunities.
+
+Where reliable data is available, consider:
+
+- recent quote volume
+- spread
+- order-book depth
+- trading activity
+
+Do not create arbitrary liquidity thresholds without documenting them.
+
+If a threshold is introduced, explain:
+
+WHY it exists.
+
+WHAT problem it solves.
+
+HOW it affects the number of markets scanned.
+
+HOW it affects API usage.
+
+============================================================
+9. TECHNICAL ANALYSIS
+============================================================
+
+Inspect the existing indicator implementation first.
+
+Reuse correct existing calculations.
+
+Do not create duplicate implementations of RSI/ATR/etc.
+
+The analysis should consider:
+
+5-minute timeframe
+15-minute timeframe
+1-hour timeframe
+
+Where sufficient data exists.
+
+Potential indicators/features:
+
+- RSI
+- ATR
+- momentum
+- trend
+- moving averages if already supported
+- volume
+- relative volume
+- volatility
+- support/resistance
+- swing highs/lows
+- breakout structure
+- price position within recent range
+- order-book imbalance
+
+Every indicator must have a clear purpose.
+
+Do not add indicators simply to make the system appear more sophisticated.
+
+============================================================
+10. MULTI-TIMEFRAME ANALYSIS
+============================================================
+
+Signals should distinguish:
+
+short-term momentum
+
+from:
+
+broader trend.
+
+Example:
+
+5m bullish
+15m bullish
+1h bullish
+
+is stronger confirmation than:
+
+5m bullish
+15m neutral
+1h bearish
+
+Do not simply average timeframes.
+
+The signal engine should understand agreement and conflict.
+
+Conflicting timeframes should reduce confidence or prevent higher setup tiers.
+
+============================================================
+11. VOLUME ANALYSIS
+============================================================
+
+Volume should not merely be displayed.
+
+Use relative volume where sufficient historical data exists.
+
+For example:
+
+current/recent volume compared to a meaningful rolling baseline.
+
+Never hard-code a statement like:
+
+"Volume is strong"
+
+unless the calculation supports it.
+
+Explanations must contain actual calculated values where appropriate.
+
+============================================================
+12. VOLATILITY / ATR
+============================================================
+
+ATR must be used for market-aware risk calculations where appropriate.
+
+Do not treat BTC, ETH and volatile altcoins identically.
+
+A fixed 2% target is not appropriate for every asset.
+
+A fixed 10% target is also not appropriate for every asset.
+
+The target must adapt to actual volatility.
+
+============================================================
+13. SUPPORT / RESISTANCE
+============================================================
+
+Inspect the existing support/resistance implementation.
+
+Improve it if necessary.
+
+Support/resistance should be based on actual price structure.
+
+Potential inputs:
+
+- recent swing highs
+- recent swing lows
+- repeated reaction levels
+- recent range boundaries
+- breakout levels
+
+Avoid arbitrary levels.
+
+For LONG:
+
+Identify meaningful resistance above entry.
+
+For SHORT:
+
+Identify meaningful support below entry.
+
+The next meaningful opposing level should influence target placement.
+
+============================================================
+14. DYNAMIC TAKE-PROFIT
+============================================================
+
+THIS IS CRITICAL.
+
+REMOVE THE CURRENT CONCEPT OF A FIXED TARGET MULTIPLIER IF THAT IS WHAT PRODUCES THE CURRENT 2.2% / 4.4% BEHAVIOUR.
+
+Do NOT simply replace it with:
+
+risk × 5
+
+or:
+
+risk × 10
+
+That would be fake precision.
+
+Instead calculate target candidates from real data.
+
+Potential target candidates:
+
+1. volatility-based projection
+2. market-structure level
+3. recent swing extension
+4. momentum/continuation potential
+
+Then evaluate the candidates.
+
+For LONG:
+
+Target should generally be below a meaningful opposing resistance level when appropriate.
+
+For SHORT:
+
+Target should generally be above a meaningful opposing support level when appropriate.
+
+Target must be:
+
+- achievable relative to current volatility
+- structurally sensible
+- compatible with the setup
+- compatible with risk/reward
+
+If the market does not support a large move:
+
+DO NOT force a large target.
+
+This means the system may legitimately produce:
+
+BTC target = 3.4%
+
+while another asset may produce:
+
+SOL target = 8.7%
+
+and another may produce:
+
+ETH target = 5.1%.
+
+That is expected.
+
+============================================================
+15. STOP-LOSS
+============================================================
+
+Stop-loss must also be market-aware.
+
+Potential inputs:
+
+- ATR
+- swing structure
+- support/resistance
+- volatility
+
+Avoid arbitrary fixed stops.
+
+For LONG:
+
+stop should generally be below relevant structure.
+
+For SHORT:
+
+stop should generally be above relevant structure.
+
+Do not make stops so tight that normal market noise makes the signal meaningless.
+
+============================================================
+16. RISK / REWARD
+============================================================
+
+Every signal must contain:
+
+entry price
+stop price
+target price
+risk percentage
+reward percentage
+risk/reward ratio
+
+Validate all calculations.
+
+For LONG:
+
+risk = entry - stop
+reward = target - entry
+
+For SHORT:
+
+risk = stop - entry
+reward = entry - target
+
+Reject mathematically invalid signals.
+
+Do not display a positive R:R if the actual numbers do not support it.
+
+============================================================
+17. FOUR SETUP TIERS
+============================================================
+
+Implement four setup classifications.
+
+The percentages MUST NOT define the tiers.
+
+The quality of the market setup defines the tier.
+
+--------------------------------------------
+WEAK SETUP
+--------------------------------------------
+
+Some evidence exists.
+
+But confirmation is limited.
+
+Possible characteristics:
+
+- weak momentum
+- mixed timeframe confirmation
+- limited volume confirmation
+- weaker structure
+- mediocre risk/reward
+
+This is a low-conviction opportunity.
+
+--------------------------------------------
+NORMAL SETUP
+--------------------------------------------
+
+Multiple indicators agree.
+
+Possible characteristics:
+
+- reasonable momentum
+- reasonable volume
+- supportive RSI
+- some multi-timeframe agreement
+- acceptable structure
+- acceptable risk/reward
+
+--------------------------------------------
+STRONG SETUP
+--------------------------------------------
+
+Strong confluence.
+
+Possible characteristics:
+
+- multi-timeframe agreement
+- strong momentum
+- strong relative volume
+- supportive RSI
+- strong market structure
+- favourable volatility
+- good risk/reward
+- meaningful room toward target
+
+--------------------------------------------
+VERY STRONG MOMENTUM
+--------------------------------------------
+
+This tier MUST be rare.
+
+Require exceptional alignment.
+
+Possible requirements:
+
+- strong momentum across multiple timeframes
+- strong volume expansion
+- trend agreement
+- strong structural confirmation
+- breakout/continuation confirmation
+- favourable volatility
+- acceptable RSI condition
+- strong risk/reward
+- sufficient liquidity
+- no major contradictory signal
+
+Do not classify a signal as Very Strong merely because its target is large.
+
+A large target does not equal a strong setup.
+
+============================================================
+18. CONFIDENCE VS EXPECTED MOVE
+============================================================
+
+These MUST remain separate.
+
+Confidence means:
+
+"How strongly do the available signals agree?"
+
+Expected move means:
+
+"How much movement does the current market structure/volatility reasonably support?"
+
+Example:
+
+Confidence: 91%
+Expected move: 4.8%
+
+can be valid.
+
+Do NOT interpret 91% as a guaranteed 91% chance of profit.
+
+Use terminology:
+
+confidence
+setup quality
+expected move
+risk/reward
+supporting evidence
+
+Avoid:
+
+guaranteed
+certain
+risk-free
+sure profit
+
+============================================================
+19. SIGNAL SCORING
+============================================================
+
+Inspect the current scoring system.
+
+Do not throw it away automatically.
+
+Identify which factors currently influence the score.
+
+Improve it so independent evidence is rewarded.
+
+Avoid double-counting highly correlated indicators.
+
+For example:
+
+RSI and momentum may be related.
+
+Multiple moving averages may represent the same underlying trend.
+
+Do not accidentally give one market condition excessive weight simply because several indicators describe it.
+
+Document scoring weights.
+
+Prefer transparent scoring over mysterious formulas.
+
+============================================================
+20. EXPLANATIONS
+============================================================
+
+THIS IS A CORE PRODUCT FEATURE.
+
+Every signal must explain:
+
+WHY THIS SIGNAL EXISTS.
+
+WHY THIS SETUP RECEIVED ITS TIER.
+
+WHY THIS TARGET WAS CHOSEN.
+
+WHY THIS STOP WAS CHOSEN.
+
+WHY IT DID NOT QUALIFY FOR A HIGHER TIER, where appropriate.
+
+Explanations must be generated from actual calculated values.
+
+Do NOT use an LLM API just to generate explanations.
+
+Do NOT create generic text.
+
+BAD:
+
+"Strong market conditions indicate a bullish opportunity."
+
+GOOD:
+
+"5m, 15m and 1h momentum are aligned bullish. Relative volume is 1.7× its recent baseline. Price is above the recent breakout level and the next major resistance is approximately X% above entry."
+
+Every statement must be traceable to actual data.
+
+============================================================
+21. EXPLANATION DATA MODEL
+============================================================
+
+Where compatible with the existing architecture, create structured reasons.
+
+Conceptually:
+
+reason:
+category
+title
+status
+value
+comparison
+explanation
+
+Example:
+
+category:
+Momentum
+
+title:
+Multi-timeframe momentum aligned
+
+status:
+positive
+
+value:
+5m/15m/1h bullish
+
+explanation:
+"Momentum is bullish across all monitored timeframes."
+
+Another:
+
+category:
+Volume
+
+title:
+Volume confirmation
+
+value:
+1.8x
+
+explanation:
+"Recent volume is 1.8× the rolling baseline."
+
+Do not fabricate these values.
+
+============================================================
+22. WHY TARGET?
+============================================================
+
+The signal must explain its target.
+
+Example:
+
+"Target is based on current volatility and the next significant resistance level. The target is placed before resistance rather than directly on it."
+
+Use actual:
+
+ATR
+entry
+target
+resistance
+volatility
+
+where available.
+
+============================================================
+23. WHY STOP?
+============================================================
+
+Explain:
+
+"The stop is below the recent swing low and outside the normal ATR movement range."
+
+Again, only if the actual calculation supports it.
+
+============================================================
+24. WHY THIS TIER?
+============================================================
+
+Example:
+
+WHY STRONG?
+
+- 5m momentum: bullish
+- 15m momentum: bullish
+- 1h momentum: bullish
+- relative volume: 1.7×
+- RSI: supportive
+- structure: breakout
+- R:R: 1:3.8
+
+Then:
+
+"This qualifies as Strong because multiple independent signals agree. It does not qualify as Very Strong because [actual missing condition]."
+
+The missing condition must be based on real calculations.
+
+============================================================
+25. MARKET RANKING
+============================================================
+
+After scanning markets:
+
+rank them.
+
+Ranking should consider:
+
+- setup quality
+- confidence
+- risk/reward
+- expected move
+- liquidity
+- data quality
+- signal freshness
+- multi-timeframe agreement
+
+Do NOT rank purely by expected percentage.
+
+A 15% target with terrible risk/reward should not automatically beat a 5% target with excellent structure.
+
+============================================================
+26. DUPLICATE SIGNAL CONTROL
+============================================================
+
+Avoid multiple nearly identical signals for the same market.
+
+Maintain the existing concept of one best current signal per asset where appropriate.
+
+If the same asset appears across multiple scans:
+
+update/replace stale signals rather than flooding the UI.
+
+============================================================
+27. FLUTTER UI
+============================================================
+
+Redesign the Signals screen around four sections:
+
+VERY STRONG MOMENTUM
+
+STRONG SETUPS
+
+NORMAL SETUPS
+
+WEAK SETUPS
+
+Each section must be visually distinct.
+
+Do NOT create four copies of the same generic card.
+
+The hierarchy should be obvious.
+
+Users should immediately understand:
+
+- what is strongest
+- what is normal
+- what is weak
+- what direction the trade is
+- entry
+- target
+- stop
+- R:R
+- confidence
+
+============================================================
+28. SIGNAL CARD
+============================================================
+
+Each signal card should show, at minimum:
+
+Asset
+Direction
+Setup tier
+Confidence
+Entry
+Target
+Stop
+Expected move
+Risk/reward
+
+Then a concise "Why?" section.
+
+Expandable details should contain:
+
+Momentum
+Volume
+RSI
+Volatility
+Structure
+Risk/reward
+Target reasoning
+Stop reasoning
+Missing confirmation
+
+Do not overwhelm the first screen.
+
+Progressive disclosure is preferred.
+
+============================================================
+29. DESIGN QUALITY
+============================================================
+
+The current interface should NOT look like generic AI-generated software.
+
+Use the installed design skill if available.
+
+Avoid:
+
+- generic purple AI gradients
+- excessive glassmorphism
+- huge rounded cards
+- excessive shadows
+- meaningless gradients
+- generic fintech templates
+- excessive icons
+- random neon colors
+- excessive animations
+- identical card layouts
+- unnecessary decoration
+
+Design for:
+
+- clarity
+- trust
+- scanability
+- hierarchy
+- information density
+- consistency
+- restrained visual language
+
+The application is a trading tool.
+
+It should feel like a serious financial product.
+
+============================================================
+30. DESIGN SYSTEM
+============================================================
+
+Create consistent design tokens where appropriate.
+
+Define:
+
+- typography
+- spacing
+- corner radius
+- elevation
+- semantic colors
+- success
+- warning
+- danger
+- neutral
+- bullish
+- bearish
+
+Do not scatter arbitrary values throughout the UI.
+
+============================================================
+31. MOBILE FIRST
+============================================================
+
+This is primarily an Android application.
+
+Design for actual phone screens.
+
+Do not build a desktop dashboard and shrink it.
+
+The most important signal information must be quickly visible.
+
+Avoid excessive scrolling.
+
+Ensure:
+
+- small phones work
+- normal phones work
+- larger phones work
+
+============================================================
+32. API / NETWORK FAILURE
+============================================================
+
+Handle:
+
+- Binance timeout
+- Binance rate limit
+- unavailable symbol
+- malformed data
+- stale data
+- insufficient candles
+- temporary network failure
+- provider failure
+
+One failed coin must NOT crash the whole scan.
+
+If BTC fails:
+
+ETH and other markets must still be processed.
+
+If Binance is temporarily unavailable:
+
+show the system as unavailable/stale rather than inventing data.
+
+============================================================
+33. RATE LIMIT PROTECTION
+============================================================
+
+Implement:
+
+- caching
+- request deduplication
+- sensible polling
+- batch requests where possible
+- exponential backoff where appropriate
+- retry limits
+- request timeouts
+
+Do not create infinite retry loops.
+
+Do not hammer Binance.
+
+Do not create a request per indicator if one candle dataset can calculate multiple indicators.
+
+============================================================
+34. SERVER COST CONTROL
+============================================================
+
+The server should calculate indicators efficiently.
+
+For example:
+
+Fetch candles once.
+
+Then calculate:
+
+RSI
+ATR
+momentum
+volume
+structure
+
+from the same dataset.
+
+Do NOT independently fetch the same candles for every indicator.
+
+Cache reusable data.
+
+Avoid unnecessary database usage.
+
+Do not introduce microservices.
+
+Prefer a simple backend.
+
+============================================================
+35. COINGECKO
+============================================================
+
+CoinGecko is optional.
+
+Use it only where it provides useful information that Binance does not conveniently provide.
+
+Potential use:
+
+- market cap
+- market ranking
+- asset metadata
+
+Do not make signal generation dependent on CoinGecko if Binance data is sufficient.
+
+If CoinGecko becomes unavailable:
+
+signal generation should continue.
+
+Do not call CoinGecko repeatedly for information that rarely changes.
+
+Cache metadata.
+
+Respect free-tier limits.
+
+============================================================
+36. COINGLASS
+============================================================
+
+DO NOT implement CoinGlass as a required dependency.
+
+Design the architecture so derivatives data can be added later.
+
+Possible future interface:
+
+DerivativesDataProvider
+
+Potential future implementation:
+
+CoinGlassDerivativesProvider
+
+But do not require an API key now.
+
+Do not block the project waiting for CoinGlass.
+
+============================================================
+37. NO AUTOMATED TRADING
+============================================================
+
+Do NOT implement:
+
+- automatic orders
+- account trading
+- withdrawals
+- exchange credentials
+- portfolio execution
+
+This version is analysis only.
+
+The architecture may allow future server-side execution, but it must not be implemented now.
+
+============================================================
+38. SECURITY
+============================================================
+
+Never store secrets in:
+
+- Flutter source
+- Android assets
+- Git
+- public configuration
+- APK
+- client environment files
+
+Server secrets must use server environment variables/secrets management.
+
+Do not log API keys.
+
+Do not return secrets to Flutter.
+
+============================================================
+39. TESTING — MANDATORY
+============================================================
+
+Create or improve automated tests.
+
+Test market calculations independently.
+
+Test:
+
+RSI
+ATR
+momentum
+volume
+relative volume
+support/resistance
+target
+stop
+risk/reward
+confidence
+setup classification
+ranking
+
+Use deterministic fixtures.
+
+Create known test datasets where the expected output is mathematically verifiable.
+
+============================================================
+40. EDGE CASE TESTS
+============================================================
+
+Test:
+
+BTC
+ETH
+high-volatility altcoin
+low-volatility market
+missing data
+stale data
+insufficient candles
+zero volume
+flat market
+extreme volatility
+breakout
+false breakout
+conflicting timeframes
+very high RSI
+very low RSI
+large spread
+poor liquidity
+invalid symbol
+
+============================================================
+41. MATHEMATICAL VERIFICATION
+============================================================
+
+For every financial calculation:
+
+Write unit tests.
+
+Verify:
+
+entry < target for LONG
+
+stop < entry for LONG
+
+entry > target for SHORT
+
+stop > entry for SHORT
+
+risk > 0
+
+reward > 0
+
+R:R > 0
+
+No NaN
+
+No Infinity
+
+No negative prices
+
+No impossible percentages
+
+============================================================
+42. NO SILENT FALLBACKS
+============================================================
+
+This rule is extremely important.
+
+Never do:
+
+if data missing:
+    use 0
+
+if price missing:
+    use previous fake/default value
+
+if ATR missing:
+    use 1%
+
+if target missing:
+    use 5%
+
+if volume missing:
+    assume normal
+
+These create fake signals.
+
+Instead:
+
+return an explicit data-quality state.
+
+For example:
+
+INSUFFICIENT_DATA
+
+STALE_DATA
+
+MARKET_UNAVAILABLE
+
+LOW_LIQUIDITY
+
+CALCULATION_ERROR
+
+============================================================
+43. DATA QUALITY SCORE
+============================================================
+
+Where practical, expose a data-quality indicator.
+
+For example:
+
+GOOD
+DEGRADED
+INSUFFICIENT
+
+The user should know when a signal has weaker data availability.
+
+Do not hide degraded data.
+
+============================================================
+44. BACKEND API CONTRACT
+============================================================
+
+Inspect the existing API contract.
+
+Extend it rather than breaking it unnecessarily.
+
+The signal response should eventually support:
+
+symbol
+direction
+setupTier
+confidence
+entry
+stop
+target
+expectedMove
+riskPercent
+rewardPercent
+riskReward
+timestamp
+dataQuality
+reasons
+targetReason
+stopReason
+tierReason
+
+Use the existing project's naming conventions.
+
+============================================================
+45. BACKWARD COMPATIBILITY
+============================================================
+
+If the existing Flutter client depends on an older response:
+
+either:
+
+- maintain compatibility temporarily
+- version the endpoint
+- migrate the client and server together
+
+Do not casually break the API.
+
+============================================================
+46. LOGGING
+============================================================
+
+Backend logs should help diagnose:
+
+- provider failures
+- stale data
+- scan duration
+- number of markets scanned
+- number rejected
+- number of signals generated
+- number per setup tier
+- rate-limit events
+- calculation failures
+
+Never log secrets.
+
+============================================================
+47. OBSERVABILITY
+============================================================
+
+Add lightweight metrics where practical:
+
+markets scanned
+markets rejected
+signals generated
+scan duration
+provider latency
+provider failures
+
+This helps determine whether the system is actually working.
+
+============================================================
+48. VALIDATION AGAINST CURRENT SYSTEM
+============================================================
+
+Before changing the target logic:
+
+run the existing signal engine against known market data.
+
+Record:
+
+current entry
+current stop
+current target
+current confidence
+current setup
+
+Then run the new engine on the same fixture/data.
+
+Compare:
+
+- target
+- stop
+- R:R
+- setup
+- confidence
+
+Make sure the new system is genuinely improving the logic rather than merely changing numbers.
+
+============================================================
+49. IMPORTANT — DO NOT OPTIMIZE FOR BIGGER PROFITS
+============================================================
+
+The goal is NOT:
+
+"Make targets bigger."
+
+The goal is:
+
+"Make targets realistic and derived from actual market conditions."
+
+If the correct target is 2.5%, allow 2.5%.
+
+If the correct target is 12%, allow 12%.
+
+The application must never inflate targets simply because the user wants larger percentages.
+
+============================================================
+50. IMPORTANT — DO NOT OPTIMIZE FOR MORE SIGNALS
+============================================================
+
+The goal is NOT:
+
+"Generate more trades."
+
+The goal is:
+
+"Find the best current opportunities."
+
+If only three markets meet the criteria:
+
+show three.
+
+If none meet the criteria:
+
+show none.
+
+Do not lower standards just to populate the UI.
+
+============================================================
+51. COUNTER-CHECK PROTOCOL
+============================================================
+
+After EVERY major implementation stage, stop and verify.
+
+Use this sequence:
+
+IMPLEMENT
+↓
+RUN TESTS
+↓
+INSPECT OUTPUT
+↓
+COMPARE AGAINST EXPECTED RESULT
+↓
+CHECK FOR REGRESSIONS
+↓
+ONLY THEN CONTINUE
+
+Do not make ten unrelated changes and test at the end.
+
+============================================================
+52. SELF-REVIEW AFTER IMPLEMENTATION
+============================================================
+
+Before declaring completion, perform a complete second audit.
+
+Ask:
+
+1. Did I accidentally break existing functionality?
+2. Did I introduce any unnecessary API?
+3. Did I introduce any paid dependency?
+4. Did I expose a secret?
+5. Can Binance rate limits be exceeded?
+6. Can stale data create a signal?
+7. Can missing data create a signal?
+8. Can target calculations produce impossible values?
+9. Can stop calculations produce impossible values?
+10. Is confidence being confused with profit probability?
+11. Are setup tiers based on quality rather than target percentage?
+12. Are explanations based on actual calculations?
+13. Can one failed market crash the scan?
+14. Does BTC work?
+15. Does ETH work?
+16. Do altcoins work?
+17. Does the Flutter UI handle the new response?
+18. Does the application look professional?
+19. Does it work on small Android screens?
+20. Is the backend still inexpensive?
+
+Fix every discovered issue before completion.
+
+============================================================
+53. VISUAL VERIFICATION
+============================================================
+
+Do not assume the UI is good because the code compiles.
+
+Run the application.
+
+Inspect:
+
+- Signals screen
+- Very Strong section
+- Strong section
+- Normal section
+- Weak section
+- signal details
+- loading
+- empty state
+- errors
+- stale data state
+
+Fix visual issues.
+
+============================================================
+54. DOCUMENTATION
+============================================================
+
+Update documentation.
+
+Explain:
+
+- architecture
+- Binance integration
+- CoinGecko integration
+- market universe
+- technical indicators
+- confidence
+- setup tiers
+- dynamic target calculation
+- stop calculation
+- R:R
+- explanation system
+- caching
+- rate limiting
+- server deployment
+- environment variables
+- testing
+- troubleshooting
+
+Include a section:
+
+"How the application decides whether a setup is Weak, Normal, Strong or Very Strong."
+
+Include a section:
+
+"How the application determines a target."
+
+Include a section:
+
+"How to add another market-data provider."
+
+============================================================
+55. GIT SAFETY
+============================================================
+
+Before modifying files:
+
+create/use a dedicated feature branch if the repository workflow supports it.
+
+Do not destroy main/master.
+
+Make logical commits where appropriate.
+
+Do not commit:
+
+.env
+API keys
+tokens
+credentials
+private certificates
+secret configuration
+
+============================================================
+56. IMPLEMENTATION ORDER
+============================================================
+
+Follow this exact order:
+
+PHASE 1
+Repository audit.
+
+PHASE 2
+Architecture report.
+
+PHASE 3
+Data-provider normalization.
+
+PHASE 4
+Binance integration/cleanup.
+
+PHASE 5
+Market-universe improvement.
+
+PHASE 6
+Data freshness + rate limiting + caching.
+
+PHASE 7
+Indicator validation/improvement.
+
+PHASE 8
+Dynamic stop-loss.
+
+PHASE 9
+Dynamic target.
+
+PHASE 10
+Risk/reward.
+
+PHASE 11
+Confidence/scoring improvements.
+
+PHASE 12
+Four setup tiers.
+
+PHASE 13
+Market ranking.
+
+PHASE 14
+Structured explanations.
+
+PHASE 15
+Flutter data-model migration.
+
+PHASE 16
+Signals UI redesign.
+
+PHASE 17
+Visual verification.
+
+PHASE 18
+Automated tests.
+
+PHASE 19
+Full regression test.
+
+PHASE 20
+Documentation.
+
+============================================================
+57. BEFORE EACH PHASE
+============================================================
+
+State:
+
+WHAT is being changed.
+
+WHY it is being changed.
+
+WHICH FILES will change.
+
+WHAT could break.
+
+HOW it will be tested.
+
+Do not proceed to the next phase if the current phase fails.
+
+============================================================
+58. FINAL REPORT
+============================================================
+
+When complete, provide a final report containing:
+
+1. Architecture before.
+2. Architecture after.
+3. Files changed.
+4. APIs used.
+5. APIs NOT required.
+6. Cost implications.
+7. Binance rate-limit strategy.
+8. Market universe.
+9. Technical indicators.
+10. Setup classification.
+11. Target methodology.
+12. Stop methodology.
+13. R:R methodology.
+14. Confidence methodology.
+15. Explanation methodology.
+16. UI changes.
+17. Tests performed.
+18. Test results.
+19. Known limitations.
+20. Recommended next improvements.
+
+============================================================
+59. FINAL ABSOLUTE RULE
+============================================================
+
+WHEN IN DOUBT:
+
+DO NOT GUESS.
+
+Inspect the code.
+
+Inspect the data.
+
+Inspect the API response.
+
+Run a test.
+
+Verify the calculation.
+
+Then proceed.
+
+A conservative, correctly functioning system is preferable to an impressive-looking system based on assumptions.
+
+The application must never manufacture confidence, market data, targets or explanations.
+
+Build a system that can explain every important decision using actual evidence.
+
+The goal is:
+
+REAL DATA
++
+REAL CALCULATIONS
++
+REAL RISK MANAGEMENT
++
+REAL EXPLANATIONS
++
+LOW OPERATING COST
++
+NO UNNECESSARY DEPENDENCIES
+
+Build from the existing TradeApp system and improve it incrementally.

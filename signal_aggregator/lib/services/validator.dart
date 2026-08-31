@@ -72,13 +72,33 @@ class Validator {
     ));
 
     final probability = (_weighted(factors) * 100).clamp(5.0, 95.0);
-    final riskBuffer = bias == Direction.buy
-        ? max(m.price * 0.015, (m.price - m.support).clamp(0, m.price * 0.05) * 0.5 + m.price * 0.005)
-        : max(m.price * 0.015, (m.resistance - m.price).clamp(0, m.price * 0.05) * 0.5 + m.price * 0.005);
-
     final entry = m.price;
-    final stopLoss = bias == Direction.buy ? entry - riskBuffer : entry + riskBuffer;
-    final takeProfit = bias == Direction.buy ? entry + riskBuffer * 1.5 : entry - riskBuffer * 1.5;
+    final atrAbs = entry * (m.atrPct > 0 ? m.atrPct : 1.2) / 100;
+
+    double stopLoss;
+    double takeProfit;
+
+    if (bias == Direction.buy) {
+      final supportLevel = m.support > 0 && m.support < entry ? m.support : entry - atrAbs * 1.5;
+      stopLoss = max(supportLevel, entry - entry * 0.04);
+      if (stopLoss >= entry) stopLoss = entry - entry * 0.015;
+
+      final resistanceLevel = m.resistance > entry ? m.resistance : entry + atrAbs * 3.0;
+      final targetCandidate = resistanceLevel * 0.995;
+      final minTarget = entry * 1.025;
+      final maxTarget = entry * 1.12;
+      takeProfit = targetCandidate.clamp(minTarget, maxTarget);
+    } else {
+      final resistanceLevel = m.resistance > entry ? m.resistance : entry + atrAbs * 1.5;
+      stopLoss = min(resistanceLevel, entry + entry * 0.04);
+      if (stopLoss <= entry) stopLoss = entry + entry * 0.015;
+
+      final supportLevel = m.support > 0 && m.support < entry ? m.support : entry - atrAbs * 3.0;
+      final targetCandidate = supportLevel * 1.005;
+      final minTarget = entry * (1 - 0.12);
+      final maxTarget = entry * (1 - 0.025);
+      takeProfit = targetCandidate.clamp(minTarget, maxTarget);
+    }
 
     final validatedAt = now ?? DateTime.now();
     final buyAt = _nextMinute(validatedAt);

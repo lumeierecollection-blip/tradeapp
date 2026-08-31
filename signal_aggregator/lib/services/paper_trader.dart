@@ -60,10 +60,7 @@ class PaperTrader extends ChangeNotifier {
       return 'Conviction cap reached ($convictionPerDay per day). Use Accumulate for smaller stacks.';
     }
 
-    final risk = (vs.entry - vs.stopLoss).abs();
-    final target = type == PositionType.conviction
-        ? vs.takeProfit
-        : vs.entry + risk * accumulateRewardMultiple;
+    final target = vs.takeProfit;
 
     final qty = amount / vs.entry;
     final trade = PaperTrade(
