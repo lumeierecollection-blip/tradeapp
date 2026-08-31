@@ -74,6 +74,20 @@ class LearnScreen extends StatelessWidget {
           'and always check the market — which is exactly what this app does for you.'
     ),
     (
+      title: 'Which broker to use & how to check charts',
+      body: '1. Which broker to use:\n'
+          '• Bybit: Best for practicing with fake money on a free demo account.\n'
+          '• MEXC: Best for starting with real small money (\$5) because it has very low fees and same-day USDT withdrawals on TRC-20.\n'
+          '• Binance / TradingView: Best for viewing live, clean charts.\n\n'
+          '2. How to counter-reference broker charts:\n'
+          '• Open your broker app (e.g., Binance or Bybit) and search the coin pair (e.g., BTCUSDT).\n'
+          '• Set the chart timeframe to 15m or 1h.\n'
+          '• Check entry price: Is the live price on the chart close to the app\'s entry?\n'
+          '• Check support floor: Look at recent dips where price bounced. Does it match the app\'s support level?\n'
+          '• Check resistance ceiling: Look at recent price highs where sellers appeared.\n'
+          '• Rule of thumb: If the chart confirms the support/resistance structure and matches the signal, take the trade. If the chart looks messy or contradicts the app, skip it.'
+    ),
+    (
       title: 'Why the app checks every 5 minutes',
       body: 'Signals go stale fast in crypto. The app rescans sources and rechecks the market '
           'every 5 minutes while it is open, and best-effort in the background. Android may '

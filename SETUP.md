@@ -141,6 +141,25 @@ Weekly targets (a rough plan, don't overthink it):
 
 ---
 
+## Step 6 — Which broker to use and how to check the charts
+
+### 1. Which broker should you use?
+- **Bybit (Best for Practice / Demo):** Open a free demo account on Bybit. You get fake money to practice all you want without any financial risk.
+- **MEXC (Best for Real Money / Small $5 Trades):** When you are ready for real money after 20+ successful practice trades, use MEXC. It has very low fees and allows same-day withdrawals in USDT via TRC-20 (about a $1 fee).
+- **Binance / TradingView:** Excellent for viewing live, clean charts and checking coin prices.
+
+### 2. How to counter-reference charts on your broker (in simple English)
+Before taking any trade suggested by the app, double-check the broker chart in 4 simple steps:
+1. **Search the coin:** Open your broker app (like Binance, Bybit, or MEXC) and search for the exact coin pair shown in the app (for example, `BTCUSDT` or `SOLUSDT`).
+2. **Set the timeframe:** Switch the chart candlestick view to **15-minute (15m)** or **1-hour (1h)**.
+3. **Compare price & structure:**
+   - **Entry Price:** Is the live price on the broker chart close to the app's suggested entry price?
+   - **Support Floor:** Look at recent price dips on the chart where selling stopped and price bounced up. Does it match the app's support level?
+   - **Resistance Ceiling:** Look at recent price spikes where buyers ran out of steam and price pulled back. Does it match the app's resistance level?
+4. **The Rule:** If the broker chart clearly shows the price bouncing off support or breaking out cleanly, the signal is confirmed. If the chart looks wild, choppy, or completely contradicts the app, **skip the trade**.
+
+---
+
 ## If something goes wrong
 
 | Problem | What to do |
