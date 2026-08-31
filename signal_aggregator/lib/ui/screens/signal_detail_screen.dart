@@ -294,7 +294,7 @@ class _PaperTradeSheetState extends State<_PaperTradeSheet> {
     final appState = context.read<AppState>();
     final trader = appState.paperTrader;
     final risk = (vs.entry - vs.stopLoss).abs();
-    final target = _type == PositionType.conviction ? vs.takeProfit : vs.entry + risk * PaperTrader.accumulateRewardMultiple;
+    final target = vs.takeProfit;
     final upside = target > 0 ? ((target - vs.entry) / vs.entry) * 100 : 0.0;
 
     return Padding(
