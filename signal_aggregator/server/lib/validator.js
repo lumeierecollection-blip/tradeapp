@@ -14,6 +14,11 @@ export function validateSignal(signal, markets) {
 
 function validateSymbol(signal, symbol, market) {
   const m = marketView(market);
+  // Rule: Reject stale or insufficient data
+  if (m.dataQuality === 'STALE_DATA' || m.dataQuality === 'INSUFFICIENT_DATA') {
+    return null;
+  }
+
   const sentiment = analyzeSentiment(`${signal.title}\n${signal.text}`);
   if (sentiment.direction === 'wait') return null;
 
@@ -76,20 +81,83 @@ function validateSymbol(signal, symbol, market) {
   });
 
   const probability = clamp(weighted(factors) * 100, 5, 95);
-  const riskBuffer =
-    bias === 'buy'
-      ? Math.max(
-          m.price * 0.015,
-          clamp(m.price - m.support, 0, m.price * 0.05) * 0.5 + m.price * 0.005,
-        )
-      : Math.max(
-          m.price * 0.015,
-          clamp(m.resistance - m.price, 0, m.price * 0.05) * 0.5 + m.price * 0.005,
-        );
-
   const entry = m.price;
-  const stopLoss = bias === 'buy' ? entry - riskBuffer : entry + riskBuffer;
-  const takeProfit = bias === 'buy' ? entry + riskBuffer * 1.5 : entry - riskBuffer * 1.5;
+
+  // Dynamic Stop-Loss (ATR and swing structure aware)
+  const atrVal = (m.atrPct > 0 ? m.atrPct : 1.0) * entry / 100;
+  let stopLoss;
+  if (bias === 'buy') {
+    const structuralStop = m.support > 0 && m.support < entry ? m.support * 0.995 : entry - atrVal * 1.5;
+    stopLoss = Math.min(entry - atrVal * 1.0, structuralStop);
+    if (stopLoss >= entry) stopLoss = entry * 0.98;
+  } else {
+    const structuralStop = m.resistance > 0 && m.resistance > entry ? m.resistance * 1.005 : entry + atrVal * 1.5;
+    stopLoss = Math.max(entry + atrVal * 1.0, structuralStop);
+    if (stopLoss <= entry) stopLoss = entry * 1.02;
+  }
+
+  // Dynamic Take-Profit (Market structure resistance/support & volatility projection, fully dynamic and unconstrained)
+  let takeProfit;
+  if (bias === 'buy') {
+    const structuralDistance = m.resistance > entry ? m.resistance - entry : atrVal * 4.0;
+    const projectedMove = Math.max(atrVal * 2.5, structuralDistance * 0.92);
+    takeProfit = entry + projectedMove;
+    if (takeProfit <= entry) takeProfit = entry * 1.05;
+  } else {
+    const structuralDistance = m.support < entry ? entry - m.support : atrVal * 4.0;
+    const projectedMove = Math.max(atrVal * 2.5, structuralDistance * 0.92);
+    takeProfit = entry - projectedMove;
+    if (takeProfit >= entry) takeProfit = entry * 0.95;
+  }
+
+  const risk = Math.abs(entry - stopLoss);
+  const reward = Math.abs(takeProfit - entry);
+  const riskReward = risk > 0 ? reward / risk : 0;
+  const riskPercent = (risk / entry) * 100;
+  const rewardPercent = (reward / entry) * 100;
+  const expectedMove = rewardPercent;
+
+  // Setup Tiers classification based on quality
+  const multiTfAgreement = (bias === 'buy' ? (m.change5m > 0 && m.change15m > 0 && m.change1h > 0) : (m.change5m < 0 && m.change15m < 0 && m.change1h < 0));
+  let setupTier = 'normal';
+  if (multiTfAgreement && m.volumeRatio >= 1.4 && probability >= 80 && riskReward >= 2.0) {
+    setupTier = 'very_strong';
+  } else if ((multiTfAgreement || m.volumeRatio >= 1.2) && probability >= 68 && riskReward >= 1.5) {
+    setupTier = 'strong';
+  } else if (probability >= 50) {
+    setupTier = 'normal';
+  } else {
+    setupTier = 'weak';
+  }
+
+  // Structured Explanations
+  const targetReason = `Target is set at ${takeProfit.toFixed(2)} (${rewardPercent.toFixed(1)}% move), derived from current volatility (ATR ${(m.atrPct || 0).toFixed(2)}%) and structural ${bias === 'buy' ? 'resistance' : 'support'} levels.`;
+  const stopReason = `Stop loss is set at ${stopLoss.toFixed(2)} (${riskPercent.toFixed(1)}% risk), positioned beyond recent swing structure to protect against market noise.`;
+  const tierReason = `Setup classified as ${setupTier.toUpperCase()} based on multi-timeframe momentum (${multiTfAgreement ? 'aligned' : 'mixed'}), volume confirmation (${m.volumeRatio.toFixed(1)}x), and R:R ratio (1:${riskReward.toFixed(1)}).`;
+
+  const reasons = [
+    {
+      category: 'Momentum',
+      title: 'Multi-timeframe momentum',
+      status: multiTfAgreement ? 'positive' : 'neutral',
+      value: `${fmtPct(m.change1h)} (1h)`,
+      explanation: `1h momentum is ${m.change1h >= 0 ? 'bullish' : 'bearish'} with 5m/15m alignment.`
+    },
+    {
+      category: 'Volume',
+      title: 'Relative volume',
+      status: m.volumeRatio >= 1.2 ? 'positive' : 'neutral',
+      value: `${m.volumeRatio.toFixed(1)}x`,
+      explanation: `Trading volume is ${m.volumeRatio.toFixed(1)}x the baseline.`
+    },
+    {
+      category: 'RSI',
+      title: 'RSI indicator',
+      status: 'neutral',
+      value: `${Math.round(m.rsi14)}`,
+      explanation: rsiPlain(m.rsi14, bias)
+    }
+  ];
 
   const validatedAt = signal.validatedAt ? new Date(signal.validatedAt) : new Date();
   const buyAt = nextMinute(validatedAt);
@@ -108,6 +176,16 @@ function validateSymbol(signal, symbol, market) {
     buyAt: buyAt.toISOString(),
     sellAt: sellAt.toISOString(),
     summary: summary(signal, symbol, m, bias, probability),
+    setupTier,
+    expectedMove,
+    riskPercent,
+    rewardPercent,
+    riskReward,
+    dataQuality: m.dataQuality || 'GOOD',
+    reasons,
+    targetReason,
+    stopReason,
+    tierReason,
   };
 }
 

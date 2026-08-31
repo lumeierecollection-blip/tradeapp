@@ -92,5 +92,18 @@ describe('Validator', () => {
     const result = validateSignal(makeSignal(), { BTC: makeMarket() });
     assert.ok(result.takeProfit > result.entry);
     assert.ok(result.stopLoss < result.entry);
+    assert.ok(result.setupTier);
+    assert.ok(result.riskReward > 0);
+    assert.ok(result.reasons.length > 0);
+    assert.ok(result.targetReason);
+    assert.ok(result.stopReason);
+    assert.ok(result.tierReason);
+  });
+
+  it('rejects stale or insufficient data', () => {
+    const market = makeMarket();
+    market.dataQuality = 'STALE_DATA';
+    const result = validateSignal(makeSignal(), { BTC: market });
+    assert.equal(result, null);
   });
 });

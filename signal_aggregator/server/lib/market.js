@@ -5,7 +5,11 @@ const BASE = process.env.BINANCE_BASE_URL || 'https://api.binance.com';
 async function get(path, query) {
   const url = new URL(`${BASE}${path}`);
   for (const [k, v] of Object.entries(query)) url.searchParams.set(k, String(v));
-  const res = await fetch(url, { signal: AbortSignal.timeout(20_000) });
+  const headers = {};
+  if (process.env.BINANCE_API_KEY) {
+    headers['X-MBX-APIKEY'] = process.env.BINANCE_API_KEY;
+  }
+  const res = await fetch(url, { headers, signal: AbortSignal.timeout(20_000) });
   if (!res.ok) {
     throw new Error(`Market API ${res.status}: ${await res.text()}`);
   }
@@ -64,6 +68,19 @@ export async function fetchSnapshot(symbol, pair) {
         avgVolume
       : 1.0;
 
+  // Data freshness & quality check
+  const now = Date.now();
+  const latestCandle = candles1h[candles1h.length - 1];
+  const candleAgeMs = latestCandle ? now - latestCandle.openTime : Infinity;
+  let dataQuality = 'GOOD';
+  if (candleAgeMs > 3 * 3600 * 1000) {
+    dataQuality = 'STALE_DATA';
+  } else if (candles1h.length < 15 || candles5m.length < 2) {
+    dataQuality = 'INSUFFICIENT_DATA';
+  } else if (!candles1h.every(c => c.high >= c.low && c.close > 0 && c.volume >= 0)) {
+    dataQuality = 'DEGRADED';
+  }
+
   return {
     symbol,
     price: lastPrice,
@@ -78,6 +95,8 @@ export async function fetchSnapshot(symbol, pair) {
     resistance,
     atrPct,
     recentVolumeRatio,
+    dataQuality,
+    candleAgeMs,
     at: new Date().toISOString(),
   };
 }

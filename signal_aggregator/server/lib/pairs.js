@@ -18,6 +18,7 @@ const SYMBOL_TO_PAIR = {
   TRX: 'TRXUSDT',
   NEAR: 'NEARUSDT',
   APT: 'APTUSDT',
+  SUI: 'SUIUSDT',
   FIL: 'FILUSDT',
 };
 

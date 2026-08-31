@@ -34,6 +34,15 @@ class ValidatedSignal {
   final DateTime buyAt;
   final DateTime sellAt;
   final String summary;
+  final String setupTier;
+  final double expectedMove;
+  final double riskPercent;
+  final double rewardPercent;
+  final String dataQuality;
+  final List<FactorScore> reasons;
+  final String targetReason;
+  final String stopReason;
+  final String tierReason;
 
   const ValidatedSignal({
     required this.signal,
@@ -48,6 +57,15 @@ class ValidatedSignal {
     required this.buyAt,
     required this.sellAt,
     required this.summary,
+    this.setupTier = 'normal',
+    this.expectedMove = 0.0,
+    this.riskPercent = 0.0,
+    this.rewardPercent = 0.0,
+    this.dataQuality = 'GOOD',
+    this.reasons = const [],
+    this.targetReason = '',
+    this.stopReason = '',
+    this.tierReason = '',
   });
 
   String get riskRewardText {
@@ -93,6 +111,17 @@ class ValidatedSignal {
         'buyAt': buyAt.toIso8601String(),
         'sellAt': sellAt.toIso8601String(),
         'summary': summary,
+        'setupTier': setupTier,
+        'expectedMove': expectedMove,
+        'riskPercent': riskPercent,
+        'rewardPercent': rewardPercent,
+        'dataQuality': dataQuality,
+        'reasons': reasons
+            .map((f) => {'label': f.label, 'score': f.score, 'plain': f.plain})
+            .toList(),
+        'targetReason': targetReason,
+        'stopReason': stopReason,
+        'tierReason': tierReason,
       };
 
   factory ValidatedSignal.fromJson(Map<String, dynamic> json) {
@@ -116,6 +145,21 @@ class ValidatedSignal {
       buyAt: buyAt ?? DateTime.now(),
       sellAt: DateTime.tryParse(json['sellAt'] as String? ?? '') ?? (buyAt ?? DateTime.now()).add(const Duration(hours: 2)),
       summary: json['summary'] as String,
+      setupTier: json['setupTier'] as String? ?? 'normal',
+      expectedMove: (json['expectedMove'] as num?)?.toDouble() ?? 0.0,
+      riskPercent: (json['riskPercent'] as num?)?.toDouble() ?? 0.0,
+      rewardPercent: (json['rewardPercent'] as num?)?.toDouble() ?? 0.0,
+      dataQuality: json['dataQuality'] as String? ?? 'GOOD',
+      reasons: (json['reasons'] as List<dynamic>? ?? [])
+          .map((f) => FactorScore(
+                label: (f as Map<String, dynamic>)['label'] as String,
+                score: (f['score'] as num).toDouble(),
+                plain: f['plain'] as String,
+              ))
+          .toList(),
+      targetReason: json['targetReason'] as String? ?? '',
+      stopReason: json['stopReason'] as String? ?? '',
+      tierReason: json['tierReason'] as String? ?? '',
     );
   }
 }

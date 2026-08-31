@@ -35,6 +35,19 @@ class SignalCard extends StatelessWidget {
                       color: color,
                     ),
                   ),
+                  const SizedBox(width: 8),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                    decoration: BoxDecoration(
+                      color: AppTheme.surfaceAlt,
+                      borderRadius: BorderRadius.circular(4),
+                      border: Border.all(color: AppTheme.line),
+                    ),
+                    child: Text(
+                      vs.setupTier.toUpperCase().replaceAll('_', ' '),
+                      style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w700, color: AppTheme.textSecondary),
+                    ),
+                  ),
                   const SizedBox(width: 10),
                   Text(
                     vs.symbol,
