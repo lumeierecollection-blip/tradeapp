@@ -48,9 +48,6 @@ class PaperTrader extends ChangeNotifier {
 
   static const int convictionPerDay = 2;
 
-  /// Wider reward target used for accumulation stacks: 3x risk instead of 1.5x.
-  static const double accumulateRewardMultiple = 3.0;
-
   String openTrade(ValidatedSignal vs, double amount,
       {PositionType type = PositionType.accumulate}) {
     if (amount <= 0) return 'Choose an amount larger than 0.';
