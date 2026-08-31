@@ -293,7 +293,6 @@ class _PaperTradeSheetState extends State<_PaperTradeSheet> {
     final vs = widget.vs;
     final appState = context.read<AppState>();
     final trader = appState.paperTrader;
-    final risk = (vs.entry - vs.stopLoss).abs();
     final target = vs.takeProfit;
     final upside = target > 0 ? ((target - vs.entry) / vs.entry) * 100 : 0.0;
 
