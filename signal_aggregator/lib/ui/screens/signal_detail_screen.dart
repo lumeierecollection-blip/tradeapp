@@ -178,7 +178,7 @@ class _SignalDetailScreenState extends State<SignalDetailScreen> {
               onPressed: () => _openPaperTrade(context, vs),
               style: FilledButton.styleFrom(
                 backgroundColor: AppTheme.buy,
-                foregroundColor: const Color(0xFF06210F),
+                foregroundColor: AppTheme.bg,
               ),
               icon: const Icon(Icons.play_arrow),
               label: const Text('Paper trade this signal'),

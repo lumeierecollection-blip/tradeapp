@@ -39,18 +39,14 @@ class PortfolioScreen extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [const Color(0xFF1B2A1E), const Color(0xFF14201F)],
-                ),
+                gradient: AppTheme.balanceGradient,
                 borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: AppTheme.buy.withValues(alpha: 0.2)),
+                border: Border.all(color: AppTheme.brandRed.withValues(alpha: 0.35)),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text('PAPER BALANCE', style: TextStyle(fontSize: 12, letterSpacing: 1.2, color: Colors.white54)),
+                  const Text('PAPER BALANCE', style: TextStyle(fontSize: 12, letterSpacing: 1.2, color: AppTheme.textDim)),
                   const SizedBox(height: 6),
                   Text(
                     '\$${trader.balance.toStringAsFixed(2)}',
@@ -90,7 +86,7 @@ class PortfolioScreen extends StatelessWidget {
               const Padding(
                 padding: EdgeInsets.symmetric(vertical: 8),
                 child: Text('No closed trades yet.',
-                    style: TextStyle(fontSize: 13, color: Colors.white54)),
+                    style: TextStyle(fontSize: 13, color: AppTheme.textDim)),
               )
             else
               ...trader.closedTrades.take(20).map((t) => _ClosedTradeTile(trade: t)),
@@ -150,12 +146,12 @@ class _GoalsLinkCard extends StatelessWidget {
                     const SizedBox(height: 3),
                     Text(
                       '$weekTrades/${plan.tradesPerWeek} trades · ${weekPnl >= 0 ? '+' : ''}\$${weekPnl.toStringAsFixed(2)} of \$${targetUsd.toStringAsFixed(2)} target',
-                      style: const TextStyle(fontSize: 12.5, color: Colors.white54),
+                      style: const TextStyle(fontSize: 12.5, color: AppTheme.textDim),
                     ),
                   ],
                 ),
               ),
-              const Icon(Icons.chevron_right, color: Colors.white38),
+              const Icon(Icons.chevron_right, color: AppTheme.textMuted),
             ],
           ),
         ),
@@ -222,7 +218,7 @@ class _OpenTradeCard extends StatelessWidget {
                 const SizedBox(width: 6),
                 Text(
                   'Closes ${AppTheme.fmtClock(trade.sellAt)} · reminders at -5m, -2m, 0m',
-                  style: const TextStyle(fontSize: 12, color: Colors.white54),
+                  style: const TextStyle(fontSize: 12, color: AppTheme.textDim),
                 ),
               ],
             ),
@@ -239,7 +235,7 @@ class _OpenTradeCard extends StatelessWidget {
             const SizedBox(height: 14),
             Row(
               children: [
-                Text('Stop ${AppTheme.fmtPrice(trade.stopLoss)}', style: const TextStyle(fontSize: 12, color: Colors.white54)),
+                Text('Stop ${AppTheme.fmtPrice(trade.stopLoss)}', style: const TextStyle(fontSize: 12, color: AppTheme.textDim)),
                 Expanded(
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -248,13 +244,13 @@ class _OpenTradeCard extends StatelessWidget {
                       child: LinearProgressIndicator(
                         value: progress,
                         minHeight: 5,
-                        backgroundColor: const Color(0xFF232C3A),
+                        backgroundColor: AppTheme.track,
                         color: progress <= 0.5 ? AppTheme.sell : AppTheme.buy,
                       ),
                     ),
                   ),
                 ),
-                Text('Target ${AppTheme.fmtPrice(trade.takeProfit)}', style: const TextStyle(fontSize: 12, color: Colors.white54)),
+                Text('Target ${AppTheme.fmtPrice(trade.takeProfit)}', style: const TextStyle(fontSize: 12, color: AppTheme.textDim)),
               ],
             ),
             const SizedBox(height: 8),
@@ -347,7 +343,7 @@ class _WhyMovingPanel extends StatelessWidget {
                       Expanded(
                         child: Text(
                           line,
-                          style: const TextStyle(fontSize: 12.5, color: Colors.white70, height: 1.45),
+                          style: const TextStyle(fontSize: 12.5, color: AppTheme.textBody, height: 1.45),
                         ),
                       ),
                     ],
@@ -373,7 +369,7 @@ class _ClosedTradeTile extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
-          color: const Color(0xFF161C26),
+          color: AppTheme.surface,
           borderRadius: BorderRadius.circular(12),
         ),
         child: Row(
@@ -387,7 +383,7 @@ class _ClosedTradeTile extends StatelessWidget {
                   const SizedBox(height: 2),
                   Text(
                     '${AppTheme.fmtPrice(trade.entry)} → ${AppTheme.fmtPrice(trade.exit ?? 0)} · ${AppTheme.timeAgo(trade.closedAt ?? trade.openedAt)}',
-                    style: const TextStyle(fontSize: 12, color: Colors.white54),
+                    style: const TextStyle(fontSize: 12, color: AppTheme.textDim),
                   ),
                 ],
               ),

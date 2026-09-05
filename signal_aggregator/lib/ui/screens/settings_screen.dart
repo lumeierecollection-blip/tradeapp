@@ -83,28 +83,28 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   value: appState.sourcesEnabled['reddit'] ?? true,
                   onChanged: (v) => appState.setSourceEnabled('reddit', v),
                 ),
-                const Divider(height: 1, color: Color(0xFF222B3A)),
+                const Divider(height: 1, color: AppTheme.line),
                 _SourceTile(
                   title: 'Crypto news',
                   subtitle: 'Free news headlines (CryptoCompare).',
                   value: appState.sourcesEnabled['news'] ?? true,
                   onChanged: (v) => appState.setSourceEnabled('news', v),
                 ),
-                const Divider(height: 1, color: Color(0xFF222B3A)),
+                const Divider(height: 1, color: AppTheme.line),
                 _SourceTile(
                   title: 'CoinDesk news',
                   subtitle: 'Second free news feed (RSS) for broader altcoin coverage.',
                   value: appState.sourcesEnabled['rss'] ?? true,
                   onChanged: (v) => appState.setSourceEnabled('rss', v),
                 ),
-                const Divider(height: 1, color: Color(0xFF222B3A)),
+                const Divider(height: 1, color: AppTheme.line),
                 _SourceTile(
                   title: 'Market pulse',
                   subtitle: 'Technical setups from all markets — signals even for coins with no social chatter.',
                   value: appState.sourcesEnabled['pulse'] ?? true,
                   onChanged: (v) => appState.setSourceEnabled('pulse', v),
                 ),
-                const Divider(height: 1, color: Color(0xFF222B3A)),
+                const Divider(height: 1, color: AppTheme.line),
                 _SourceTile(
                   title: 'Telegram channels',
                   subtitle: 'Public channels only. No private groups or encrypted chats.',
@@ -129,7 +129,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   value: appState.cloudEnabled,
                   onChanged: appState.setCloudEnabled,
                 ),
-                const Divider(height: 1, color: Color(0xFF222B3A)),
+                const Divider(height: 1, color: AppTheme.line),
                 Padding(
                   padding: const EdgeInsets.all(16),
                   child: Column(
@@ -137,7 +137,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     children: [
                       const Text(
                         'Backend URL (from your deployed cloud backend):',
-                        style: TextStyle(fontSize: 13, color: Colors.white54),
+                        style: TextStyle(fontSize: 13, color: AppTheme.textDim),
                       ),
                       const SizedBox(height: 12),
                       TextField(
@@ -178,7 +178,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 children: [
                   const Text(
                     'Public channel usernames, comma separated. Only channels that show a public preview at t.me/NAME work.',
-                    style: TextStyle(fontSize: 13, color: Colors.white54, height: 1.4),
+                    style: TextStyle(fontSize: 13, color: AppTheme.textDim, height: 1.4),
                   ),
                   const SizedBox(height: 12),
                   TextField(
@@ -230,7 +230,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 children: [
                   Row(
                     children: [
-                      const Icon(Icons.notifications_active, size: 18, color: Colors.white70),
+                      const Icon(Icons.notifications_active, size: 18, color: AppTheme.textBody),
                       const SizedBox(width: 8),
                       Text(
                         'Cloud push alerts',
@@ -241,7 +241,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   const SizedBox(height: 8),
                   Text(
                     _pushStatusText(appState),
-                    style: const TextStyle(fontSize: 12.5, color: Colors.white54, height: 1.4),
+                    style: const TextStyle(fontSize: 12.5, color: AppTheme.textDim, height: 1.4),
                   ),
                 ],
               ),
@@ -263,7 +263,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   const SizedBox(height: 4),
                   const Text(
                     'Reset paper balance to start over. This does not touch your real money.',
-                    style: TextStyle(fontSize: 13, color: Colors.white54),
+                    style: TextStyle(fontSize: 13, color: AppTheme.textDim),
                   ),
                   const SizedBox(height: 12),
                   Row(
@@ -335,7 +335,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   const SizedBox(height: 10),
                   const Text(
                     'Warning: at \$5 size, a single trade fee (~0.1%) is small, but losses are real. Never trade money you cannot afford to lose.',
-                    style: TextStyle(fontSize: 13, color: Color(0xFFF0C9C9), height: 1.4),
+                    style: TextStyle(fontSize: 13, color: AppTheme.accent2, height: 1.4),
                   ),
                 ],
               ),
@@ -357,7 +357,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   const SizedBox(height: 8),
                   const Text(
                     'This app aggregates public posts and news, then checks them against live market data. It is an educational tool, not financial advice. No prediction is guaranteed.',
-                    style: TextStyle(fontSize: 13, color: Colors.white54, height: 1.5),
+                    style: TextStyle(fontSize: 13, color: AppTheme.textDim, height: 1.5),
                   ),
                   const SizedBox(height: 12),
                   TextButton.icon(
@@ -405,7 +405,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ),
             const SizedBox(width: 10),
             Expanded(
-              child: Text(text, style: const TextStyle(fontSize: 13.5, color: Color(0xFFC3CAD6), height: 1.5)),
+              child: Text(text, style: const TextStyle(fontSize: 13.5, color: AppTheme.textBody, height: 1.5)),
             ),
           ],
         ),
@@ -420,7 +420,7 @@ class _SectionLabel extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       text.toUpperCase(),
-      style: const TextStyle(fontSize: 12, letterSpacing: 1.2, fontWeight: FontWeight.w700, color: Colors.white54),
+      style: const TextStyle(fontSize: 12, letterSpacing: 1.2, fontWeight: FontWeight.w700, color: AppTheme.textDim),
     );
   }
 }
@@ -442,7 +442,7 @@ class _SourceTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return SwitchListTile(
       title: Text(title, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700)),
-      subtitle: Text(subtitle, style: const TextStyle(fontSize: 12.5, color: Colors.white54)),
+      subtitle: Text(subtitle, style: const TextStyle(fontSize: 12.5, color: AppTheme.textDim)),
       value: value,
       onChanged: onChanged,
     );

@@ -76,9 +76,9 @@ class _SignalsScreenState extends State<SignalsScreen> {
                     labelStyle: TextStyle(
                       fontSize: 12.5,
                       fontWeight: FontWeight.w600,
-                      color: selected ? AppTheme.bg : AppTheme.textSecondary,
+                      color: selected ? AppTheme.onAccent : AppTheme.textSecondary,
                     ),
-                    selectedColor: AppTheme.accent,
+                    selectedColor: AppTheme.brandRed,
                     backgroundColor: AppTheme.surfaceAlt,
                     side: const BorderSide(color: AppTheme.line),
                   );

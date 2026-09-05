@@ -87,7 +87,7 @@ class GoalsScreen extends StatelessWidget {
                     style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w800),
                   ),
                   const SizedBox(height: 6),
-                  Text(plan.summary, style: const TextStyle(fontSize: 13.5, color: Color(0xFFC3CAD6), height: 1.5)),
+                  Text(plan.summary, style: const TextStyle(fontSize: 13.5, color: AppTheme.textBody, height: 1.5)),
                   const SizedBox(height: 16),
                   _ProgressRow(
                     label: 'Trades today',
@@ -141,7 +141,7 @@ class GoalsScreen extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(14),
             decoration: BoxDecoration(
-              color: const Color(0xFF1B232F),
+              color: AppTheme.surfaceAlt,
               borderRadius: BorderRadius.circular(12),
             ),
             child: Column(
@@ -159,7 +159,7 @@ class GoalsScreen extends StatelessWidget {
                   'Only put \$${riskUsd.toStringAsFixed(2)} (${plan.riskPerTradePct.round()}% of balance) into any '
                   'single trade. If a trade would need more than that, skip it. '
                   'Never trade more than the plan allows, even if a signal looks great.',
-                  style: const TextStyle(fontSize: 13.5, color: Color(0xFFC3CAD6), height: 1.5),
+                  style: const TextStyle(fontSize: 13.5, color: AppTheme.textBody, height: 1.5),
                 ),
               ],
             ),
@@ -228,7 +228,7 @@ class _PhaseCard extends StatelessWidget {
                   ? 'You are trading real money. Follow the plan strictly and stop at the loss limit.'
                   : 'Fake money until your accuracy proves out. Flip to real when you are ready — '
                       'the goals count the same.',
-              style: const TextStyle(fontSize: 13.5, color: Color(0xFFC3CAD6), height: 1.5),
+              style: const TextStyle(fontSize: 13.5, color: AppTheme.textBody, height: 1.5),
             ),
             const SizedBox(height: 12),
             SegmentedButton<bool>(
@@ -328,7 +328,7 @@ class _ProgressRow extends StatelessWidget {
               style: TextStyle(
                 fontSize: 13.5,
                 fontWeight: FontWeight.w800,
-                color: exceeded || reached ? color : const Color(0xFFE6E9EF),
+                color: exceeded || reached ? color : AppTheme.textPrimary,
               ),
             ),
           ],
@@ -339,12 +339,12 @@ class _ProgressRow extends StatelessWidget {
           child: LinearProgressIndicator(
             value: progress,
             minHeight: 7,
-            backgroundColor: const Color(0xFF232C3A),
+            backgroundColor: AppTheme.track,
             color: color,
           ),
         ),
         const SizedBox(height: 4),
-        Text(hint, style: const TextStyle(fontSize: 12, color: Colors.white54)),
+        Text(hint, style: const TextStyle(fontSize: 12, color: AppTheme.textDim)),
       ],
     );
   }

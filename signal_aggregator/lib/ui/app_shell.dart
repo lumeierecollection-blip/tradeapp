@@ -5,6 +5,7 @@ import 'screens/learn_screen.dart';
 import 'screens/portfolio_screen.dart';
 import 'screens/settings_screen.dart';
 import 'screens/signals_screen.dart';
+import 'theme.dart';
 
 class AppShell extends StatefulWidget {
   const AppShell({super.key});
@@ -32,7 +33,7 @@ class _AppShellState extends State<AppShell> {
       body: IndexedStack(index: _index, children: pages),
       bottomNavigationBar: Container(
         decoration: const BoxDecoration(
-          border: Border(top: BorderSide(color: Color(0xFF1B2330))),
+          border: Border(top: BorderSide(color: AppTheme.line)),
         ),
         child: Padding(
           padding: const EdgeInsets.fromLTRB(14, 8, 14, 10),
@@ -41,7 +42,7 @@ class _AppShellState extends State<AppShell> {
             child: NavigationBar(
               selectedIndex: _index,
               onDestinationSelected: _changeTab,
-              backgroundColor: const Color(0xFF0E1219),
+              backgroundColor: AppTheme.surfaceDeep,
               destinations: const [
                 NavigationDestination(icon: Icon(Icons.home_outlined), selectedIcon: Icon(Icons.home), label: 'Home'),
                 NavigationDestination(icon: Icon(Icons.radar_outlined), selectedIcon: Icon(Icons.radar), label: 'Signals'),

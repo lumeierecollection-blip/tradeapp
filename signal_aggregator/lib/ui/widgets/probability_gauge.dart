@@ -26,7 +26,7 @@ class ProbabilityGauge extends StatelessWidget {
             strokeWidth: 7,
             strokeCap: StrokeCap.round,
             color: color,
-            backgroundColor: const Color(0xFF232C3A),
+            backgroundColor: AppTheme.track,
           ),
           Center(
             child: Column(
@@ -46,7 +46,7 @@ class ProbabilityGauge extends StatelessWidget {
                   style: TextStyle(
                     fontSize: size * 0.16,
                     fontWeight: FontWeight.w600,
-                    color: Colors.white54,
+                    color: AppTheme.textDim,
                     height: 1.1,
                   ),
                 ),

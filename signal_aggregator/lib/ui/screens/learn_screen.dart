@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../theme.dart';
+
 class LearnScreen extends StatelessWidget {
   const LearnScreen({super.key});
 
@@ -107,7 +109,7 @@ class LearnScreen extends StatelessWidget {
             padding: EdgeInsets.only(bottom: 16),
             child: Text(
               'Everything in simple language. Read a few before your first trade.',
-              style: TextStyle(fontSize: 14, color: Colors.white54),
+              style: TextStyle(fontSize: 14, color: AppTheme.textDim),
             ),
           ),
           for (final lesson in _lessons)
@@ -126,7 +128,7 @@ class LearnScreen extends StatelessWidget {
                   children: [
                     Text(
                       lesson.body,
-                      style: const TextStyle(fontSize: 14, color: Color(0xFFC3CAD6), height: 1.55),
+                      style: const TextStyle(fontSize: 14, color: AppTheme.textBody, height: 1.55),
                     ),
                   ],
                 ),
