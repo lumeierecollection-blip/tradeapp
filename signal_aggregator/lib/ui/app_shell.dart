@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'screens/backtest_screen.dart';
 import 'screens/portfolio_screen.dart';
 import 'screens/settings_screen.dart';
 import 'screens/signals_screen.dart';
@@ -21,6 +22,7 @@ class _AppShellState extends State<AppShell> {
     const pages = [
       SignalsScreen(),
       PortfolioScreen(),
+      BacktestScreen(),
       SettingsScreen(),
     ];
 
@@ -41,6 +43,7 @@ class _AppShellState extends State<AppShell> {
               destinations: const [
                 NavigationDestination(icon: Icon(Icons.radar_outlined), selectedIcon: Icon(Icons.radar), label: 'Signals'),
                 NavigationDestination(icon: Icon(Icons.account_balance_wallet_outlined), selectedIcon: Icon(Icons.account_balance_wallet), label: 'Portfolio'),
+                NavigationDestination(icon: Icon(Icons.history_outlined), selectedIcon: Icon(Icons.history), label: 'Backtest'),
                 NavigationDestination(icon: Icon(Icons.settings_outlined), selectedIcon: Icon(Icons.settings), label: 'Settings'),
               ],
             ),
