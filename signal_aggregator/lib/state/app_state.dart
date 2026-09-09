@@ -8,6 +8,7 @@ import '../models/paper_trade.dart';
 import '../models/signal.dart';
 import '../models/validated_signal.dart';
 import '../models/goal_plan.dart';
+import '../journal/journal.dart';
 import '../services/background.dart';
 import '../services/cloud_backend.dart';
 import '../services/market_service.dart';
@@ -26,6 +27,7 @@ class AppState extends ChangeNotifier {
 
   final Storage storage;
   final PaperTrader paperTrader;
+  final Journal journal;
   final MarketService _marketService = MarketService();
   final SourceRegistry _sourceRegistry = SourceRegistry();
   final Validator _validator = Validator();
@@ -75,7 +77,7 @@ class AppState extends ChangeNotifier {
   /// subtle "just refreshed" animation without a full reload.
   int get updateTick => _updateTick;
 
-  AppState(this.storage, this.paperTrader) {
+  AppState(this.storage, this.paperTrader, this.journal) {
     _watchlist = storage.getWatchlist();
     _telegramChannels = storage.getTelegramChannels();
     _sourcesEnabled = storage.getSourcesEnabled();
@@ -207,6 +209,9 @@ class AppState extends ChangeNotifier {
         if (_cloudEnabled && _cloudBackend != null) {
           _error = 'Cloud feed offline — showing on-device scan.';
         }
+      }
+      for (final vs in _validated) {
+        journal.recordSignalShown(vs);
       }
       _lastUpdated = DateTime.now();
       _updateTick++;
