@@ -10,7 +10,11 @@ import 'storage.dart';
 
 class PaperTrader extends ChangeNotifier {
   final Storage _storage;
-  final Journal? _journal;
+
+  /// Optional append-only log of opens and closes. Null in tests that don't
+  /// care about journalling.
+  final Journal? journal;
+
   double _balance;
   final List<PaperTrade> _trades;
 
@@ -18,9 +22,8 @@ class PaperTrader extends ChangeNotifier {
   /// and backtests of the same idea line up.
   static const TradingCosts _costs = TradingCosts();
 
-  PaperTrader(this._storage, {Journal? journal})
-      : _journal = journal,
-        _balance = _storage.paperBalance,
+  PaperTrader(this._storage, {this.journal})
+      : _balance = _storage.paperBalance,
         _trades = _storage.getTradesJson().map(PaperTrade.fromJson).toList() {
     _trades.sort((a, b) => b.openedAt.compareTo(a.openedAt));
   }
@@ -88,7 +91,7 @@ class PaperTrader extends ChangeNotifier {
     _balance -= amount;
     _trades.insert(0, trade);
     _persist();
-    _journal?.recordTradeOpened(trade);
+    journal?.recordTradeOpened(trade);
     notifyListeners();
     return '';
   }
@@ -161,7 +164,7 @@ class PaperTrader extends ChangeNotifier {
     trade.closedAt = DateTime.now();
     trade.closedBy = closedBy;
     _balance += trade.amount + pnl;
-    _journal?.recordTradeClosed(trade);
+    journal?.recordTradeClosed(trade);
   }
 
   Future<void> resetBalance(double amount) async {
