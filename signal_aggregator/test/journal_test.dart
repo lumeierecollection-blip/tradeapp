@@ -151,4 +151,54 @@ void main() {
     expect(stats['early-entry']!.winRate, 0);
     expect(stats['early-entry']!.totalPnl, closeTo(-9, 1e-9)); // -6 - 3
   });
+
+  test('calibration groups closed trades by rightness bucket', () {
+    final j = Journal(storage);
+    // needs the probability carried on the trade -> use _tradeWithProb
+    j.recordTradeClosed(_tradeP('a', prob: 74, pnl: 5, closedAt: DateTime.utc(2026, 4, 1)));
+    j.recordTradeClosed(_tradeP('b', prob: 71, pnl: -2, closedAt: DateTime.utc(2026, 4, 2)));
+    j.recordTradeClosed(_tradeP('c', prob: 63, pnl: 4, closedAt: DateTime.utc(2026, 4, 3)));
+
+    final rows = j.calibration();
+    expect(rows.map((r) => r.bucketLow).toList(), [60, 70]); // ascending
+
+    final b70 = rows.firstWhere((r) => r.bucketLow == 70);
+    expect(b70.label, '70-79%');
+    expect(b70.trades, 2);
+    expect(b70.wins, 1);
+    expect(b70.winRate, 50);
+    expect(b70.netPnl, closeTo(3, 1e-9)); // 5 - 2
+  });
+
+  test('symbolPerformance aggregates per coin, most-traded first', () {
+    final j = Journal(storage);
+    j.recordTradeClosed(_tradeP('a', symbol: 'BTC', pnl: 5, closedAt: DateTime.utc(2026, 5, 1)));
+    j.recordTradeClosed(_tradeP('b', symbol: 'BTC', pnl: -3, closedAt: DateTime.utc(2026, 5, 2)));
+    j.recordTradeClosed(_tradeP('c', symbol: 'ETH', pnl: 8, closedAt: DateTime.utc(2026, 5, 3)));
+
+    final rows = j.symbolPerformance();
+    expect(rows.map((r) => r.symbol).toList(), ['BTC', 'ETH']);
+    expect(rows.first.trades, 2);
+    expect(rows.first.wins, 1);
+    expect(rows.first.netPnl, closeTo(2, 1e-9));
+  });
 }
+
+PaperTrade _tradeP(String id,
+        {String symbol = 'BTC', double prob = 72, double? pnl, DateTime? closedAt}) =>
+    PaperTrade(
+      id: id,
+      symbol: symbol,
+      entry: 100,
+      quantity: 1,
+      amount: 100,
+      stopLoss: 90,
+      takeProfit: 130,
+      probability: prob,
+      reason: 'why',
+      openedAt: DateTime.utc(2026, 1, 1),
+      sellAt: DateTime.utc(2026, 1, 1, 2),
+      pnl: pnl,
+      closedBy: (pnl ?? 0) >= 0 ? 'target' : 'stop',
+      closedAt: closedAt,
+    );

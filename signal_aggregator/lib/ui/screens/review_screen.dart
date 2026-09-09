@@ -16,6 +16,8 @@ class ReviewScreen extends StatelessWidget {
     final journal = context.watch<Journal>();
     final closed = journal.ofKind(JournalKind.tradeClosed).reversed.toList();
     final stats = journal.tagStats();
+    final calibration = journal.calibration();
+    final symbolPerf = journal.symbolPerformance();
 
     return Scaffold(
       appBar: AppBar(title: const Text('Review')),
@@ -24,12 +26,25 @@ class ReviewScreen extends StatelessWidget {
           : ListView(
               padding: const EdgeInsets.all(16),
               children: [
+                if (calibration.isNotEmpty) ...[
+                  const _Heading('Calibration — rightness vs. actual wins'),
+                  const SizedBox(height: 8),
+                  _CalibrationTable(rows: calibration),
+                  const SizedBox(height: 20),
+                ],
+                if (symbolPerf.isNotEmpty) ...[
+                  const _Heading('By coin'),
+                  const SizedBox(height: 8),
+                  _SymbolTable(rows: symbolPerf),
+                  const SizedBox(height: 20),
+                ],
                 if (stats.isNotEmpty) ...[
+                  const _Heading('Mistake tags'),
+                  const SizedBox(height: 8),
                   _TagSummary(stats: stats),
                   const SizedBox(height: 20),
                 ],
-                const Text('Closed trades',
-                    style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: AppTheme.textMuted)),
+                const _Heading('Closed trades'),
                 const SizedBox(height: 8),
                 for (final e in closed)
                   Padding(
@@ -54,6 +69,123 @@ class _Empty extends StatelessWidget {
           'No closed trades yet. Once a paper trade finishes it shows up here to tag.',
           textAlign: TextAlign.center,
           style: TextStyle(color: AppTheme.textMuted, height: 1.5),
+        ),
+      ),
+    );
+  }
+}
+
+class _Heading extends StatelessWidget {
+  final String text;
+  const _Heading(this.text);
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      text,
+      style: const TextStyle(
+        fontSize: 13,
+        fontWeight: FontWeight.w700,
+        color: AppTheme.textMuted,
+      ),
+    );
+  }
+}
+
+class _CalibrationTable extends StatelessWidget {
+  final List<BucketPerf> rows;
+  const _CalibrationTable({required this.rows});
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        child: Column(
+          children: [
+            for (final r in rows)
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 7),
+                child: Row(
+                  children: [
+                    SizedBox(
+                      width: 70,
+                      child: Text(r.label,
+                          style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w700)),
+                    ),
+                    Expanded(
+                      child: Text('${r.trades} trade${r.trades == 1 ? '' : 's'}',
+                          style: const TextStyle(fontSize: 12, color: AppTheme.textMuted)),
+                    ),
+                    Text('${r.winRate.round()}% won',
+                        style: const TextStyle(fontSize: 12.5, fontWeight: FontWeight.w700)),
+                    const SizedBox(width: 12),
+                    SizedBox(
+                      width: 64,
+                      child: Text(
+                        '${r.netPnl >= 0 ? '+' : ''}${r.netPnl.toStringAsFixed(0)}',
+                        textAlign: TextAlign.right,
+                        style: TextStyle(
+                          fontSize: 12.5,
+                          fontWeight: FontWeight.w800,
+                          color: r.netPnl >= 0 ? AppTheme.buy : AppTheme.sell,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _SymbolTable extends StatelessWidget {
+  final List<SymbolPerf> rows;
+  const _SymbolTable({required this.rows});
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        child: Column(
+          children: [
+            for (final r in rows)
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 7),
+                child: Row(
+                  children: [
+                    SizedBox(
+                      width: 60,
+                      child: Text(r.symbol,
+                          style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w700)),
+                    ),
+                    Expanded(
+                      child: Text('${r.trades} trade${r.trades == 1 ? '' : 's'}',
+                          style: const TextStyle(fontSize: 12, color: AppTheme.textMuted)),
+                    ),
+                    Text('${r.winRate.round()}% won',
+                        style: const TextStyle(fontSize: 12.5, fontWeight: FontWeight.w700)),
+                    const SizedBox(width: 12),
+                    SizedBox(
+                      width: 64,
+                      child: Text(
+                        '${r.netPnl >= 0 ? '+' : ''}${r.netPnl.toStringAsFixed(0)}',
+                        textAlign: TextAlign.right,
+                        style: TextStyle(
+                          fontSize: 12.5,
+                          fontWeight: FontWeight.w800,
+                          color: r.netPnl >= 0 ? AppTheme.buy : AppTheme.sell,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+          ],
         ),
       ),
     );

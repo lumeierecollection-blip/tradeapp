@@ -140,6 +140,49 @@ class Journal extends ChangeNotifier {
     return stats;
   }
 
+  /// Closed-trade outcomes grouped by the rightness bucket they were opened on.
+  /// Lets you see whether "72%" signals actually win ~72% of the time.
+  List<BucketPerf> calibration() {
+    final byBucket = <int, List<JournalEntry>>{};
+    for (final e in _entries) {
+      if (e.kind != JournalKind.tradeClosed) continue;
+      final b = e.probabilityBucket;
+      if (b == null) continue;
+      (byBucket[b] ??= []).add(e);
+    }
+    final rows = [
+      for (final entry in byBucket.entries)
+        BucketPerf(
+          bucketLow: entry.key,
+          trades: entry.value.length,
+          wins: entry.value.where((e) => (e.pnl ?? 0) > 0).length,
+          netPnl: entry.value.fold(0.0, (s, e) => s + (e.pnl ?? 0)),
+        ),
+    ];
+    rows.sort((a, b) => a.bucketLow.compareTo(b.bucketLow));
+    return rows;
+  }
+
+  /// Closed-trade win rate and net P&L per symbol, most-traded first.
+  List<SymbolPerf> symbolPerformance() {
+    final bySymbol = <String, List<JournalEntry>>{};
+    for (final e in _entries) {
+      if (e.kind != JournalKind.tradeClosed) continue;
+      (bySymbol[e.symbol] ??= []).add(e);
+    }
+    final rows = [
+      for (final entry in bySymbol.entries)
+        SymbolPerf(
+          symbol: entry.key,
+          trades: entry.value.length,
+          wins: entry.value.where((e) => (e.pnl ?? 0) > 0).length,
+          netPnl: entry.value.fold(0.0, (s, e) => s + (e.pnl ?? 0)),
+        ),
+    ];
+    rows.sort((a, b) => b.trades.compareTo(a.trades));
+    return rows;
+  }
+
   // --- internals ---------------------------------------------------------
 
   void _append(JournalEntry e) {
@@ -168,6 +211,44 @@ class TagStat {
     required this.trades,
     required this.wins,
     required this.totalPnl,
+  });
+
+  double get winRate => trades == 0 ? 0 : wins / trades * 100;
+}
+
+/// Calibration row: how trades opened in one rightness bucket actually did.
+class BucketPerf {
+  final int bucketLow;
+  final int trades;
+  final int wins;
+  final double netPnl;
+
+  const BucketPerf({
+    required this.bucketLow,
+    required this.trades,
+    required this.wins,
+    required this.netPnl,
+  });
+
+  /// Realised win rate for the bucket.
+  double get winRate => trades == 0 ? 0 : wins / trades * 100;
+
+  /// `50` -> `"50-59%"`.
+  String get label => '$bucketLow-${bucketLow + 9}%';
+}
+
+/// Per-symbol closed-trade outcome.
+class SymbolPerf {
+  final String symbol;
+  final int trades;
+  final int wins;
+  final double netPnl;
+
+  const SymbolPerf({
+    required this.symbol,
+    required this.trades,
+    required this.wins,
+    required this.netPnl,
   });
 
   double get winRate => trades == 0 ? 0 : wins / trades * 100;
