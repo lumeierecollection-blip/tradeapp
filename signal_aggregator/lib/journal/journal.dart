@@ -112,6 +112,34 @@ class Journal extends ChangeNotifier {
     return _entries.where((e) => e.probabilityBucket == low).toList();
   }
 
+  /// Frequency and outcome per mistake tag across every closed-trade entry. A
+  /// trade carrying several tags counts once under each. Ordered most-used first.
+  List<TagStat> tagStats() {
+    final trades = <String, int>{};
+    final wins = <String, int>{};
+    final pnl = <String, double>{};
+    for (final e in _entries) {
+      if (e.kind != JournalKind.tradeClosed) continue;
+      final won = (e.pnl ?? 0) > 0;
+      for (final tag in e.tags) {
+        trades[tag] = (trades[tag] ?? 0) + 1;
+        if (won) wins[tag] = (wins[tag] ?? 0) + 1;
+        pnl[tag] = (pnl[tag] ?? 0) + (e.pnl ?? 0);
+      }
+    }
+    final stats = [
+      for (final tag in trades.keys)
+        TagStat(
+          tag: tag,
+          trades: trades[tag] ?? 0,
+          wins: wins[tag] ?? 0,
+          totalPnl: pnl[tag] ?? 0.0,
+        ),
+    ];
+    stats.sort((a, b) => b.trades.compareTo(a.trades));
+    return stats;
+  }
+
   // --- internals ---------------------------------------------------------
 
   void _append(JournalEntry e) {
@@ -126,4 +154,21 @@ class Journal extends ChangeNotifier {
 
   String _id(String prefix) =>
       '$prefix-${DateTime.now().microsecondsSinceEpoch}-${Random().nextInt(9999)}';
+}
+
+/// Aggregated outcome for one review tag.
+class TagStat {
+  final String tag;
+  final int trades;
+  final int wins;
+  final double totalPnl;
+
+  const TagStat({
+    required this.tag,
+    required this.trades,
+    required this.wins,
+    required this.totalPnl,
+  });
+
+  double get winRate => trades == 0 ? 0 : wins / trades * 100;
 }

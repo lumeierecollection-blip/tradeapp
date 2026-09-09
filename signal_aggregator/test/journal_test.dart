@@ -121,4 +121,34 @@ void main() {
     expect(j2.ofKind(JournalKind.tradeClosed).single.tags,
         const ['early-entry', 'oversized']);
   });
+
+  test('tagStats aggregates count, wins and pnl per tag, most-used first', () {
+    final j = Journal(storage);
+    j.recordTradeClosed(
+        _trade('a', pnl: 10, closedBy: 'target', closedAt: DateTime.utc(2026, 3, 1)));
+    j.recordTradeClosed(
+        _trade('b', pnl: -6, closedBy: 'stop', closedAt: DateTime.utc(2026, 3, 2)));
+    j.recordTradeClosed(
+        _trade('c', pnl: -3, closedBy: 'stop', closedAt: DateTime.utc(2026, 3, 3)));
+    j.recordTradeClosed(
+        _trade('d', pnl: 5, closedBy: 'target', closedAt: DateTime.utc(2026, 3, 4)));
+
+    j.setTags('a', const ['oversized']);
+    j.setTags('b', const ['oversized', 'early-entry']);
+    j.setTags('c', const ['early-entry']);
+    j.setTags('d', const ['oversized']);
+
+    final ordered = j.tagStats();
+    expect(ordered.map((s) => s.tag).toList(), ['oversized', 'early-entry']);
+
+    final stats = {for (final s in ordered) s.tag: s};
+    expect(stats['oversized']!.trades, 3);
+    expect(stats['oversized']!.wins, 2);
+    expect(stats['oversized']!.totalPnl, closeTo(9, 1e-9)); // 10 - 6 + 5
+
+    expect(stats['early-entry']!.trades, 2);
+    expect(stats['early-entry']!.wins, 0);
+    expect(stats['early-entry']!.winRate, 0);
+    expect(stats['early-entry']!.totalPnl, closeTo(-9, 1e-9)); // -6 - 3
+  });
 }
