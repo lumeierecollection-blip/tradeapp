@@ -7,7 +7,9 @@ import '../models/market_snapshot.dart';
 
 class MarketService {
   static const String _base = 'https://api.binance.com';
-  final http.Client _client = http.Client();
+  final http.Client _client;
+
+  MarketService({http.Client? client}) : _client = client ?? http.Client();
 
   static const Map<String, String> symbolToPair = {
     'BTC': 'BTCUSDT',
@@ -60,12 +62,57 @@ class MarketService {
         _cacheAt[symbol] = DateTime.now();
         results[symbol] = snap;
       } catch (_) {
-        // Skip coins we cannot get data for; keep any previous value.
+        // Binance failed. Try the price-only fallback; if that fails too, reuse
+        // the last snapshot but flag it as stale so nothing treats it as live.
+        final fallback = await _fallbackSnapshot(symbol);
         final previous = _cache[symbol];
-        if (previous != null) results[symbol] = previous;
+        if (fallback != null) {
+          _cache[symbol] = fallback;
+          _cacheAt[symbol] = DateTime.now();
+          results[symbol] = fallback;
+        } else if (previous != null) {
+          results[symbol] = previous.copyWith(stale: true);
+        }
       }
     }
     return results;
+  }
+
+  /// A degraded snapshot from Coinbase spot: real price, everything else
+  /// neutralised. Marked stale so signals built on it can be downgraded.
+  Future<MarketSnapshot?> _fallbackSnapshot(String symbol) async {
+    final price = await _coinbaseSpot(symbol);
+    if (price == null || price <= 0) return null;
+    return MarketSnapshot(
+      symbol: symbol,
+      price: price,
+      change5m: 0,
+      change15m: 0,
+      change1h: 0,
+      change24h: 0,
+      rsi14: 50,
+      volume24h: 0,
+      avgVolume: 0,
+      support: 0,
+      resistance: 0,
+      at: DateTime.now(),
+      source: 'coinbase',
+      stale: true,
+    );
+  }
+
+  Future<double?> _coinbaseSpot(String symbol) async {
+    try {
+      final uri = Uri.parse(
+          'https://api.coinbase.com/v2/prices/${symbol.toUpperCase()}-USD/spot');
+      final res = await _client.get(uri).timeout(const Duration(seconds: 10));
+      if (res.statusCode != 200) return null;
+      final data = jsonDecode(res.body);
+      final amount = data is Map ? (data['data'] as Map?)?['amount'] : null;
+      return amount == null ? null : double.tryParse(amount.toString());
+    } catch (_) {
+      return null;
+    }
   }
 
   Future<MarketSnapshot> fetchSnapshot(String symbol, String pair) async {

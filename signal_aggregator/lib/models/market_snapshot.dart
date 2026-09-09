@@ -21,6 +21,14 @@ class MarketSnapshot {
 
   final DateTime at;
 
+  /// Where the price came from: 'binance' for a full snapshot, 'coinbase' for a
+  /// degraded price-only fallback.
+  final String source;
+
+  /// True when this data can't be trusted as current — a reused past-TTL cache
+  /// entry, or a fallback source with no technical fields.
+  final bool stale;
+
   const MarketSnapshot({
     required this.symbol,
     required this.price,
@@ -36,7 +44,28 @@ class MarketSnapshot {
     this.atrPct = 0,
     this.recentVolumeRatio = 1.0,
     required this.at,
+    this.source = 'binance',
+    this.stale = false,
   });
+
+  MarketSnapshot copyWith({bool? stale, String? source}) => MarketSnapshot(
+        symbol: symbol,
+        price: price,
+        change5m: change5m,
+        change15m: change15m,
+        change1h: change1h,
+        change24h: change24h,
+        rsi14: rsi14,
+        volume24h: volume24h,
+        avgVolume: avgVolume,
+        support: support,
+        resistance: resistance,
+        atrPct: atrPct,
+        recentVolumeRatio: recentVolumeRatio,
+        at: at,
+        source: source ?? this.source,
+        stale: stale ?? this.stale,
+      );
 
   double get volumeRatio => avgVolume <= 0 ? 1.0 : volume24h / avgVolume;
 
@@ -61,6 +90,8 @@ class MarketSnapshot {
         'atrPct': atrPct,
         'recentVolumeRatio': recentVolumeRatio,
         'at': at.toIso8601String(),
+        'source': source,
+        'stale': stale,
       };
 
   factory MarketSnapshot.fromJson(Map<String, dynamic> json) => MarketSnapshot(
@@ -78,5 +109,7 @@ class MarketSnapshot {
         atrPct: (json['atrPct'] as num?)?.toDouble() ?? 0,
         recentVolumeRatio: (json['recentVolumeRatio'] as num?)?.toDouble() ?? 1.0,
         at: DateTime.parse(json['at'] as String),
+        source: json['source'] as String? ?? 'binance',
+        stale: json['stale'] as bool? ?? false,
       );
 }

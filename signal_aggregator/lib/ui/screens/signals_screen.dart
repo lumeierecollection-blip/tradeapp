@@ -46,6 +46,7 @@ class _SignalsScreenState extends State<SignalsScreen> {
       ),
       body: Column(
         children: [
+          if (appState.hasStaleMarketData) const _StaleBanner(),
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 4, 16, 10),
             child: SizedBox(
@@ -201,6 +202,31 @@ class _SignalDetail extends StatelessWidget {
             Text('Stop: ${vs.stopReason}',
                 style: const TextStyle(fontSize: 12.5, color: AppTheme.textMuted, height: 1.45)),
           ],
+        ],
+      ),
+    );
+  }
+}
+
+class _StaleBanner extends StatelessWidget {
+  const _StaleBanner();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      color: AppTheme.warn.withValues(alpha: 0.14),
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+      child: const Row(
+        children: [
+          Icon(Icons.warning_amber_rounded, size: 16, color: AppTheme.warn),
+          SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              'Some prices are stale or from a backup source — treat these signals with caution.',
+              style: TextStyle(fontSize: 12, color: AppTheme.textSecondary),
+            ),
+          ),
         ],
       ),
     );

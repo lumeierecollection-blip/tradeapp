@@ -73,6 +73,9 @@ class AppState extends ChangeNotifier {
   bool get isLoading => _isLoading;
   String? get error => _error;
 
+  /// True when at least one shown market is running on stale or fallback data.
+  bool get hasStaleMarketData => _markets.values.any((m) => m.stale);
+
   /// Incremented after every successful data update so the UI can play a
   /// subtle "just refreshed" animation without a full reload.
   int get updateTick => _updateTick;
