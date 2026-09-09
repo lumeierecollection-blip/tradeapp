@@ -4,12 +4,17 @@ import 'package:flutter/foundation.dart';
 
 import '../models/paper_trade.dart';
 import '../models/validated_signal.dart';
+import '../trading/costs.dart';
 import 'storage.dart';
 
 class PaperTrader extends ChangeNotifier {
   final Storage _storage;
   double _balance;
   final List<PaperTrade> _trades;
+
+  /// Same spread / slippage / fee model the backtester uses, so paper results
+  /// and backtests of the same idea line up.
+  static const TradingCosts _costs = TradingCosts();
 
   PaperTrader(this._storage)
       : _balance = _storage.paperBalance,
@@ -38,6 +43,8 @@ class PaperTrader extends ChangeNotifier {
     return won / high.length * 100;
   }
 
+  // NOTE: this always returns 0 today — pnlAt(entry) has no market price to work
+  // with. It needs a live price feed wired in (tracked separately).
   double get openUnrealizedPnl {
     var sum = 0.0;
     for (final t in openTrades) {
@@ -57,17 +64,19 @@ class PaperTrader extends ChangeNotifier {
       return 'Conviction cap reached ($convictionPerDay per day). Use Accumulate for smaller stacks.';
     }
 
-    final target = vs.takeProfit;
+    // Fill above the quoted price, and let the committed cash cover the taker
+    // fee so the position size is honest.
+    final entryFill = _costs.buyFill(vs.entry);
+    final qty = amount / (entryFill * (1 + _costs.feeRate));
 
-    final qty = amount / vs.entry;
     final trade = PaperTrade(
       id: 'pt-${DateTime.now().millisecondsSinceEpoch}-${Random().nextInt(9999)}',
       symbol: vs.symbol,
-      entry: vs.entry,
+      entry: entryFill,
       quantity: qty,
       amount: amount,
       stopLoss: vs.stopLoss,
-      takeProfit: target,
+      takeProfit: vs.takeProfit,
       probability: vs.probability,
       reason: vs.summary,
       openedAt: DateTime.now(),
@@ -98,16 +107,12 @@ class PaperTrader extends ChangeNotifier {
       throw StateError('Trade not found');
     });
     if (!trade.isOpen) return;
-    final exitPrice = trade.takeProfit >= trade.entry && closedBy == 'target'
-        ? trade.takeProfit
-        : trade.stopLoss <= trade.entry && closedBy == 'stop'
-            ? trade.stopLoss
-            : trade.entry;
-    trade.exit = exitPrice;
-    trade.pnl = (exitPrice - trade.entry) * trade.quantity;
-    trade.closedAt = DateTime.now();
-    trade.closedBy = closedBy;
-    _balance += trade.amount + (trade.pnl ?? 0);
+    final rawExit = switch (closedBy) {
+      'target' => trade.takeProfit,
+      'stop' => trade.stopLoss,
+      _ => trade.entry,
+    };
+    _close(trade, rawExit, closedBy ?? 'manual');
     _persist();
     notifyListeners();
   }
@@ -115,11 +120,7 @@ class PaperTrader extends ChangeNotifier {
   void closeAtMarket(String id, double price) {
     final trade = _trades.firstWhere((t) => t.id == id);
     if (!trade.isOpen) return;
-    trade.exit = price;
-    trade.pnl = (price - trade.entry) * trade.quantity;
-    trade.closedAt = DateTime.now();
-    trade.closedBy = 'manual';
-    _balance += trade.amount + (trade.pnl ?? 0);
+    _close(trade, price, 'manual');
     _persist();
     notifyListeners();
   }
@@ -130,18 +131,10 @@ class PaperTrader extends ChangeNotifier {
       final price = currentPrice(trade.symbol);
       if (price <= 0) continue;
       if (price <= trade.stopLoss) {
-        trade.exit = trade.stopLoss;
-        trade.pnl = (trade.stopLoss - trade.entry) * trade.quantity;
-        trade.closedAt = DateTime.now();
-        trade.closedBy = 'stop';
-        _balance += trade.amount + (trade.pnl ?? 0);
+        _close(trade, trade.stopLoss, 'stop');
         changed = true;
       } else if (price >= trade.takeProfit) {
-        trade.exit = trade.takeProfit;
-        trade.pnl = (trade.takeProfit - trade.entry) * trade.quantity;
-        trade.closedAt = DateTime.now();
-        trade.closedBy = 'target';
-        _balance += trade.amount + (trade.pnl ?? 0);
+        _close(trade, trade.takeProfit, 'target');
         changed = true;
       }
     }
@@ -149,6 +142,21 @@ class PaperTrader extends ChangeNotifier {
       _persist();
       notifyListeners();
     }
+  }
+
+  /// Settle [trade] against a raw exit price. The fill lands below the quote by
+  /// the friction fraction; both the entry and exit taker fees come out of P&L.
+  /// Mutates the trade and balance only — callers persist and notify.
+  void _close(PaperTrade trade, double rawExitPrice, String closedBy) {
+    final exitFill = _costs.sellFill(rawExitPrice);
+    final entryFee = _costs.fee(trade.entry * trade.quantity);
+    final exitFee = _costs.fee(exitFill * trade.quantity);
+
+    trade.exit = exitFill;
+    trade.pnl = (exitFill - trade.entry) * trade.quantity - entryFee - exitFee;
+    trade.closedAt = DateTime.now();
+    trade.closedBy = closedBy;
+    _balance += trade.amount + trade.pnl!;
   }
 
   Future<void> resetBalance(double amount) async {

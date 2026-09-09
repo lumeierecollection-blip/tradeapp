@@ -1,10 +1,11 @@
 import 'dart:math';
 
+import '../trading/costs.dart';
 import 'bar.dart';
 import 'strategy.dart';
 
-/// Trading costs and risk knobs. Defaults are deliberately conservative so a
-/// backtest under-promises rather than over-promises.
+/// Risk knobs plus the shared [TradingCosts] model. Defaults are deliberately
+/// conservative so a backtest under-promises rather than over-promises.
 class BacktestConfig {
   final double initialBalance;
 
@@ -17,45 +18,36 @@ class BacktestConfig {
   /// Fraction of current cash risked down to the stop on each trade.
   final double riskPerTradePct;
 
-  /// Taker fee charged on notional, each side (0.001 = 0.10%).
-  final double feeRate;
-
-  /// One-directional slippage applied to every fill (0.0005 = 0.05%).
-  final double slippageRate;
-
-  /// Full bid/ask spread; half is paid on each side (0.0005 = 0.05%).
-  final double spreadRate;
+  /// Spread / slippage / fee model — the same one the live paper trader uses.
+  final TradingCosts costs;
 
   const BacktestConfig({
     this.initialBalance = 500,
     this.stopLossPct = 0.05,
     this.takeProfitPct = 0.10,
     this.riskPerTradePct = 0.02,
-    this.feeRate = 0.001,
-    this.slippageRate = 0.0005,
-    this.spreadRate = 0.0005,
+    this.costs = const TradingCosts(),
   });
 
   /// Fraction added to a buy fill / subtracted from a sell fill.
-  double get friction => spreadRate / 2 + slippageRate;
+  double get friction => costs.friction;
+
+  /// Taker fee rate per side.
+  double get feeRate => costs.feeRate;
 
   BacktestConfig copyWith({
     double? initialBalance,
     double? stopLossPct,
     double? takeProfitPct,
     double? riskPerTradePct,
-    double? feeRate,
-    double? slippageRate,
-    double? spreadRate,
+    TradingCosts? costs,
   }) =>
       BacktestConfig(
         initialBalance: initialBalance ?? this.initialBalance,
         stopLossPct: stopLossPct ?? this.stopLossPct,
         takeProfitPct: takeProfitPct ?? this.takeProfitPct,
         riskPerTradePct: riskPerTradePct ?? this.riskPerTradePct,
-        feeRate: feeRate ?? this.feeRate,
-        slippageRate: slippageRate ?? this.slippageRate,
-        spreadRate: spreadRate ?? this.spreadRate,
+        costs: costs ?? this.costs,
       );
 }
 
