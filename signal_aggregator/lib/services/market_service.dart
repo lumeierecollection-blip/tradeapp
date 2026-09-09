@@ -108,7 +108,10 @@ class MarketService {
       final res = await _client.get(uri).timeout(const Duration(seconds: 10));
       if (res.statusCode != 200) return null;
       final data = jsonDecode(res.body);
-      final amount = data is Map ? (data['data'] as Map?)?['amount'] : null;
+      if (data is! Map) return null;
+      final inner = data['data'];
+      if (inner is! Map) return null;
+      final amount = inner['amount'];
       return amount == null ? null : double.tryParse(amount.toString());
     } catch (_) {
       return null;
