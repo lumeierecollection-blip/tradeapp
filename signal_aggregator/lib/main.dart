@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'journal/journal.dart';
 import 'services/paper_trader.dart';
 import 'services/storage.dart';
 import 'state/app_state.dart';
@@ -11,8 +12,9 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   final storage = await Storage.load();
-  final paperTrader = PaperTrader(storage);
-  final appState = AppState(storage, paperTrader);
+  final journal = Journal(storage);
+  final paperTrader = PaperTrader(storage, journal: journal);
+  final appState = AppState(storage, paperTrader, journal);
   await appState.initNotifications();
   await appState.initPush();
 
@@ -21,6 +23,7 @@ Future<void> main() async {
       providers: [
         ChangeNotifierProvider<AppState>.value(value: appState),
         ChangeNotifierProvider<PaperTrader>.value(value: paperTrader),
+        ChangeNotifierProvider<Journal>.value(value: journal),
       ],
       child: const SignalAggregatorApp(),
     ),
