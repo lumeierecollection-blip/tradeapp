@@ -8,6 +8,7 @@ class Storage {
   static const _kSourcesEnabled = 'sources_enabled';
   static const _kPaperBalance = 'paper_balance';
   static const _kTrades = 'paper_trades';
+  static const _kJournal = 'journal';
   static const _kNotifications = 'notifications_enabled';
   static const _kStartBalance = 'start_balance';
   static const _kGoalPlan = 'goal_plan_id';
@@ -72,6 +73,16 @@ class Storage {
 
   Future<void> setTradesJson(List<Map<String, dynamic>> value) =>
       _prefs.setString(_kTrades, jsonEncode(value));
+
+  List<Map<String, dynamic>> getJournalJson() {
+    final raw = _prefs.getString(_kJournal);
+    if (raw == null) return [];
+    final list = jsonDecode(raw) as List<dynamic>;
+    return list.cast<Map<String, dynamic>>();
+  }
+
+  Future<void> setJournalJson(List<Map<String, dynamic>> value) =>
+      _prefs.setString(_kJournal, jsonEncode(value));
 
   bool get notificationsEnabled => _prefs.getBool(_kNotifications) ?? true;
 

@@ -5,7 +5,6 @@ import '../../models/validated_signal.dart';
 import '../../state/app_state.dart';
 import '../theme.dart';
 import '../widgets/signal_card.dart';
-import 'signal_detail_screen.dart';
 
 class SignalsScreen extends StatefulWidget {
   const SignalsScreen({super.key});
@@ -17,6 +16,11 @@ class SignalsScreen extends StatefulWidget {
 class _SignalsScreenState extends State<SignalsScreen> {
   Direction? _filter;
   String? _symbol;
+  final Set<String> _expanded = {};
+
+  void _toggle(String id) => setState(() {
+        if (!_expanded.remove(id)) _expanded.add(id);
+      });
 
   @override
   Widget build(BuildContext context) {
@@ -42,6 +46,7 @@ class _SignalsScreenState extends State<SignalsScreen> {
       ),
       body: Column(
         children: [
+          if (appState.hasStaleMarketData) const _StaleBanner(),
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 4, 16, 10),
             child: SizedBox(
@@ -105,13 +110,17 @@ class _SignalsScreenState extends State<SignalsScreen> {
                       itemCount: filtered.length,
                       itemBuilder: (context, i) {
                         final vs = filtered[i];
+                        final open = _expanded.contains(vs.signal.id);
                         return Padding(
                           padding: const EdgeInsets.only(bottom: 12),
-                          child: SignalCard(
-                            vs: vs,
-                            onTap: () => Navigator.of(context).push(
-                              MaterialPageRoute(builder: (_) => SignalDetailScreen(vs: vs)),
-                            ),
+                          child: Column(
+                            children: [
+                              SignalCard(
+                                vs: vs,
+                                onTap: () => _toggle(vs.signal.id),
+                              ),
+                              if (open) _SignalDetail(vs: vs),
+                            ],
                           ),
                         );
                       },
@@ -120,6 +129,130 @@ class _SignalsScreenState extends State<SignalsScreen> {
           ),
         ],
       ),
+    );
+  }
+}
+
+/// Inline "why this signal" panel shown under a tapped [SignalCard].
+class _SignalDetail extends StatelessWidget {
+  final ValidatedSignal vs;
+  const _SignalDetail({required this.vs});
+
+  @override
+  Widget build(BuildContext context) {
+    final reasons = vs.reasons.isNotEmpty ? vs.reasons : vs.factors;
+    return Container(
+      width: double.infinity,
+      margin: const EdgeInsets.only(top: 2),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: AppTheme.surface,
+        borderRadius: const BorderRadius.vertical(bottom: Radius.circular(10)),
+        border: Border.all(color: AppTheme.line),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            vs.summary,
+            style: const TextStyle(fontSize: 13.5, color: AppTheme.textSecondary, height: 1.5),
+          ),
+          const SizedBox(height: 14),
+          Wrap(
+            spacing: 18,
+            runSpacing: 10,
+            children: [
+              _Stat(label: 'ENTRY', value: '\$${AppTheme.fmtPrice(vs.entry)}'),
+              _Stat(label: 'STOP', value: '\$${AppTheme.fmtPrice(vs.stopLoss)}', color: AppTheme.sell),
+              _Stat(label: 'TARGET', value: '\$${AppTheme.fmtPrice(vs.takeProfit)}', color: AppTheme.buy),
+              _Stat(label: 'RISK : REWARD', value: vs.riskRewardText),
+            ],
+          ),
+          if (vs.entryWindow.isNotEmpty) ...[
+            const SizedBox(height: 12),
+            Text('Entry window: ${vs.entryWindow}',
+                style: const TextStyle(fontSize: 12.5, color: AppTheme.textMuted)),
+          ],
+          if (reasons.isNotEmpty) ...[
+            const SizedBox(height: 14),
+            const Divider(),
+            const SizedBox(height: 10),
+            for (final f in reasons)
+              Padding(
+                padding: const EdgeInsets.only(bottom: 8),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(f.label,
+                        style: const TextStyle(fontSize: 12.5, fontWeight: FontWeight.w700)),
+                    if (f.plain.isNotEmpty)
+                      Text(f.plain,
+                          style: const TextStyle(fontSize: 12.5, color: AppTheme.textSecondary, height: 1.45)),
+                  ],
+                ),
+              ),
+          ],
+          if (vs.targetReason.isNotEmpty) ...[
+            const SizedBox(height: 4),
+            Text('Target: ${vs.targetReason}',
+                style: const TextStyle(fontSize: 12.5, color: AppTheme.textMuted, height: 1.45)),
+          ],
+          if (vs.stopReason.isNotEmpty) ...[
+            const SizedBox(height: 4),
+            Text('Stop: ${vs.stopReason}',
+                style: const TextStyle(fontSize: 12.5, color: AppTheme.textMuted, height: 1.45)),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+class _StaleBanner extends StatelessWidget {
+  const _StaleBanner();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      color: AppTheme.warn.withValues(alpha: 0.14),
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+      child: const Row(
+        children: [
+          Icon(Icons.warning_amber_rounded, size: 16, color: AppTheme.warn),
+          SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              'Some prices are stale or from a backup source — treat these signals with caution.',
+              style: TextStyle(fontSize: 12, color: AppTheme.textSecondary),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _Stat extends StatelessWidget {
+  final String label;
+  final String value;
+  final Color? color;
+  const _Stat({required this.label, required this.value, this.color});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(label,
+            style: const TextStyle(
+                fontSize: 10, fontWeight: FontWeight.w700, letterSpacing: 1, color: AppTheme.textMuted)),
+        const SizedBox(height: 3),
+        Text(value,
+            style: TextStyle(
+                fontSize: 14, fontWeight: FontWeight.w800, color: color ?? AppTheme.textPrimary)),
+      ],
     );
   }
 }

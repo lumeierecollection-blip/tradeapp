@@ -1,0 +1,15 @@
+# Secrets — never commit
+github token.txt
+github-token.txt
+*token*.txt
+*.pem
+*.key
+*.p12
+.env
+.env.*
+
+# Local scratch notes (not part of the codebase)
+/changes.txt
+/colour.txt
+/needed.txt
+/new direction.txt
