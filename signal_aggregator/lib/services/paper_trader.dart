@@ -151,12 +151,13 @@ class PaperTrader extends ChangeNotifier {
     final exitFill = _costs.sellFill(rawExitPrice);
     final entryFee = _costs.fee(trade.entry * trade.quantity);
     final exitFee = _costs.fee(exitFill * trade.quantity);
+    final pnl = (exitFill - trade.entry) * trade.quantity - entryFee - exitFee;
 
     trade.exit = exitFill;
-    trade.pnl = (exitFill - trade.entry) * trade.quantity - entryFee - exitFee;
+    trade.pnl = pnl;
     trade.closedAt = DateTime.now();
     trade.closedBy = closedBy;
-    _balance += trade.amount + trade.pnl!;
+    _balance += trade.amount + pnl;
   }
 
   Future<void> resetBalance(double amount) async {

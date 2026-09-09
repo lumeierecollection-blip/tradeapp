@@ -129,7 +129,7 @@ class _BacktestScreenState extends State<BacktestScreen> {
               children: [
                 Expanded(
                   child: DropdownButtonFormField<String>(
-                    value: _symbol,
+                    initialValue: _symbol,
                     decoration: const InputDecoration(labelText: 'Coin', isDense: true),
                     items: [
                       for (final s in _symbols) DropdownMenuItem(value: s, child: Text(s)),
@@ -223,7 +223,7 @@ class _EquityChart extends StatelessWidget {
 class _EquityPainter extends CustomPainter {
   final List<EquityPoint> points;
   final double initial;
-  _EquityPainter(this.points, this.initial);
+  const _EquityPainter(this.points, this.initial);
 
   @override
   void paint(Canvas canvas, Size size) {

@@ -7,8 +7,7 @@ import 'package:signal_aggregator/services/paper_trader.dart';
 import 'package:signal_aggregator/services/storage.dart';
 import 'package:signal_aggregator/trading/costs.dart';
 
-ValidatedSignal _sig({double entry = 100, double stop = 90, double target = 130}) =>
-    ValidatedSignal(
+ValidatedSignal _sig() => ValidatedSignal(
       signal: Signal(
         id: 's1',
         sourceKey: 'test',
@@ -24,9 +23,9 @@ ValidatedSignal _sig({double entry = 100, double stop = 90, double target = 130}
       direction: Direction.buy,
       probability: 70,
       factors: const [],
-      entry: entry,
-      stopLoss: stop,
-      takeProfit: target,
+      entry: 100,
+      stopLoss: 90,
+      takeProfit: 130,
       entryWindow: '',
       buyAt: DateTime.utc(2026),
       sellAt: DateTime.utc(2026).add(const Duration(hours: 2)),
@@ -48,7 +47,7 @@ void main() {
   });
 
   test('entry fills above the quote; committed cash covers notional + fee', () {
-    expect(trader.openTrade(_sig(entry: 100), 200), '');
+    expect(trader.openTrade(_sig(), 200), '');
     expect(trader.balance, closeTo(800, 1e-9));
 
     final t = trader.openTrades.single;
@@ -57,7 +56,7 @@ void main() {
   });
 
   test('a winning close returns proceeds minus both taker fees', () {
-    trader.openTrade(_sig(entry: 100, target: 130), 200);
+    trader.openTrade(_sig(), 200);
     trader.closeTrade(trader.openTrades.single.id, closedBy: 'target');
 
     final t = trader.closedTrades.single;
@@ -73,8 +72,8 @@ void main() {
   });
 
   test('checkStops closes at the stop and books a loss that includes fees', () {
-    trader.openTrade(_sig(entry: 100, stop: 90), 200);
-    trader.checkStops((_) => 85);
+    trader.openTrade(_sig(), 200);
+    trader.checkStops((_) => 85.0);
 
     final t = trader.closedTrades.single;
     expect(t.closedBy, 'stop');
@@ -85,16 +84,16 @@ void main() {
   });
 
   test('a round-trip with no price move loses only the friction + fees', () {
-    trader.openTrade(_sig(entry: 100), 200);
+    trader.openTrade(_sig(), 200);
     trader.closeAtMarket(trader.openTrades.single.id, 100);
 
     final t = trader.closedTrades.single;
     expect(t.pnl, lessThan(0));
-    expect(t.pnl, greaterThan(-5)); // costs only, not a blow-up
+    expect(t.pnl, greaterThan(-5));
   });
 
   test('closeTrade with no reason exits flat at the entry (costs only)', () {
-    trader.openTrade(_sig(entry: 100), 200);
+    trader.openTrade(_sig(), 200);
     trader.closeTrade(trader.openTrades.single.id);
 
     final t = trader.closedTrades.single;
