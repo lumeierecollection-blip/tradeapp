@@ -3,22 +3,23 @@ import 'package:flutter/material.dart';
 import '../models/validated_signal.dart';
 
 class AppTheme {
-  // Palette — warm dark, low noise.
-  static const Color bg = Color(0xFF0A0D12);
-  static const Color surface = Color(0xFF12161E);
-  static const Color surfaceAlt = Color(0xFF171D27);
-  static const Color line = Color(0xFF222A36);
+  // Palette — red & black. Aggressive trading vibe, low noise.
+  static const Color bg = Color(0xFF0A0A0A);
+  static const Color surface = Color(0xFF141414);
+  static const Color surfaceAlt = Color(0xFF1E1E1E);
+  static const Color line = Color(0xFF2A2A2A);
 
-  static const Color textPrimary = Color(0xFFEDF1F7);
-  static const Color textSecondary = Color(0xFF97A1B3);
-  static const Color textMuted = Color(0xFF5F6878);
+  static const Color textPrimary = Color(0xFFF5F5F5);
+  static const Color textSecondary = Color(0xFFB0B0B0);
+  static const Color textMuted = Color(0xFF6B6B6B);
 
-  static const Color accent = Color(0xFF5EEAD4);
-  static const Color accentSoft = Color(0xFF2DD4BF);
-  static const Color accent2 = Color(0xFF38BDF8);
-  static const Color buy = Color(0xFF34D399);
-  static const Color sell = Color(0xFFFB7185);
-  static const Color warn = Color(0xFFFBBF24);
+  static const Color accent = Color(0xFFE31B23);
+  static const Color accentSoft = Color(0xFF8B0000);
+  static const Color accent2 = Color(0xFFFF4444);
+  // buy stays green for legibility (profit = up), everything else red/black.
+  static const Color buy = Color(0xFF22C55E);
+  static const Color sell = Color(0xFFFF4D4D);
+  static const Color warn = Color(0xFFF5A623);
 
   static const LinearGradient accentGradient = LinearGradient(
     begin: Alignment.topLeft,
@@ -93,7 +94,7 @@ class AppTheme {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       ),
       navigationBarTheme: NavigationBarThemeData(
-        backgroundColor: const Color(0xFF0E1219),
+        backgroundColor: const Color(0xFF121212),
         surfaceTintColor: Colors.transparent,
         indicatorColor: accent.withValues(alpha: 0.14),
         height: 64,
