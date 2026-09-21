@@ -42,6 +42,12 @@ def main():
                 key = f'{s}|{st}|{tf}'
                 print(f'[{done}/{total}] {key} ...', end=' ', flush=True)
                 try:
+                    if holdout:
+                        out_path = 'data/backtest/results_holdout.json'
+                    else:
+                        out_path = 'data/backtest/walkforward.json'
+                    if os.path.exists(out_path):
+                        os.remove(out_path)
                     cmd = [sys.executable, 'signal_aggregator/backend/backtest/engine.py',
                            '--symbol', s, '--strategy', st, '--timeframe', tf]
                     if holdout:
@@ -55,10 +61,6 @@ def main():
                         rows.append({'symbol': s, 'strategy': st, 'tf': tf, 'error': err})
                         print(f'FAIL: {err[:80]}')
                         continue
-                    if holdout:
-                        out_path = 'data/backtest/holdout.json'
-                    else:
-                        out_path = 'data/backtest/walkforward.json'
                     with open(out_path) as f:
                         result = json.load(f)
                     if holdout:

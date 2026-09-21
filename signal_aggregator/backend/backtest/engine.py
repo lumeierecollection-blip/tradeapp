@@ -3,6 +3,7 @@ import json
 import math
 import os
 import random
+import sys
 from datetime import datetime
 
 import numpy as np
@@ -299,7 +300,10 @@ def run_holdout(symbol, strategy, timeframe, holdout_start, period='10y'):
     max_drawdown = compute_max_drawdown(equity_curve)
     win_rate = compute_win_rate(trades)
 
+    final_equity = equity_curve[-1]
+
     output = {
+        'timestamp': datetime.now().strftime('%Y-%m-%dT%H:%M:%SZ'),
         'symbol': symbol,
         'strategy': strategy,
         'timeframe': timeframe,
@@ -311,6 +315,7 @@ def run_holdout(symbol, strategy, timeframe, holdout_start, period='10y'):
         'max_drawdown': round(max_drawdown * 100, 2),
         'win_rate': round(win_rate * 100, 2),
         'total_trades': len(trades),
+        'final_equity': round(final_equity, 2),
         'equity_curve': equity_curve,
         'exit_reason_counts': exit_reason_counts,
         'test_start': str(post.index[0]),
@@ -318,7 +323,7 @@ def run_holdout(symbol, strategy, timeframe, holdout_start, period='10y'):
     }
 
     os.makedirs('data/backtest', exist_ok=True)
-    with open('data/backtest/holdout.json', 'w') as f:
+    with open('data/backtest/results_holdout.json', 'w') as f:
         json.dump(output, f, indent=2)
 
     print(f'  Holdout: {holdout_start} to {str(post.index[-1])[:10]}, '
@@ -340,8 +345,10 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     if args.holdout_start:
-        run_holdout(args.symbol, args.strategy, args.timeframe,
-                    args.holdout_start, args.period)
+        result = run_holdout(args.symbol, args.strategy, args.timeframe,
+                             args.holdout_start, args.period)
+        if result is None:
+            sys.exit(1)
     elif args.walk_forward:
         run_walk_forward(args.symbol, args.strategy, args.timeframe,
                          args.wf_train_months, args.wf_test_months, args.period)
