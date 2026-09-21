@@ -1,18 +1,14 @@
-import { toPair } from './pairs.js';
+const yahooBase = 'https://query1.finance.yahoo.com';
 
-const BASE = process.env.BINANCE_BASE_URL || 'https://api.binance.com';
+const FOREX_SYMBOLS = ['EURUSD=X', 'GBPUSD=X', 'USDJPY=X', 'GC=F', 'AUDUSD=X'];
 
-async function get(path, query) {
-  const url = new URL(`${BASE}${path}`);
-  for (const [k, v] of Object.entries(query)) url.searchParams.set(k, String(v));
-  const headers = {};
-  if (process.env.BINANCE_API_KEY) {
-    headers['X-MBX-APIKEY'] = process.env.BINANCE_API_KEY;
-  }
-  const res = await fetch(url, { headers, signal: AbortSignal.timeout(20_000) });
-  if (!res.ok) {
-    throw new Error(`Market API ${res.status}: ${await res.text()}`);
-  }
+export function isForexSymbol(symbol) {
+  return FOREX_SYMBOLS.includes(symbol) || symbol.endsWith('=X');
+}
+
+async function yahooGet(url) {
+  const res = await fetch(url, { signal: AbortSignal.timeout(20_000) });
+  if (!res.ok) throw new Error(`Yahoo API ${res.status}: ${await res.text()}`);
   return res.json();
 }
 
@@ -20,66 +16,53 @@ export async function fetchSnapshots(symbols) {
   const results = {};
   await Promise.all(
     symbols.map(async (symbol) => {
-      const pair = toPair(symbol);
-      if (!pair) return;
       try {
-        results[symbol] = await fetchSnapshot(symbol, pair);
+        results[symbol] = await fetchSnapshot(symbol);
       } catch {
-        // Skip coins we cannot get data for.
+        // Skip symbols we cannot get data for.
       }
     }),
   );
   return results;
 }
 
-export async function fetchSnapshot(symbol, pair) {
-  const ticker = await get('/api/v3/ticker/24hr', { symbol: pair });
-  const lastPrice = parseFloat(ticker.lastPrice);
-  const change24h = parseFloat(ticker.priceChangePercent);
-  const volume24h = parseFloat(ticker.volume);
+export async function fetchSnapshot(symbol) {
+  const url = `${yahooBase}/v8/finance/chart/${encodeURIComponent(symbol)}?interval=1h&range=1d`;
+  const data = await yahooGet(url);
+  const result = data.chart.result?.[0];
+  if (!result) throw new Error('No data');
 
-  const candles5m = await fetchKlines(pair, '5m', 3);
-  const change5m = percentChange(candles5m);
-  const candles15m = await fetchKlines(pair, '15m', 3);
-  const change15m = percentChange(candles15m);
+  const meta = result.meta;
+  const lastPrice = meta.regularMarketPrice ?? 0;
+  const prevClose = meta.chartPreviousClose ?? lastPrice;
+  const change24h = prevClose > 0 ? ((lastPrice - prevClose) / prevClose) * 100 : 0;
 
-  const candles1h = await fetchKlines(pair, '1h', 96);
-  const change1h = percentChange(candles1h);
-  const rsi14 = rsi(candles1h, 14);
+  const quotes = result.indicators?.quote?.[0] || {};
+  const closes = (quotes.close || []).filter((v) => v != null);
+  const highs = (quotes.high || []).filter((v) => v != null);
+  const lows = (quotes.low || []).filter((v) => v != null);
+  const volumes = (quotes.volume || []).filter((v) => v != null);
 
-  const window = candles1h.length >= 24 ? candles1h.slice(candles1h.length - 24) : candles1h;
-  const highs = window.map((c) => c.high);
-  const lows = window.map((c) => c.low);
-  const support = Math.min(...lows);
-  const resistance = Math.max(...highs);
+  const volume24h = volumes.reduce((a, b) => a + b, 0);
+  const avgVolume = volumes.length > 0 ? volume24h / volumes.length : 0;
 
-  const avgVolume =
-    candles1h.length === 0
-      ? 1
-      : candles1h.reduce((a, c) => a + c.volume, 0) / candles1h.length;
+  const change5m = percentChange(closes, closes.length - 4, closes.length - 1);
+  const change15m = percentChange(closes, closes.length - 16, closes.length - 1);
+  const change1h = percentChange(closes, closes.length - 2, closes.length - 1);
 
-  const atrPct = atrOf(candles1h, lastPrice);
+  const rsi14 = rsi(closes, 14);
+
+  const window = highs.length >= 24 ? highs.slice(-24) : highs;
+  const lowWindow = lows.length >= 24 ? lows.slice(-24) : lows;
+  const support = Math.min(...lowWindow);
+  const resistance = Math.max(...window);
+
+  const atrPct = atrOf(highs, lows, lastPrice);
+
   const recentVolumeRatio =
-    candles1h.length >= 6 && avgVolume > 0
-      ? candles1h
-          .slice(candles1h.length - 6)
-          .reduce((a, c) => a + c.volume, 0) /
-        6 /
-        avgVolume
+    volumes.length >= 6 && avgVolume > 0
+      ? volumes.slice(-6).reduce((a, b) => a + b, 0) / 6 / avgVolume
       : 1.0;
-
-  // Data freshness & quality check
-  const now = Date.now();
-  const latestCandle = candles1h[candles1h.length - 1];
-  const candleAgeMs = latestCandle ? now - latestCandle.openTime : Infinity;
-  let dataQuality = 'GOOD';
-  if (candleAgeMs > 3 * 3600 * 1000) {
-    dataQuality = 'STALE_DATA';
-  } else if (candles1h.length < 15 || candles5m.length < 2) {
-    dataQuality = 'INSUFFICIENT_DATA';
-  } else if (!candles1h.every(c => c.high >= c.low && c.close > 0 && c.volume >= 0)) {
-    dataQuality = 'DEGRADED';
-  }
 
   return {
     symbol,
@@ -95,57 +78,41 @@ export async function fetchSnapshot(symbol, pair) {
     resistance,
     atrPct,
     recentVolumeRatio,
-    dataQuality,
-    candleAgeMs,
+    source: 'yahoo',
     at: new Date().toISOString(),
   };
 }
 
-function atrOf(candles, price) {
-  if (candles.length < 15 || price <= 0) return 0;
+function atrOf(highs, lows, price) {
+  if (highs.length < 15 || price <= 0) return 0;
   let sum = 0;
-  for (let i = candles.length - 14; i < candles.length; i++) {
-    sum += candles[i].high - candles[i].low;
+  for (let i = highs.length - 14; i < highs.length; i++) {
+    sum += highs[i] - lows[i];
   }
   return (sum / 14 / price) * 100;
 }
 
-async function fetchKlines(pair, interval, limit) {
-  const data = await get('/api/v3/klines', { symbol: pair, interval, limit });
-  if (!Array.isArray(data)) return [];
-  return data.map((row) => ({
-    openTime: Number(row[0]),
-    high: parseFloat(row[2]),
-    low: parseFloat(row[3]),
-    close: parseFloat(row[4]),
-    volume: parseFloat(row[5]),
-  }));
+function percentChange(arr, from, to) {
+  if (!arr || arr.length < 2 || from < 0 || to < 0 || from >= arr.length || to >= arr.length) return 0;
+  const first = arr[from];
+  const last = arr[to];
+  if (!first || first <= 0) return 0;
+  return ((last - first) / first) * 100;
 }
 
-function percentChange(candles) {
-  if (candles.length < 2) return 0;
-  const first = candles[0];
-  const last = candles[candles.length - 1];
-  if (first.close <= 0) return 0;
-  return ((last.close - first.close) / first.close) * 100;
-}
-
-function rsi(candles, period) {
-  if (candles.length < period + 1) return 50;
+function rsi(closes, period) {
+  if (closes.length < period + 1) return 50;
   let gainSum = 0;
   let lossSum = 0;
   for (let i = 1; i <= period; i++) {
-    const change = candles[i].close - candles[i - 1].close;
-    if (change >= 0) {
-      gainSum += change;
-    } else {
-      lossSum -= change;
-    }
+    const change = closes[i] - closes[i - 1];
+    if (change >= 0) gainSum += change;
+    else lossSum -= change;
   }
   let avgGain = gainSum / period;
   let avgLoss = lossSum / period;
-  for (let i = period + 1; i < candles.length; i++) {
-    const change = candles[i].close - candles[i - 1].close;
+  for (let i = period + 1; i < closes.length; i++) {
+    const change = closes[i] - closes[i - 1];
     avgGain = (avgGain * (period - 1) + (change > 0 ? change : 0)) / period;
     avgLoss = (avgLoss * (period - 1) + (change < 0 ? -change : 0)) / period;
   }
