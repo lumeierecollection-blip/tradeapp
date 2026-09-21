@@ -1,6 +1,6 @@
 {
   "symbol": "^GSPC",
-  "trained_at": "2026-09-21T08:48:02.545449+00:00",
+  "trained_at": "2026-09-21T11:39:10.179424+00:00",
   "n_features": 35,
   "feature_cols": [
     "ret_1",

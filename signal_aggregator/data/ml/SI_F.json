@@ -1,6 +1,6 @@
 {
   "symbol": "SI=F",
-  "trained_at": "2026-09-21T08:47:46.559590+00:00",
+  "trained_at": "2026-09-21T11:38:56.045396+00:00",
   "n_features": 35,
   "feature_cols": [
     "ret_1",
