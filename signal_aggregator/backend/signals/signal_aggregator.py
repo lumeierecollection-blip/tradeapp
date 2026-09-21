@@ -9,7 +9,13 @@ import yfinance as yf
 _BACKEND_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 if _BACKEND_DIR not in sys.path:
     sys.path.insert(0, _BACKEND_DIR)
-from data.sentiment_fetcher import get_contrarian_signal, fetch_sentiment
+try:
+    from data.sentiment_fetcher import get_contrarian_signal, fetch_sentiment
+except ImportError:
+    def get_contrarian_signal(symbol, threshold=70.0):
+        return None
+    def fetch_sentiment(force=False):
+        return {}
 
 # --- Strategy weights (loaded from persistence or defaults) ---
 _WEIGHTS_PATH = os.path.join(os.path.dirname(__file__), '..', '..', 'data', 'strategy_weights.json')
