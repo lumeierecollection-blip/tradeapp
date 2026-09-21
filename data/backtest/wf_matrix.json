@@ -1,0 +1,589 @@
+{
+  "generated_at": "2026-09-21T00:45:27.777598+00:00",
+  "config": {
+    "train_months": 3,
+    "test_months": 2
+  },
+  "rows": [
+    {
+      "symbol": "EURUSD=X",
+      "strategy": "ma_cross",
+      "tf": "1h",
+      "avg_oos_sharpe": -0.22,
+      "std_oos_sharpe": 0.43,
+      "pct_positive": 50.0,
+      "windows": 2,
+      "per_window": [
+        {
+          "train_start": "2025-09-22 00:00:00+01:00",
+          "train_end": "2025-12-18 20:00:00+00:00",
+          "test_start": "2025-12-18 21:00:00+00:00",
+          "test_end": "2026-02-18 16:00:00+00:00",
+          "test_return": 0.36,
+          "test_sharpe": 0.09,
+          "test_trades": 80
+        },
+        {
+          "train_start": "2026-02-18 17:00:00+00:00",
+          "train_end": "2026-05-19 23:00:00+01:00",
+          "test_start": "2026-05-20 00:00:00+01:00",
+          "test_end": "2026-07-17 12:00:00+01:00",
+          "test_return": -1.94,
+          "test_sharpe": -0.52,
+          "test_trades": 58
+        }
+      ]
+    },
+    {
+      "symbol": "EURUSD=X",
+      "strategy": "ma_cross",
+      "tf": "1d",
+      "avg_oos_sharpe": -0.69,
+      "std_oos_sharpe": 0.98,
+      "pct_positive": 0.0,
+      "windows": 2,
+      "per_window": [
+        {
+          "train_start": "2025-09-22 00:00:00+01:00",
+          "train_end": "2025-12-18 00:00:00+00:00",
+          "test_start": "2025-12-19 00:00:00+00:00",
+          "test_end": "2026-02-18 00:00:00+00:00",
+          "test_return": -1.21,
+          "test_sharpe": -1.38,
+          "test_trades": 4
+        },
+        {
+          "train_start": "2026-02-19 00:00:00+00:00",
+          "train_end": "2026-05-19 00:00:00+01:00",
+          "test_start": "2026-05-20 00:00:00+01:00",
+          "test_end": "2026-07-16 00:00:00+01:00",
+          "test_return": 0.0,
+          "test_sharpe": 0.0,
+          "test_trades": 0
+        }
+      ]
+    },
+    {
+      "symbol": "EURUSD=X",
+      "strategy": "rsi",
+      "tf": "1h",
+      "avg_oos_sharpe": -0.12,
+      "std_oos_sharpe": 0.54,
+      "pct_positive": 50.0,
+      "windows": 2,
+      "per_window": [
+        {
+          "train_start": "2025-09-22 00:00:00+01:00",
+          "train_end": "2025-12-18 20:00:00+00:00",
+          "test_start": "2025-12-18 21:00:00+00:00",
+          "test_end": "2026-02-18 16:00:00+00:00",
+          "test_return": -1.57,
+          "test_sharpe": -0.5,
+          "test_trades": 40
+        },
+        {
+          "train_start": "2026-02-18 17:00:00+00:00",
+          "train_end": "2026-05-19 23:00:00+01:00",
+          "test_start": "2026-05-20 00:00:00+01:00",
+          "test_end": "2026-07-17 12:00:00+01:00",
+          "test_return": 0.77,
+          "test_sharpe": 0.26,
+          "test_trades": 66
+        }
+      ]
+    },
+    {
+      "symbol": "EURUSD=X",
+      "strategy": "rsi",
+      "tf": "1d",
+      "avg_oos_sharpe": 1.55,
+      "std_oos_sharpe": 2.04,
+      "pct_positive": 100.0,
+      "windows": 2,
+      "per_window": [
+        {
+          "train_start": "2025-09-22 00:00:00+01:00",
+          "train_end": "2025-12-18 00:00:00+00:00",
+          "test_start": "2025-12-19 00:00:00+00:00",
+          "test_end": "2026-02-18 00:00:00+00:00",
+          "test_return": 1.52,
+          "test_sharpe": 2.99,
+          "test_trades": 2
+        },
+        {
+          "train_start": "2026-02-19 00:00:00+00:00",
+          "train_end": "2026-05-19 00:00:00+01:00",
+          "test_start": "2026-05-20 00:00:00+01:00",
+          "test_end": "2026-07-16 00:00:00+01:00",
+          "test_return": 0.04,
+          "test_sharpe": 0.11,
+          "test_trades": 2
+        }
+      ]
+    },
+    {
+      "symbol": "GBPUSD=X",
+      "strategy": "ma_cross",
+      "tf": "1h",
+      "avg_oos_sharpe": 0.1,
+      "std_oos_sharpe": 0.11,
+      "pct_positive": 100.0,
+      "windows": 2,
+      "per_window": [
+        {
+          "train_start": "2025-09-22 00:00:00+01:00",
+          "train_end": "2025-12-18 20:00:00+00:00",
+          "test_start": "2025-12-18 21:00:00+00:00",
+          "test_end": "2026-02-18 15:00:00+00:00",
+          "test_return": 0.75,
+          "test_sharpe": 0.18,
+          "test_trades": 76
+        },
+        {
+          "train_start": "2026-02-18 16:00:00+00:00",
+          "train_end": "2026-05-19 22:00:00+01:00",
+          "test_start": "2026-05-19 23:00:00+01:00",
+          "test_end": "2026-07-17 11:00:00+01:00",
+          "test_return": 0.08,
+          "test_sharpe": 0.03,
+          "test_trades": 56
+        }
+      ]
+    },
+    {
+      "symbol": "GBPUSD=X",
+      "strategy": "ma_cross",
+      "tf": "1d",
+      "avg_oos_sharpe": 0.28,
+      "std_oos_sharpe": 2.55,
+      "pct_positive": 50.0,
+      "windows": 2,
+      "per_window": [
+        {
+          "train_start": "2025-09-22 00:00:00+01:00",
+          "train_end": "2025-12-18 00:00:00+00:00",
+          "test_start": "2025-12-19 00:00:00+00:00",
+          "test_end": "2026-02-18 00:00:00+00:00",
+          "test_return": -1.43,
+          "test_sharpe": -1.53,
+          "test_trades": 4
+        },
+        {
+          "train_start": "2026-02-19 00:00:00+00:00",
+          "train_end": "2026-05-19 00:00:00+01:00",
+          "test_start": "2026-05-20 00:00:00+01:00",
+          "test_end": "2026-07-16 00:00:00+01:00",
+          "test_return": 1.09,
+          "test_sharpe": 2.08,
+          "test_trades": 2
+        }
+      ]
+    },
+    {
+      "symbol": "GBPUSD=X",
+      "strategy": "rsi",
+      "tf": "1h",
+      "avg_oos_sharpe": -0.01,
+      "std_oos_sharpe": 0.41,
+      "pct_positive": 50.0,
+      "windows": 2,
+      "per_window": [
+        {
+          "train_start": "2025-09-22 00:00:00+01:00",
+          "train_end": "2025-12-18 20:00:00+00:00",
+          "test_start": "2025-12-18 21:00:00+00:00",
+          "test_end": "2026-02-18 15:00:00+00:00",
+          "test_return": -1.09,
+          "test_sharpe": -0.3,
+          "test_trades": 46
+        },
+        {
+          "train_start": "2026-02-18 16:00:00+00:00",
+          "train_end": "2026-05-19 22:00:00+01:00",
+          "test_start": "2026-05-19 23:00:00+01:00",
+          "test_end": "2026-07-17 11:00:00+01:00",
+          "test_return": 0.89,
+          "test_sharpe": 0.28,
+          "test_trades": 52
+        }
+      ]
+    },
+    {
+      "symbol": "GBPUSD=X",
+      "strategy": "rsi",
+      "tf": "1d",
+      "avg_oos_sharpe": 1.7,
+      "std_oos_sharpe": 2.4,
+      "pct_positive": 50.0,
+      "windows": 2,
+      "per_window": [
+        {
+          "train_start": "2025-09-22 00:00:00+01:00",
+          "train_end": "2025-12-18 00:00:00+00:00",
+          "test_start": "2025-12-19 00:00:00+00:00",
+          "test_end": "2026-02-18 00:00:00+00:00",
+          "test_return": 0.0,
+          "test_sharpe": 0.0,
+          "test_trades": 0
+        },
+        {
+          "train_start": "2026-02-19 00:00:00+00:00",
+          "train_end": "2026-05-19 00:00:00+01:00",
+          "test_start": "2026-05-20 00:00:00+01:00",
+          "test_end": "2026-07-16 00:00:00+01:00",
+          "test_return": 2.21,
+          "test_sharpe": 3.39,
+          "test_trades": 2
+        }
+      ]
+    },
+    {
+      "symbol": "USDJPY=X",
+      "strategy": "ma_cross",
+      "tf": "1h",
+      "avg_oos_sharpe": 0.28,
+      "std_oos_sharpe": 0.03,
+      "pct_positive": 100.0,
+      "windows": 2,
+      "per_window": [
+        {
+          "train_start": "2025-09-22 00:00:00+01:00",
+          "train_end": "2025-12-18 17:00:00+00:00",
+          "test_start": "2025-12-18 18:00:00+00:00",
+          "test_end": "2026-02-19 02:00:00+00:00",
+          "test_return": 1.4,
+          "test_sharpe": 0.26,
+          "test_trades": 58
+        },
+        {
+          "train_start": "2026-02-19 03:00:00+00:00",
+          "train_end": "2026-05-20 06:00:00+01:00",
+          "test_start": "2026-05-20 07:00:00+01:00",
+          "test_end": "2026-07-17 15:00:00+01:00",
+          "test_return": 0.9,
+          "test_sharpe": 0.3,
+          "test_trades": 46
+        }
+      ]
+    },
+    {
+      "symbol": "USDJPY=X",
+      "strategy": "ma_cross",
+      "tf": "1d",
+      "avg_oos_sharpe": -0.43,
+      "std_oos_sharpe": 2.13,
+      "pct_positive": 50.0,
+      "windows": 2,
+      "per_window": [
+        {
+          "train_start": "2025-09-22 00:00:00+01:00",
+          "train_end": "2025-12-18 00:00:00+00:00",
+          "test_start": "2025-12-19 00:00:00+00:00",
+          "test_end": "2026-02-18 00:00:00+00:00",
+          "test_return": -2.35,
+          "test_sharpe": -1.94,
+          "test_trades": 4
+        },
+        {
+          "train_start": "2026-02-19 00:00:00+00:00",
+          "train_end": "2026-05-19 00:00:00+01:00",
+          "test_start": "2026-05-20 00:00:00+01:00",
+          "test_end": "2026-07-16 00:00:00+01:00",
+          "test_return": 0.51,
+          "test_sharpe": 1.07,
+          "test_trades": 6
+        }
+      ]
+    },
+    {
+      "symbol": "USDJPY=X",
+      "strategy": "rsi",
+      "tf": "1h",
+      "avg_oos_sharpe": 0.29,
+      "std_oos_sharpe": 0.73,
+      "pct_positive": 50.0,
+      "windows": 2,
+      "per_window": [
+        {
+          "train_start": "2025-09-22 00:00:00+01:00",
+          "train_end": "2025-12-18 17:00:00+00:00",
+          "test_start": "2025-12-18 18:00:00+00:00",
+          "test_end": "2026-02-19 02:00:00+00:00",
+          "test_return": -1.1,
+          "test_sharpe": -0.23,
+          "test_trades": 30
+        },
+        {
+          "train_start": "2026-02-19 03:00:00+00:00",
+          "train_end": "2026-05-20 06:00:00+01:00",
+          "test_start": "2026-05-20 07:00:00+01:00",
+          "test_end": "2026-07-17 15:00:00+01:00",
+          "test_return": 1.8,
+          "test_sharpe": 0.8,
+          "test_trades": 32
+        }
+      ]
+    },
+    {
+      "symbol": "USDJPY=X",
+      "strategy": "rsi",
+      "tf": "1d",
+      "avg_oos_sharpe": -1.01,
+      "std_oos_sharpe": 1.43,
+      "pct_positive": 0.0,
+      "windows": 2,
+      "per_window": [
+        {
+          "train_start": "2025-09-22 00:00:00+01:00",
+          "train_end": "2025-12-18 00:00:00+00:00",
+          "test_start": "2025-12-19 00:00:00+00:00",
+          "test_end": "2026-02-18 00:00:00+00:00",
+          "test_return": -1.52,
+          "test_sharpe": -2.02,
+          "test_trades": 2
+        },
+        {
+          "train_start": "2026-02-19 00:00:00+00:00",
+          "train_end": "2026-05-19 00:00:00+01:00",
+          "test_start": "2026-05-20 00:00:00+01:00",
+          "test_end": "2026-07-16 00:00:00+01:00",
+          "test_return": 0.0,
+          "test_sharpe": 0.0,
+          "test_trades": 0
+        }
+      ]
+    },
+    {
+      "symbol": "GC=F",
+      "strategy": "ma_cross",
+      "tf": "1h",
+      "avg_oos_sharpe": 0.15,
+      "std_oos_sharpe": 1.42,
+      "pct_positive": 50.0,
+      "windows": 2,
+      "per_window": [
+        {
+          "train_start": "2025-09-22 00:00:00-04:00",
+          "train_end": "2025-12-18 04:00:00-05:00",
+          "test_start": "2025-12-18 05:00:00-05:00",
+          "test_end": "2026-02-20 08:00:00-05:00",
+          "test_return": 30.09,
+          "test_sharpe": 1.16,
+          "test_trades": 54
+        },
+        {
+          "train_start": "2026-02-20 09:00:00-05:00",
+          "train_end": "2026-05-19 23:00:00-04:00",
+          "test_start": "2026-05-20 00:00:00-04:00",
+          "test_end": "2026-07-20 13:00:00-04:00",
+          "test_return": -11.96,
+          "test_sharpe": -0.85,
+          "test_trades": 64
+        }
+      ]
+    },
+    {
+      "symbol": "GC=F",
+      "strategy": "ma_cross",
+      "tf": "1d",
+      "avg_oos_sharpe": 0.42,
+      "std_oos_sharpe": 0.6,
+      "pct_positive": 50.0,
+      "windows": 2,
+      "per_window": [
+        {
+          "train_start": "2025-09-22 00:00:00-04:00",
+          "train_end": "2025-12-17 00:00:00-05:00",
+          "test_start": "2025-12-18 00:00:00-05:00",
+          "test_end": "2026-02-18 00:00:00-05:00",
+          "test_return": 3.82,
+          "test_sharpe": 0.85,
+          "test_trades": 10
+        },
+        {
+          "train_start": "2026-02-19 00:00:00-05:00",
+          "train_end": "2026-05-18 00:00:00-04:00",
+          "test_start": "2026-05-19 00:00:00-04:00",
+          "test_end": "2026-07-17 00:00:00-04:00",
+          "test_return": 0.0,
+          "test_sharpe": 0.0,
+          "test_trades": 0
+        }
+      ]
+    },
+    {
+      "symbol": "GC=F",
+      "strategy": "rsi",
+      "tf": "1h",
+      "avg_oos_sharpe": -0.2,
+      "std_oos_sharpe": 0.15,
+      "pct_positive": 0.0,
+      "windows": 2,
+      "per_window": [
+        {
+          "train_start": "2025-09-22 00:00:00-04:00",
+          "train_end": "2025-12-18 04:00:00-05:00",
+          "test_start": "2025-12-18 05:00:00-05:00",
+          "test_end": "2026-02-20 08:00:00-05:00",
+          "test_return": -3.33,
+          "test_sharpe": -0.09,
+          "test_trades": 26
+        },
+        {
+          "train_start": "2026-02-20 09:00:00-05:00",
+          "train_end": "2026-05-19 23:00:00-04:00",
+          "test_start": "2026-05-20 00:00:00-04:00",
+          "test_end": "2026-07-20 13:00:00-04:00",
+          "test_return": -4.83,
+          "test_sharpe": -0.3,
+          "test_trades": 58
+        }
+      ]
+    },
+    {
+      "symbol": "GC=F",
+      "strategy": "rsi",
+      "tf": "1d",
+      "avg_oos_sharpe": -0.7,
+      "std_oos_sharpe": 0.99,
+      "pct_positive": 0.0,
+      "windows": 2,
+      "per_window": [
+        {
+          "train_start": "2025-09-22 00:00:00-04:00",
+          "train_end": "2025-12-17 00:00:00-05:00",
+          "test_start": "2025-12-18 00:00:00-05:00",
+          "test_end": "2026-02-18 00:00:00-05:00",
+          "test_return": 0.0,
+          "test_sharpe": 0.0,
+          "test_trades": 0
+        },
+        {
+          "train_start": "2026-02-19 00:00:00-05:00",
+          "train_end": "2026-05-18 00:00:00-04:00",
+          "test_start": "2026-05-19 00:00:00-04:00",
+          "test_end": "2026-07-17 00:00:00-04:00",
+          "test_return": -5.1,
+          "test_sharpe": -1.4,
+          "test_trades": 2
+        }
+      ]
+    },
+    {
+      "symbol": "AUDUSD=X",
+      "strategy": "ma_cross",
+      "tf": "1h",
+      "avg_oos_sharpe": 0.05,
+      "std_oos_sharpe": 0.99,
+      "pct_positive": 50.0,
+      "windows": 2,
+      "per_window": [
+        {
+          "train_start": "2025-09-22 00:00:00+01:00",
+          "train_end": "2025-12-19 02:00:00+00:00",
+          "test_start": "2025-12-19 03:00:00+00:00",
+          "test_end": "2026-02-18 02:00:00+00:00",
+          "test_return": 4.49,
+          "test_sharpe": 0.75,
+          "test_trades": 90
+        },
+        {
+          "train_start": "2026-02-18 03:00:00+00:00",
+          "train_end": "2026-05-19 13:00:00+01:00",
+          "test_start": "2026-05-19 14:00:00+01:00",
+          "test_end": "2026-07-17 07:00:00+01:00",
+          "test_return": -3.39,
+          "test_sharpe": -0.65,
+          "test_trades": 58
+        }
+      ]
+    },
+    {
+      "symbol": "AUDUSD=X",
+      "strategy": "ma_cross",
+      "tf": "1d",
+      "avg_oos_sharpe": 1.71,
+      "std_oos_sharpe": 2.41,
+      "pct_positive": 50.0,
+      "windows": 2,
+      "per_window": [
+        {
+          "train_start": "2025-09-22 00:00:00+01:00",
+          "train_end": "2025-12-18 00:00:00+00:00",
+          "test_start": "2025-12-19 00:00:00+00:00",
+          "test_end": "2026-02-18 00:00:00+00:00",
+          "test_return": 4.97,
+          "test_sharpe": 3.41,
+          "test_trades": 6
+        },
+        {
+          "train_start": "2026-02-19 00:00:00+00:00",
+          "train_end": "2026-05-19 00:00:00+01:00",
+          "test_start": "2026-05-20 00:00:00+01:00",
+          "test_end": "2026-07-16 00:00:00+01:00",
+          "test_return": 0.0,
+          "test_sharpe": 0.0,
+          "test_trades": 0
+        }
+      ]
+    },
+    {
+      "symbol": "AUDUSD=X",
+      "strategy": "rsi",
+      "tf": "1h",
+      "avg_oos_sharpe": -0.19,
+      "std_oos_sharpe": 0.33,
+      "pct_positive": 50.0,
+      "windows": 2,
+      "per_window": [
+        {
+          "train_start": "2025-09-22 00:00:00+01:00",
+          "train_end": "2025-12-19 02:00:00+00:00",
+          "test_start": "2025-12-19 03:00:00+00:00",
+          "test_end": "2026-02-18 02:00:00+00:00",
+          "test_return": 0.13,
+          "test_sharpe": 0.04,
+          "test_trades": 34
+        },
+        {
+          "train_start": "2026-02-18 03:00:00+00:00",
+          "train_end": "2026-05-19 13:00:00+01:00",
+          "test_start": "2026-05-19 14:00:00+01:00",
+          "test_end": "2026-07-17 07:00:00+01:00",
+          "test_return": -1.62,
+          "test_sharpe": -0.42,
+          "test_trades": 54
+        }
+      ]
+    },
+    {
+      "symbol": "AUDUSD=X",
+      "strategy": "rsi",
+      "tf": "1d",
+      "avg_oos_sharpe": -0.18,
+      "std_oos_sharpe": 0.26,
+      "pct_positive": 0.0,
+      "windows": 2,
+      "per_window": [
+        {
+          "train_start": "2025-09-22 00:00:00+01:00",
+          "train_end": "2025-12-18 00:00:00+00:00",
+          "test_start": "2025-12-19 00:00:00+00:00",
+          "test_end": "2026-02-18 00:00:00+00:00",
+          "test_return": 0.0,
+          "test_sharpe": 0.0,
+          "test_trades": 0
+        },
+        {
+          "train_start": "2026-02-19 00:00:00+00:00",
+          "train_end": "2026-05-19 00:00:00+01:00",
+          "test_start": "2026-05-20 00:00:00+01:00",
+          "test_end": "2026-07-16 00:00:00+01:00",
+          "test_return": -0.34,
+          "test_sharpe": -0.37,
+          "test_trades": 4
+        }
+      ]
+    }
+  ]
+}
