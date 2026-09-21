@@ -1,0 +1,27 @@
+name: ML Signals
+on:
+  schedule: [{ cron: '0 6 * * *' }]
+  workflow_dispatch:
+jobs:
+  signals:
+    runs-on: ubuntu-latest
+    permissions: { contents: write }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.11' }
+      - run: pip install pandas numpy requests yfinance lightgbm
+      - name: Train models
+        run: |
+          for s in "EURUSD=X" "GBPUSD=X" "USDJPY=X" "AUDUSD=X" "NZDUSD=X" "GBPJPY=X" "EURJPY=X" "AUDJPY=X" "USDCAD=X" "GC=F" "SI=F" "CL=F" "NG=F" "BTC-USD" "ETH-USD" "^GSPC" "^NDX"; do
+            python signal_aggregator/backend/ml/train.py --symbol "$s" || true
+          done
+      - name: Generate signals
+        run: python signal_aggregator/backend/signals/ml_signal.py
+      - name: Commit results
+        run: |
+          git config user.name  "GitHub Actions"
+          git config user.email "actions@github.com"
+          git add signal_aggregator/data/signals/ signal_aggregator/data/ml/
+          git commit -m "Update ML signals [skip ci]" || echo "no changes"
+          git push

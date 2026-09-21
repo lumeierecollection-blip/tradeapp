@@ -12,6 +12,9 @@ jobs:
         with: { python-version: '3.11' }
       - run: pip install pandas numpy requests yfinance transformers torch --extra-index-url https://download.pytorch.org/whl/cpu
       - run: python signal_aggregator/backend/signals/signal_aggregator.py
+        env:
+          MYFXBOOK_EMAIL: ${{ secrets.MYFXBOOK_EMAIL }}
+          MYFXBOOK_PASSWORD: ${{ secrets.MYFXBOOK_PASSWORD }}
       - run: |
           git config user.name  "GitHub Actions"
           git config user.email "actions@github.com"

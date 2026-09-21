@@ -5,6 +5,7 @@ from datetime import datetime, timezone
 
 import yfinance as yf
 
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 from data.sentiment_fetcher import get_contrarian_signal, fetch_sentiment
 
 # --- Strategy weights (loaded from persistence or defaults) ---
@@ -229,9 +230,10 @@ def determine_signals(symbol='EURUSD=X'):
 
     price = fetch_price(symbol)
 
+    hist = yf.Ticker(symbol).history(period='1d')
     latest = datetime.fromtimestamp(
-        int(hist.index[-1].timestamp)
-    ) if (hist := yf.Ticker(symbol).history(period='1d')) else datetime.now(timezone.utc)
+        int(hist.index[-1].timestamp())
+    ) if not hist.empty else datetime.now(timezone.utc)
 
     result = {
         'timestamp': latest.strftime('%Y-%m-%dT%H:%M:%SZ'),
@@ -249,8 +251,8 @@ def determine_signals(symbol='EURUSD=X'):
         ],
     }
 
-    os.makedirs(os.path.dirname('data/signals/latest.json'), exist_ok=True)
-    with open('data/signals/latest.json', 'w') as f:
+    os.makedirs(os.path.dirname('signal_aggregator/data/signals/latest.json'), exist_ok=True)
+    with open('signal_aggregator/data/signals/latest.json', 'w') as f:
         json.dump(result, f, indent=2)
 
     _save_weights()
@@ -273,7 +275,7 @@ if __name__ == '__main__':
         'timestamp': datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ'),
         'signals': all_signals,
     }
-    os.makedirs('data/signals', exist_ok=True)
-    with open('data/signals/latest.json', 'w') as f:
+    os.makedirs('signal_aggregator/data/signals', exist_ok=True)
+    with open('signal_aggregator/data/signals/latest.json', 'w') as f:
         json.dump(combined, f, indent=2)
     print(f'Generated {len(all_signals)} signals')
