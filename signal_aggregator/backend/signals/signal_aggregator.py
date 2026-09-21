@@ -5,7 +5,10 @@ from datetime import datetime, timezone
 
 import yfinance as yf
 
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
+# Ensure backend/ is on sys.path so 'data.*' and 'sentiment.*' resolve
+_BACKEND_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+if _BACKEND_DIR not in sys.path:
+    sys.path.insert(0, _BACKEND_DIR)
 from data.sentiment_fetcher import get_contrarian_signal, fetch_sentiment
 
 # --- Strategy weights (loaded from persistence or defaults) ---
