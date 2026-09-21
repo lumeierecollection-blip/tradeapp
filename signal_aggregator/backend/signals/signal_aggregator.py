@@ -5,6 +5,8 @@ from datetime import datetime, timezone
 
 import yfinance as yf
 
+from data.sentiment_fetcher import get_contrarian_signal, fetch_sentiment
+
 # --- Strategy weights (loaded from persistence or defaults) ---
 _WEIGHTS_PATH = os.path.join(os.path.dirname(__file__), '..', '..', 'data', 'strategy_weights.json')
 _STRATEGY_WEIGHTS = {"ma_cross": 1.0, "rsi_bollinger": 1.0, "vwap_bollinger": 1.0}
@@ -211,8 +213,19 @@ def determine_signals(symbol='EURUSD=X'):
     else:
         final_signal = raw_signal
 
+    # Retail sentiment contrarian filter (informational + optional gate)
+    contra = get_contrarian_signal(symbol)
+    if contra and final_signal != 'HOLD' and contra != final_signal:
+        filtered_reason = f"retail crowd {contra} signal conflict"
+        final_signal = 'HOLD'
+
     # Sentiment (informational only)
     sentiment = _compute_sentiment(symbol)
+
+    # Retail sentiment data for output
+    retail_data = fetch_sentiment()
+    retail_key = symbol.replace('=X', '').replace('/', '')
+    retail_sentiment = retail_data.get(retail_key) or retail_data.get(symbol) or {}
 
     price = fetch_price(symbol)
 
@@ -231,6 +244,7 @@ def determine_signals(symbol='EURUSD=X'):
                 'strategies': strategies,
                 'filtered_reason': filtered_reason,
                 'sentiment': sentiment,
+                'retail_sentiment': retail_sentiment,
             }
         ],
     }
@@ -244,7 +258,13 @@ def determine_signals(symbol='EURUSD=X'):
 
 
 if __name__ == '__main__':
-    symbols = ['EURUSD=X', 'GBPUSD=X', 'USDJPY=X', 'GC=F', 'AUDUSD=X']
+    symbols = [
+        'EURUSD=X', 'GBPUSD=X', 'USDJPY=X', 'AUDUSD=X',
+        'GBPJPY=X', 'EURJPY=X', 'AUDJPY=X', 'NZDUSD=X', 'USDCAD=X',
+        'GC=F', 'SI=F', 'CL=F', 'NG=F',
+        'BTC-USD', 'ETH-USD', 'SOL-USD', 'BNB-USD',
+        '^GSPC', '^NDX', '^RUT',
+    ]
     all_signals = []
     for sym in symbols:
         result = determine_signals(sym)
