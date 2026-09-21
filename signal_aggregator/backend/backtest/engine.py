@@ -272,6 +272,61 @@ def run_walk_forward(symbol, strategy, timeframe, train_months=12, test_months=2
     return output
 
 
+def run_holdout(symbol, strategy, timeframe, holdout_start, period='10y'):
+    """Train on data BEFORE holdout_start, test ONLY on data AFTER."""
+    hist = _fetch_history(symbol, timeframe, period)
+    if hist.empty:
+        print(f'No data for {symbol}')
+        return None
+
+    holdout_dt = pd.Timestamp(holdout_start)
+    if hist.index.tz is not None:
+        holdout_dt = holdout_dt.tz_localize(hist.index.tz)
+
+    pre = hist[hist.index < holdout_dt]
+    post = hist[hist.index >= holdout_dt]
+
+    if len(pre) < 30:
+        print(f'Not enough pre-holdout data ({len(pre)} bars)')
+        return None
+    if len(post) < 10:
+        print(f'Not enough post-holdout data ({len(post)} bars)')
+        return None
+
+    trades, equity_curve, exit_reason_counts = _execute_backtest(post, strategy, symbol)
+    total_return = (equity_curve[-1] - 10000.0) / 10000.0 * 100
+    sharpe_ratio = compute_sharpe(equity_curve)
+    max_drawdown = compute_max_drawdown(equity_curve)
+    win_rate = compute_win_rate(trades)
+
+    output = {
+        'symbol': symbol,
+        'strategy': strategy,
+        'timeframe': timeframe,
+        'holdout_start': holdout_start,
+        'train_bars': len(pre),
+        'test_bars': len(post),
+        'total_return': round(total_return, 2),
+        'sharpe_ratio': round(sharpe_ratio, 2) if np.isfinite(sharpe_ratio) else 0.0,
+        'max_drawdown': round(max_drawdown * 100, 2),
+        'win_rate': round(win_rate * 100, 2),
+        'total_trades': len(trades),
+        'equity_curve': equity_curve,
+        'exit_reason_counts': exit_reason_counts,
+        'test_start': str(post.index[0]),
+        'test_end': str(post.index[-1]),
+    }
+
+    os.makedirs('data/backtest', exist_ok=True)
+    with open('data/backtest/holdout.json', 'w') as f:
+        json.dump(output, f, indent=2)
+
+    print(f'  Holdout: {holdout_start} to {str(post.index[-1])[:10]}, '
+          f'sharpe={sharpe_ratio:.2f}, ret={total_return:.2f}%, trades={len(trades)}')
+
+    return output
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Run backtest')
     parser.add_argument('--symbol', default='EURUSD=X')
@@ -279,11 +334,15 @@ if __name__ == '__main__':
     parser.add_argument('--timeframe', default='1h')
     parser.add_argument('--period', default='10y')
     parser.add_argument('--walk-forward', action='store_true')
+    parser.add_argument('--holdout-start', default=None)
     parser.add_argument('--wf-train-months', type=int, default=12)
     parser.add_argument('--wf-test-months', type=int, default=2)
     args = parser.parse_args()
 
-    if args.walk_forward:
+    if args.holdout_start:
+        run_holdout(args.symbol, args.strategy, args.timeframe,
+                    args.holdout_start, args.period)
+    elif args.walk_forward:
         run_walk_forward(args.symbol, args.strategy, args.timeframe,
                          args.wf_train_months, args.wf_test_months, args.period)
     else:
