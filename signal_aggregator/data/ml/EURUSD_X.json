@@ -1,0 +1,57 @@
+{
+  "symbol": "EURUSD=X",
+  "trained_at": "2026-09-21T07:59:01.093710+00:00",
+  "n_features": 35,
+  "feature_cols": [
+    "ret_1",
+    "ret_5",
+    "ret_10",
+    "ret_20",
+    "vol_10",
+    "vol_20",
+    "vol_ratio",
+    "sma_10",
+    "dist_sma_10",
+    "sma_20",
+    "dist_sma_20",
+    "sma_50",
+    "dist_sma_50",
+    "rsi_14",
+    "bb_pctb",
+    "atr_pct",
+    "range_pct",
+    "body_pct",
+    "vol_z",
+    "x_vix_ret_1",
+    "x_vix_ret_5",
+    "x_dxy_ret_1",
+    "x_dxy_ret_5",
+    "x_tnx_ret_1",
+    "x_tnx_ret_5",
+    "x_gold_ret_1",
+    "x_gold_ret_5",
+    "x_oil_ret_1",
+    "x_oil_ret_5",
+    "x_spx_ret_1",
+    "x_spx_ret_5",
+    "corr_vix",
+    "corr_dxy",
+    "vol_percentile",
+    "trend_strength"
+  ],
+  "avg_accuracy": 0.675,
+  "windows": [
+    {
+      "window_start": "2026-02-27",
+      "window_end": "2026-05-21",
+      "accuracy": 0.7167,
+      "test_size": 60
+    },
+    {
+      "window_start": "2026-05-22",
+      "window_end": "2026-08-13",
+      "accuracy": 0.6333,
+      "test_size": 60
+    }
+  ]
+}

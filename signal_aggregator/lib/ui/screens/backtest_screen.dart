@@ -27,9 +27,10 @@ class _BacktestScreenState extends State<BacktestScreen> {
   Future<void> _load() async {
     setState(() { _loading = true; _error = null; });
     try {
-      final matrix = await _data.getBacktestMatrix();
-      final rows = (matrix['results'] as List<dynamic>? ?? [])
+      final matrix = await _data.getWalkForwardMatrix();
+      final rows = (matrix['rows'] as List<dynamic>? ?? [])
           .map((r) => Map<String, dynamic>.from(r as Map))
+          .where((r) => !r.containsKey('error'))
           .toList();
       if (!mounted) return;
       setState(() { _matrixRows = rows; _loading = false; });
@@ -67,7 +68,7 @@ class _BacktestScreenState extends State<BacktestScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Strategy Matrix'),
+        title: const Text('Walk-Forward Matrix'),
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh),
@@ -95,7 +96,8 @@ class _BacktestScreenState extends State<BacktestScreen> {
                 )
               : _matrixRows.isEmpty
                   ? const Center(
-                      child: Text('No backtest results yet.',
+                      child: Text('No walk-forward results yet.\nRun the matrix generator first.',
+                          textAlign: TextAlign.center,
                           style: TextStyle(color: AppTheme.textMuted)),
                     )
                   : RefreshIndicator(
@@ -103,6 +105,7 @@ class _BacktestScreenState extends State<BacktestScreen> {
                       child: ListView(
                         padding: const EdgeInsets.all(12),
                         children: [
+                          _warningBanner(),
                           _summaryCard(),
                           const SizedBox(height: 12),
                           _tableCard(sorted),
@@ -112,15 +115,49 @@ class _BacktestScreenState extends State<BacktestScreen> {
     );
   }
 
+  int get _survivorCount => _matrixRows.where((r) {
+    final sharpe = (r['avg_oos_sharpe'] ?? 0).toDouble();
+    final pos = (r['pct_positive'] ?? 0).toDouble();
+    final windows = (r['windows'] ?? 0) as int;
+    return sharpe > 0.5 && pos >= 50 && windows >= 3;
+  }).length;
+
+  Widget _warningBanner() {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(12),
+      margin: const EdgeInsets.only(bottom: 12),
+      decoration: BoxDecoration(
+        color: AppTheme.warn.withValues(alpha: 0.15),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: AppTheme.warn.withValues(alpha: 0.4)),
+      ),
+      child: Row(
+        children: [
+          const Icon(Icons.warning_amber_rounded, color: AppTheme.warn, size: 20),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              'In-sample results are misleading. Only combinations with avg_sharpe > 0.5 AND '
+              '% positive >= 50% AND windows >= 3 are candidates. '
+              'Currently: ${_survivorCount} combos meet this bar.',
+              style: const TextStyle(fontSize: 12, color: AppTheme.textPrimary, height: 1.4),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _summaryCard() {
     if (_matrixRows.isEmpty) return const SizedBox.shrink();
-    final sharpes = _matrixRows.map((r) => (r['sharpe'] ?? 0).toDouble()).toList();
+    final sharpes = _matrixRows.map((r) => (r['avg_oos_sharpe'] ?? 0).toDouble()).toList();
     final avg = sharpes.reduce((a, b) => a + b) / sharpes.length;
     final best = sharpes.reduce((a, b) => a > b ? a : b);
     final worst = sharpes.reduce((a, b) => a < b ? a : b);
     final profitable = sharpes.where((s) => s > 0).length;
     final bestRow = _matrixRows.firstWhere(
-      (r) => (r['sharpe'] ?? 0).toDouble() == best,
+      (r) => (r['avg_oos_sharpe'] ?? 0).toDouble() == best,
       orElse: () => {},
     );
 
@@ -130,7 +167,7 @@ class _BacktestScreenState extends State<BacktestScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text('Summary', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
+            const Text('Walk-Forward Summary', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
             const SizedBox(height: 12),
             Row(
               children: [
@@ -146,7 +183,7 @@ class _BacktestScreenState extends State<BacktestScreen> {
             if (bestRow.isNotEmpty) ...[
               const SizedBox(height: 12),
               Text(
-                'Best combo: ${bestRow['symbol']} · ${bestRow['strategy']} · ${bestRow['timeframe']}',
+                'Best combo: ${bestRow['symbol']} · ${bestRow['strategy']} · ${bestRow['tf']}',
                 style: const TextStyle(fontSize: 12, color: AppTheme.textMuted),
               ),
             ],
@@ -180,29 +217,28 @@ class _BacktestScreenState extends State<BacktestScreen> {
           columns: [
             _col('Symbol', 'symbol'),
             _col('Strategy', 'strategy'),
-            _col('TF', 'timeframe'),
-            _col('Sharpe', 'sharpe'),
-            _col('Max DD', 'max_dd'),
-            _col('Win%', 'win_rate'),
-            _col('Return%', 'total_return'),
-            _col('Trades', 'trades'),
+            _col('TF', 'tf'),
+            _col('Avg Sharpe', 'avg_oos_sharpe'),
+            _col('Std', 'std_oos_sharpe'),
+            _col('% Positive', 'pct_positive'),
+            _col('Windows', 'windows'),
           ],
           rows: rows.map((r) {
-            final sharpe = (r['sharpe'] ?? 0).toDouble();
-            final ret = (r['total_return'] ?? 0).toDouble();
-            final maxDd = (r['max_dd'] ?? 0).toDouble();
+            final sharpe = (r['avg_oos_sharpe'] ?? 0).toDouble();
+            final std = (r['std_oos_sharpe'] ?? 0).toDouble();
+            final pctPos = (r['pct_positive'] ?? 0).toDouble();
+            final windows = (r['windows'] ?? 0) as int;
             return DataRow(cells: [
               DataCell(Text(r['symbol'] ?? '', style: const TextStyle(fontWeight: FontWeight.w600))),
               DataCell(Text(r['strategy'] ?? '')),
-              DataCell(Text(r['timeframe'] ?? '')),
+              DataCell(Text(r['tf'] ?? '')),
               DataCell(Text(sharpe.toStringAsFixed(2),
                   style: TextStyle(color: sharpe > 0 ? AppTheme.buy : AppTheme.sell, fontWeight: FontWeight.w700))),
-              DataCell(Text(maxDd.toStringAsFixed(1),
-                  style: TextStyle(color: maxDd > 10 ? AppTheme.sell : AppTheme.textSecondary))),
-              DataCell(Text('${(r['win_rate'] ?? 0).toDouble().toStringAsFixed(0)}%')),
-              DataCell(Text(ret.toStringAsFixed(1),
-                  style: TextStyle(color: ret > 0 ? AppTheme.buy : AppTheme.sell))),
-              DataCell(Text('${r['trades'] ?? 0}')),
+              DataCell(Text(std.toStringAsFixed(2),
+                  style: TextStyle(color: std > 1 ? AppTheme.warn : AppTheme.textSecondary))),
+              DataCell(Text('${pctPos.toStringAsFixed(0)}%',
+                  style: TextStyle(color: pctPos >= 50 ? AppTheme.buy : AppTheme.sell))),
+              DataCell(Text('$windows')),
             ]);
           }).toList(),
         ),

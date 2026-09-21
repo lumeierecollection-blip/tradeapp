@@ -1,0 +1,319 @@
+# OpenCode Master Task: tradeapp Full Upgrade (Idempotent + Verified)
+
+## CRITICAL OPERATING RULES (READ FIRST)
+
+You are working on the repo: https://github.com/lumeierecollection-blip/tradeapp
+
+### Rule 1: NEVER ASSUME — ALWAYS VERIFY
+For EVERY task in this prompt, you must:
+1. **CHECK** if the change already exists (grep, file read, config inspect).
+2. **REPORT** one of these statuses:
+   - `[ALREADY DONE — VERIFIED]` → exists and is correct, no action needed
+   - `[PARTIALLY DONE — FIXING]` → exists but incomplete/incorrect, complete it
+   - `[NOT DONE — IMPLEMENTING]` → does not exist, create it
+3. **CONFIRM** completion after the action with a short proof (file path + snippet or command output).
+4. **DO NOT** move to the next task until the current one is explicitly confirmed.
+
+### Rule 2: EXPLICIT CONFIRMATION FORMAT
+After each task, output a block like:
+
+```
+✅ TASK: <name>
+STATUS: [ALREADY DONE — VERIFIED] | [PARTIALLY DONE — FIXED] | [NOT DONE — CREATED]
+EVIDENCE: <file path + line snippet OR command output>
+DEPENDENCIES CHECKED: <list>
+NEXT TASK: <name>
+```
+
+### Rule 3: NO SILENT SKIPPING
+If you cannot complete a task, say:
+```
+⚠️ TASK: <name>
+BLOCKER: <reason>
+ACTION NEEDED FROM USER: <what>
+```
+
+### Rule 4: TOKEN EFFICIENCY
+- Do not re‑read files you've already read in this session unless they changed.
+- Do not repeat full file contents in your response — just quote the relevant 5–10 lines as evidence.
+- Batch related checks (e.g., read 3 files at once if you need all 3).
+- Keep confirmations short. No essays.
+
+### Rule 5: FINAL HANDOFF
+At the end, produce a **VERIFICATION MANIFEST** (see final section) that Claude Code will use to independently verify your work. This is the ONLY thing Claude Code should need to read.
+
+---
+
+## TASK LIST (Execute in Order)
+
+### TASK 1 — Baseline Snapshot
+1. Run `ls -R lib/` and `ls -R .github/ 2>/dev/null || echo "no .github"` and `ls backend/ 2>/dev/null || echo "no backend"`.
+2. Save the output as `BASELINE_TREE` in memory.
+3. Report which of the following already exist:
+   - `lib/core/theme/app_theme.dart`
+   - `lib/services/github_data_service.dart`
+   - `lib/services/github_trigger.dart`
+   - `lib/services/auto_refresh_service.dart`
+   - `.github/workflows/daily_signal.yml`
+   - `.github/workflows/backtest_trigger.yml`
+   - `backend/signals/signal_aggregator.py`
+   - `backend/backtest/engine.py`
+   - `backend/data/forex_fetcher.py`
+   - `data/signals/latest.json`
+   - `data/backtest/results.json`
+
+Output the `BASELINE_TREE` and existence report.
+
+---
+
+### TASK 2 — Red & Black Theme
+**Check**: Does `lib/core/theme/app_theme.dart` exist with the red/black palette?
+**If yes**: Read it, verify colors match spec (`#E31B23`, `#0A0A0A`, `#1A1A1A`, `#FFFFFF`, `#FF4444`, `#2A2A2A`). Report `[ALREADY DONE — VERIFIED]` or `[PARTIALLY DONE — FIXED]`.
+**If no**: Create it with:
+```dart
+// lib/core/theme/app_theme.dart
+import 'package:flutter/material.dart';
+
+class AppTheme {
+  static const Color primary = Color(0xFFE31B23);
+  static const Color background = Color(0xFF0A0A0A);
+  static const Color surface = Color(0xFF1A1A1A);
+  static const Color accent = Color(0xFFFF4444);
+  static const Color negative = Color(0xFFFF6B6B);
+  static const Color border = Color(0xFF2A2A2A);
+  static const Color buy = Color(0xFF00C853);
+
+  static ThemeData get darkTheme => ThemeData(
+    brightness: Brightness.dark,
+    scaffoldBackgroundColor: background,
+    primaryColor: primary,
+    colorScheme: const ColorScheme.dark(
+      primary: primary,
+      secondary: accent,
+      surface: surface,
+      background: background,
+      error: negative,
+    ),
+    cardColor: surface,
+    dividerColor: border,
+    appBarTheme: const AppBarTheme(
+      backgroundColor: background,
+      foregroundColor: Colors.white,
+      elevation: 0,
+    ),
+  );
+}
+```
+Then update `lib/main.dart` to use `AppTheme.darkTheme`.
+Then **grep** for hardcoded `Color(0xFF...)` in `lib/` and replace with theme references where sensible (report count before/after).
+
+**Confirm** with file path + snippet.
+
+---
+
+### TASK 3 — GitHub Data Service
+**Check**: Does `lib/services/github_data_service.dart` exist?
+**If yes**: Verify it has methods `getLatestSignals()`, `getBacktestResults()`, `getTradeHistory()`. Report status.
+**If no**: Create it with methods that fetch from:
+```
+https://raw.githubusercontent.com/<YOUR_USERNAME>/tradeapp/main/data/signals/latest.json
+https://raw.githubusercontent.com/<YOUR_USERNAME>/tradeapp/main/data/backtest/results.json
+https://raw.githubusercontent.com/<YOUR_USERNAME>/tradeapp/main/data/trades/history.json
+```
+Handle 404 gracefully (return empty map / empty list, no crash).
+
+**Confirm** with file path + snippet.
+
+---
+
+### TASK 4 — Auto‑Refresh Service
+**Check**: Does `lib/services/auto_refresh_service.dart` exist?
+**If yes**: Verify it uses `Timer.periodic(Duration(seconds: 5), ...)`, calls the GitHub data service, and extends `ChangeNotifier`. Report.
+**If no**: Create it as a `ChangeNotifier` that:
+- Uses `Timer.periodic(Duration(seconds: 5), ...)`
+- Calls `getLatestSignals()`, `getBacktestResults()`, `getTradeHistory()` in parallel
+- Stores results in public getters
+- Calls `notifyListeners()` after each refresh
+- Has `startAutoRefresh()` and `stopAutoRefresh()` methods
+- Does NOT crash on network errors (catch and log)
+
+**Confirm** with snippet showing the Timer and notifyListeners.
+
+---
+
+### TASK 5 — GitHub Trigger Service
+**Check**: Does `lib/services/github_trigger.dart` exist?
+**If yes**: Verify it has `triggerBacktest({symbol, strategy, timeframe})` and uses `flutter_dotenv` for the PAT. Report.
+**If no**: Create it. Use `GITHUB_PAT`, `GITHUB_REPO_OWNER`, `GITHUB_REPO_NAME` from `.env`.
+
+**Confirm** with snippet.
+
+---
+
+### TASK 6 — GitHub Workflows
+**Check** each file individually:
+- `.github/workflows/daily_signal.yml`
+- `.github/workflows/backtest_trigger.yml`
+- `.github/workflows/update_data.yml`
+
+**For each**:
+- If exists → read, verify it has the correct `on:` triggers, `runs-on: ubuntu-latest`, Python setup, and a `git commit`/`git push` step. Report `[ALREADY DONE — VERIFIED]` or `[PARTIALLY DONE — FIXED]`.
+- If missing → create it per spec below.
+
+**`daily_signal.yml`** — cron `0 */4 * * *` + `workflow_dispatch`, runs `python backend/signals/signal_aggregator.py`, commits `data/signals/`.
+
+**`backtest_trigger.yml`** — `workflow_dispatch` with inputs `symbol`, `strategy`, `timeframe` AND `repository_dispatch` type `backtest`. Runs `python backend/backtest/engine.py --symbol ... --strategy ... --timeframe ...`, commits `data/backtest/`.
+
+**`update_data.yml`** — cron `0 */6 * * *`, runs `python backend/data/forex_fetcher.py`, commits `data/raw/`.
+
+**Confirm** each with file path + the `on:` block.
+
+---
+
+### TASK 7 — Python Backend
+**Check** each file:
+- `backend/data/forex_fetcher.py`
+- `backend/signals/signal_aggregator.py` (plus `strategy_ma.py`, `strategy_rsi.py`, `strategy_vwap.py` if you want modular)
+- `backend/backtest/engine.py`
+- `backend/ml/rl_agent.py` (optional)
+
+**For each**:
+- If exists → verify it uses `yfinance`, outputs to the correct JSON path, and has no Binance imports. Report.
+- If missing → create it. Use **Yahoo Finance via `yfinance`** ONLY. Symbols: `EURUSD=X`, `GBPUSD=X`, `USDJPY=X`, `XAUUSD=X`, `AUDUSD=X`.
+
+**Requirements for each script**:
+- `forex_fetcher.py`: function `fetch_forex_ohlcv(symbol, interval='1h', period='7d')` → DataFrame
+- `signal_aggregator.py`: run MA cross + RSI/Bollinger + VWAP/Bollinger, majority vote, write `data/signals/latest.json` with schema:
+  ```json
+  {"timestamp": "...", "signals": [{"symbol":"EURUSD=X","signal":"BUY","confidence":0.85,"price":1.08,"strategies":{"ma_cross":"BUY","rsi_bollinger":"HOLD","vwap_bollinger":"BUY"}}]}
+  ```
+- `engine.py`: argparse `--symbol --strategy --timeframe`, backtest with $10k capital, output `data/backtest/results.json` with `sharpe_ratio`, `max_drawdown`, `win_rate`, `total_return`, `equity_curve`
+- `rl_agent.py`: advisory only; if not feasible in one session, create a stub that outputs `{"recommendation":"HOLD","confidence":0.0,"note":"not yet trained"}` and mark as TODO
+
+**Confirm** each with file path + main function signature.
+
+---
+
+### TASK 8 — Seed Data Files
+**Check**: Do these exist?
+- `data/signals/latest.json`
+- `data/backtest/results.json`
+- `data/trades/history.json`
+
+**If missing**: Create each with a valid empty/placeholder schema so Flutter doesn't crash on first load.
+
+Example `data/signals/latest.json`:
+```json
+{"timestamp":"1970-01-01T00:00:00Z","signals":[]}
+```
+
+**Confirm** with path + content.
+
+---
+
+### TASK 9 — UI Integration
+**Check**: Does `lib/main.dart` wrap the app in `ChangeNotifierProvider<AutoRefreshService>`?
+**If yes**: Report `[ALREADY DONE — VERIFIED]`.
+**If no**: Add it.
+**Check**: Does the home screen use `Consumer<AutoRefreshService>` to display signals from GitHub?
+**If yes**: Verify it renders `signal`, `confidence`, `price`.
+**If no**: Update it.
+
+**Confirm** with snippet of the `ChangeNotifierProvider` wrap and the `Consumer` usage.
+
+---
+
+### TASK 10 — Dependencies
+**Check** `pubspec.yaml` for:
+- `provider`
+- `http`
+- `flutter_dotenv`
+- `imp_trading_chart` (or equivalent)
+
+**If missing**: Add them, then run `flutter pub get`.
+**Check** that `.env.example` exists with:
+```
+GITHUB_PAT=
+GITHUB_REPO_OWNER=
+GITHUB_REPO_NAME=
+```
+
+**Confirm** with the dependency block.
+
+---
+
+### TASK 11 — Remove Binance Residue
+**Check**: Grep the repo for `binance` (case‑insensitive) in `lib/`, `backend/`, `.github/`.
+**If found**: List every match with file path + line. Remove or replace with forex equivalents. Report count before/after.
+**If none**: Report `[ALREADY DONE — VERIFIED]` — no Binance residue.
+
+**Confirm** with the grep command output.
+
+---
+
+### TASK 12 — Sanity Run
+1. Run `flutter analyze` and report any errors (do NOT fix warnings unless trivial).
+2. Run `python -m py_compile backend/signals/signal_aggregator.py backend/backtest/engine.py backend/data/forex_fetcher.py` and report.
+3. Validate all JSON files in `data/` with `python -m json.tool <file>`.
+
+**Confirm** with command outputs.
+
+---
+
+## FINAL OUTPUT: VERIFICATION MANIFEST (for Claude Code)
+
+At the very end, print EXACTLY this structure (no extra prose):
+
+```
+===== VERIFICATION MANIFEST =====
+
+FILES EXPECTED (verify each exists):
+- lib/core/theme/app_theme.dart
+- lib/services/github_data_service.dart
+- lib/services/auto_refresh_service.dart
+- lib/services/github_trigger.dart
+- .github/workflows/daily_signal.yml
+- .github/workflows/backtest_trigger.yml
+- .github/workflows/update_data.yml
+- backend/data/forex_fetcher.py
+- backend/signals/signal_aggregator.py
+- backend/backtest/engine.py
+- backend/ml/rl_agent.py
+- data/signals/latest.json
+- data/backtest/results.json
+- data/trades/history.json
+- .env.example
+
+CHECKS FOR CLAUDE CODE TO RUN:
+1. grep -R "Timer.periodic" lib/services/auto_refresh_service.dart
+2. grep -R "notifyListeners" lib/services/auto_refresh_service.dart
+3. grep -R "raw.githubusercontent.com" lib/services/github_data_service.dart
+4. grep -R "ChangeNotifierProvider" lib/main.dart
+5. grep -Ri "binance" lib/ backend/ .github/   → expect ZERO matches
+6. grep -R "yfinance" backend/                 → expect matches in forex_fetcher.py and signal_aggregator.py
+7. python -m json.tool data/signals/latest.json
+8. python -m json.tool data/backtest/results.json
+9. flutter analyze
+
+STATUS SUMMARY:
+- Tasks completed: <n>/12
+- Tasks skipped (already done): <n>
+- Tasks blocked: <n>
+- Files created: <n>
+- Files modified: <n>
+- Estimated token usage this session: <low/medium/high>
+
+HANDOFF:
+Claude Code should run the CHECKS above and report pass/fail per check.
+No further OpenCode work is needed unless Claude Code finds a failure.
+```
+
+---
+
+## START NOW
+
+Begin with TASK 1. Do not skip the baseline snapshot. Do not assume any file exists — check it. Report every task with the confirmation format in Rule 2.
+
+If you hit a blocker, stop and report it with Rule 3. Do not guess.
+
+When all tasks are done, print the VERIFICATION MANIFEST exactly as specified.

@@ -23,7 +23,7 @@ import '../services/validator.dart';
 import '../ui/theme.dart';
 
 class AppState extends ChangeNotifier {
-  static const Duration refreshInterval = Duration(seconds: 15);
+  static const Duration refreshInterval = Duration(seconds: 5);
 
   final Storage storage;
   final PaperTrader paperTrader;

@@ -1,0 +1,41 @@
+===== VERIFICATION MANIFEST =====
+
+FILES EXPECTED (verify each exists):
+- lib/core/theme/app_theme.dart
+- lib/services/github_data_service.dart
+- lib/services/auto_refresh_service.dart
+- lib/services/github_trigger.dart
+- .github/workflows/daily_signal.yml
+- .github/workflows/backtest_trigger.yml
+- .github/workflows/update_data.yml
+- backend/data/forex_fetcher.py
+- backend/signals/signal_aggregator.py
+- backend/backtest/engine.py
+- backend/ml/rl_agent.py
+- data/signals/latest.json
+- data/backtest/results.json
+- data/trades/history.json
+- .env.example
+
+CHECKS FOR CLAUDE CODE TO RUN:
+1. grep -R "Timer.periodic" lib/services/auto_refresh_service.dart
+2. grep -R "notifyListeners" lib/services/auto_refresh_service.dart
+3. grep -R "raw.githubusercontent.com" lib/services/github_data_service.dart
+4. grep -R "ChangeNotifierProvider" lib/main.dart
+5. grep -Ri "binance" lib/ backend/ .github/   → expect ZERO matches
+6. grep -R "yfinance" backend/                 → expect matches in forex_fetcher.py and signal_aggregator.py
+7. python -m json.tool data/signals/latest.json
+8. python -m json.tool data/backtest/results.json
+9. flutter analyze
+
+STATUS SUMMARY:
+- Tasks completed: 12/12
+- Tasks skipped (already done): 0
+- Tasks blocked: 0
+- Files created: 13
+- Files modified: 3
+- Estimated token usage this session: medium
+
+HANDOFF:
+Claude Code should run the CHECKS above and report pass/fail per check.
+No further OpenCode work is needed unless Claude Code finds a failure.

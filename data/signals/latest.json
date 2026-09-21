@@ -1,0 +1,365 @@
+{
+  "timestamp": "2026-09-21T02:23:27Z",
+  "signals": [
+    {
+      "symbol": "EURUSD=X",
+      "signal": "HOLD",
+      "confidence": 0.5,
+      "price": 1.1485,
+      "strategies": {
+        "ma_cross": "SELL",
+        "rsi_bollinger": "BUY",
+        "vwap_bollinger": "HOLD"
+      },
+      "filtered_reason": null,
+      "sentiment": {
+        "label": "neutral",
+        "score": 0.5,
+        "value": 0.0
+      },
+      "retail_sentiment": {}
+    },
+    {
+      "symbol": "GBPUSD=X",
+      "signal": "SELL",
+      "confidence": 0.35,
+      "price": 1.3387,
+      "strategies": {
+        "ma_cross": "SELL",
+        "rsi_bollinger": "HOLD",
+        "vwap_bollinger": "HOLD"
+      },
+      "filtered_reason": null,
+      "sentiment": {
+        "label": "neutral",
+        "score": 0.5,
+        "value": 0.0
+      },
+      "retail_sentiment": {}
+    },
+    {
+      "symbol": "USDJPY=X",
+      "signal": "SELL",
+      "confidence": 0.35,
+      "price": 156.824,
+      "strategies": {
+        "ma_cross": "SELL",
+        "rsi_bollinger": "HOLD",
+        "vwap_bollinger": "HOLD"
+      },
+      "filtered_reason": null,
+      "sentiment": {
+        "label": "neutral",
+        "score": 0.5,
+        "value": 0.0
+      },
+      "retail_sentiment": {}
+    },
+    {
+      "symbol": "AUDUSD=X",
+      "signal": "HOLD",
+      "confidence": 0.35,
+      "price": 0.7126,
+      "strategies": {
+        "ma_cross": "SELL",
+        "rsi_bollinger": "HOLD",
+        "vwap_bollinger": "HOLD"
+      },
+      "filtered_reason": "counter-trend, filtered",
+      "sentiment": {
+        "label": "neutral",
+        "score": 0.5,
+        "value": 0.0
+      },
+      "retail_sentiment": {}
+    },
+    {
+      "symbol": "GBPJPY=X",
+      "signal": "HOLD",
+      "confidence": 0.5,
+      "price": 209.958,
+      "strategies": {
+        "ma_cross": "SELL",
+        "rsi_bollinger": "BUY",
+        "vwap_bollinger": "HOLD"
+      },
+      "filtered_reason": null,
+      "sentiment": {
+        "label": "neutral",
+        "score": 0.5,
+        "value": 0.0
+      },
+      "retail_sentiment": {}
+    },
+    {
+      "symbol": "EURJPY=X",
+      "signal": "HOLD",
+      "confidence": 0.5,
+      "price": 180.097,
+      "strategies": {
+        "ma_cross": "SELL",
+        "rsi_bollinger": "BUY",
+        "vwap_bollinger": "HOLD"
+      },
+      "filtered_reason": null,
+      "sentiment": {
+        "label": "neutral",
+        "score": 0.5,
+        "value": 0.0
+      },
+      "retail_sentiment": {}
+    },
+    {
+      "symbol": "AUDJPY=X",
+      "signal": "SELL",
+      "confidence": 0.35,
+      "price": 111.715,
+      "strategies": {
+        "ma_cross": "SELL",
+        "rsi_bollinger": "HOLD",
+        "vwap_bollinger": "HOLD"
+      },
+      "filtered_reason": null,
+      "sentiment": {
+        "label": "neutral",
+        "score": 0.5,
+        "value": 0.0
+      },
+      "retail_sentiment": {}
+    },
+    {
+      "symbol": "NZDUSD=X",
+      "signal": "HOLD",
+      "confidence": 0.5,
+      "price": 0.5722,
+      "strategies": {
+        "ma_cross": "SELL",
+        "rsi_bollinger": "BUY",
+        "vwap_bollinger": "HOLD"
+      },
+      "filtered_reason": null,
+      "sentiment": {
+        "label": "neutral",
+        "score": 0.5,
+        "value": 0.0
+      },
+      "retail_sentiment": {}
+    },
+    {
+      "symbol": "USDCAD=X",
+      "signal": "BUY",
+      "confidence": 0.65,
+      "price": 1.4,
+      "strategies": {
+        "ma_cross": "BUY",
+        "rsi_bollinger": "HOLD",
+        "vwap_bollinger": "HOLD"
+      },
+      "filtered_reason": null,
+      "sentiment": {
+        "label": "neutral",
+        "score": 0.5,
+        "value": 0.0
+      },
+      "retail_sentiment": {}
+    },
+    {
+      "symbol": "GC=F",
+      "signal": "HOLD",
+      "confidence": 0.5,
+      "price": 4409.6001,
+      "strategies": {
+        "ma_cross": "SELL",
+        "rsi_bollinger": "HOLD",
+        "vwap_bollinger": "BUY"
+      },
+      "filtered_reason": null,
+      "sentiment": {
+        "label": "neutral",
+        "score": 0.5,
+        "value": 0.0
+      },
+      "retail_sentiment": {}
+    },
+    {
+      "symbol": "SI=F",
+      "signal": "HOLD",
+      "confidence": 0.2,
+      "price": 66.965,
+      "strategies": {
+        "ma_cross": "SELL",
+        "rsi_bollinger": "HOLD",
+        "vwap_bollinger": "SELL"
+      },
+      "filtered_reason": "counter-trend, filtered",
+      "sentiment": {
+        "label": "neutral",
+        "score": 0.5,
+        "value": 0.0
+      },
+      "retail_sentiment": {}
+    },
+    {
+      "symbol": "CL=F",
+      "signal": "BUY",
+      "confidence": 0.8,
+      "price": 93.95,
+      "strategies": {
+        "ma_cross": "BUY",
+        "rsi_bollinger": "HOLD",
+        "vwap_bollinger": "BUY"
+      },
+      "filtered_reason": null,
+      "sentiment": {
+        "label": "neutral",
+        "score": 0.5,
+        "value": 0.0
+      },
+      "retail_sentiment": {}
+    },
+    {
+      "symbol": "NG=F",
+      "signal": "BUY",
+      "confidence": 0.8,
+      "price": 2.873,
+      "strategies": {
+        "ma_cross": "BUY",
+        "rsi_bollinger": "HOLD",
+        "vwap_bollinger": "BUY"
+      },
+      "filtered_reason": null,
+      "sentiment": {
+        "label": "neutral",
+        "score": 0.5,
+        "value": 0.0
+      },
+      "retail_sentiment": {}
+    },
+    {
+      "symbol": "BTC-USD",
+      "signal": "HOLD",
+      "confidence": 0.5,
+      "price": 81461.1797,
+      "strategies": {
+        "ma_cross": "BUY",
+        "rsi_bollinger": "HOLD",
+        "vwap_bollinger": "SELL"
+      },
+      "filtered_reason": null,
+      "sentiment": {
+        "label": "neutral",
+        "score": 0.5,
+        "value": 0.0
+      },
+      "retail_sentiment": {}
+    },
+    {
+      "symbol": "ETH-USD",
+      "signal": "HOLD",
+      "confidence": 0.5,
+      "price": 2664.8899,
+      "strategies": {
+        "ma_cross": "BUY",
+        "rsi_bollinger": "HOLD",
+        "vwap_bollinger": "SELL"
+      },
+      "filtered_reason": null,
+      "sentiment": {
+        "label": "neutral",
+        "score": 0.5,
+        "value": 0.0
+      },
+      "retail_sentiment": {}
+    },
+    {
+      "symbol": "SOL-USD",
+      "signal": "HOLD",
+      "confidence": 0.35,
+      "price": 111.84,
+      "strategies": {
+        "ma_cross": "BUY",
+        "rsi_bollinger": "SELL",
+        "vwap_bollinger": "SELL"
+      },
+      "filtered_reason": "counter-trend, filtered",
+      "sentiment": {
+        "label": "neutral",
+        "score": 0.5,
+        "value": 0.0
+      },
+      "retail_sentiment": {}
+    },
+    {
+      "symbol": "BNB-USD",
+      "signal": "HOLD",
+      "confidence": 0.35,
+      "price": 779.6,
+      "strategies": {
+        "ma_cross": "BUY",
+        "rsi_bollinger": "SELL",
+        "vwap_bollinger": "SELL"
+      },
+      "filtered_reason": "counter-trend, filtered",
+      "sentiment": {
+        "label": "neutral",
+        "score": 0.5,
+        "value": 0.0
+      },
+      "retail_sentiment": {}
+    },
+    {
+      "symbol": "^GSPC",
+      "signal": "HOLD",
+      "confidence": 0.5,
+      "price": 7650.5,
+      "strategies": {
+        "ma_cross": "SELL",
+        "rsi_bollinger": "HOLD",
+        "vwap_bollinger": "BUY"
+      },
+      "filtered_reason": null,
+      "sentiment": {
+        "label": "neutral",
+        "score": 0.5,
+        "value": 0.0
+      },
+      "retail_sentiment": {}
+    },
+    {
+      "symbol": "^NDX",
+      "signal": "HOLD",
+      "confidence": 0.2,
+      "price": 29644.1699,
+      "strategies": {
+        "ma_cross": "SELL",
+        "rsi_bollinger": "HOLD",
+        "vwap_bollinger": "SELL"
+      },
+      "filtered_reason": "counter-trend, filtered",
+      "sentiment": {
+        "label": "neutral",
+        "score": 0.5,
+        "value": 0.0
+      },
+      "retail_sentiment": {}
+    },
+    {
+      "symbol": "^RUT",
+      "signal": "HOLD",
+      "confidence": 0.5,
+      "price": 2860.3999,
+      "strategies": {
+        "ma_cross": "SELL",
+        "rsi_bollinger": "BUY",
+        "vwap_bollinger": "HOLD"
+      },
+      "filtered_reason": null,
+      "sentiment": {
+        "label": "neutral",
+        "score": 0.5,
+        "value": 0.0
+      },
+      "retail_sentiment": {}
+    }
+  ]
+}
