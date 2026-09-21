@@ -21,7 +21,7 @@ class MarketSnapshot {
 
   final DateTime at;
 
-  /// Where the price came from: 'binance' for a full snapshot, 'coinbase' for a
+  /// Where the price came from: 'binance' for a full snapshot, 'yahoo' for a
   /// degraded price-only fallback.
   final String source;
 

@@ -27,19 +27,19 @@ void main() {
   });
 
   test('copyWith flips stale/source and leaves the rest', () {
-    final s = _snap().copyWith(stale: true, source: 'coinbase');
+    final s = _snap().copyWith(stale: true, source: 'yahoo');
     expect(s.stale, isTrue);
-    expect(s.source, 'coinbase');
+    expect(s.source, 'yahoo');
     expect(s.price, 100);
     expect(s.rsi14, 55);
     expect(s.at, DateTime.utc(2026));
   });
 
   test('source and stale round-trip through JSON', () {
-    final s = _snap().copyWith(stale: true, source: 'coinbase');
+    final s = _snap().copyWith(stale: true, source: 'yahoo');
     final r = MarketSnapshot.fromJson(s.toJson());
     expect(r.stale, isTrue);
-    expect(r.source, 'coinbase');
+    expect(r.source, 'yahoo');
     expect(r.price, s.price);
   });
 

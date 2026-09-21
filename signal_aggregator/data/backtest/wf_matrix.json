@@ -1,0 +1,129 @@
+{
+  "generated_at": "2026-09-21T00:43:04.030479+00:00",
+  "config": {
+    "train_months": 3,
+    "test_months": 2
+  },
+  "rows": [
+    {
+      "symbol": "EURUSD=X",
+      "strategy": "ma_cross",
+      "tf": "1h",
+      "error": "[Errno 2] No such file or directory: 'signal_aggregator/data/backtest/walkforward.json'"
+    },
+    {
+      "symbol": "EURUSD=X",
+      "strategy": "ma_cross",
+      "tf": "1d",
+      "error": "[Errno 2] No such file or directory: 'signal_aggregator/data/backtest/walkforward.json'"
+    },
+    {
+      "symbol": "EURUSD=X",
+      "strategy": "rsi",
+      "tf": "1h",
+      "error": "[Errno 2] No such file or directory: 'signal_aggregator/data/backtest/walkforward.json'"
+    },
+    {
+      "symbol": "EURUSD=X",
+      "strategy": "rsi",
+      "tf": "1d",
+      "error": "[Errno 2] No such file or directory: 'signal_aggregator/data/backtest/walkforward.json'"
+    },
+    {
+      "symbol": "GBPUSD=X",
+      "strategy": "ma_cross",
+      "tf": "1h",
+      "error": "[Errno 2] No such file or directory: 'signal_aggregator/data/backtest/walkforward.json'"
+    },
+    {
+      "symbol": "GBPUSD=X",
+      "strategy": "ma_cross",
+      "tf": "1d",
+      "error": "[Errno 2] No such file or directory: 'signal_aggregator/data/backtest/walkforward.json'"
+    },
+    {
+      "symbol": "GBPUSD=X",
+      "strategy": "rsi",
+      "tf": "1h",
+      "error": "[Errno 2] No such file or directory: 'signal_aggregator/data/backtest/walkforward.json'"
+    },
+    {
+      "symbol": "GBPUSD=X",
+      "strategy": "rsi",
+      "tf": "1d",
+      "error": "[Errno 2] No such file or directory: 'signal_aggregator/data/backtest/walkforward.json'"
+    },
+    {
+      "symbol": "USDJPY=X",
+      "strategy": "ma_cross",
+      "tf": "1h",
+      "error": "[Errno 2] No such file or directory: 'signal_aggregator/data/backtest/walkforward.json'"
+    },
+    {
+      "symbol": "USDJPY=X",
+      "strategy": "ma_cross",
+      "tf": "1d",
+      "error": "[Errno 2] No such file or directory: 'signal_aggregator/data/backtest/walkforward.json'"
+    },
+    {
+      "symbol": "USDJPY=X",
+      "strategy": "rsi",
+      "tf": "1h",
+      "error": "[Errno 2] No such file or directory: 'signal_aggregator/data/backtest/walkforward.json'"
+    },
+    {
+      "symbol": "USDJPY=X",
+      "strategy": "rsi",
+      "tf": "1d",
+      "error": "[Errno 2] No such file or directory: 'signal_aggregator/data/backtest/walkforward.json'"
+    },
+    {
+      "symbol": "GC=F",
+      "strategy": "ma_cross",
+      "tf": "1h",
+      "error": "[Errno 2] No such file or directory: 'signal_aggregator/data/backtest/walkforward.json'"
+    },
+    {
+      "symbol": "GC=F",
+      "strategy": "ma_cross",
+      "tf": "1d",
+      "error": "[Errno 2] No such file or directory: 'signal_aggregator/data/backtest/walkforward.json'"
+    },
+    {
+      "symbol": "GC=F",
+      "strategy": "rsi",
+      "tf": "1h",
+      "error": "[Errno 2] No such file or directory: 'signal_aggregator/data/backtest/walkforward.json'"
+    },
+    {
+      "symbol": "GC=F",
+      "strategy": "rsi",
+      "tf": "1d",
+      "error": "[Errno 2] No such file or directory: 'signal_aggregator/data/backtest/walkforward.json'"
+    },
+    {
+      "symbol": "AUDUSD=X",
+      "strategy": "ma_cross",
+      "tf": "1h",
+      "error": "[Errno 2] No such file or directory: 'signal_aggregator/data/backtest/walkforward.json'"
+    },
+    {
+      "symbol": "AUDUSD=X",
+      "strategy": "ma_cross",
+      "tf": "1d",
+      "error": "[Errno 2] No such file or directory: 'signal_aggregator/data/backtest/walkforward.json'"
+    },
+    {
+      "symbol": "AUDUSD=X",
+      "strategy": "rsi",
+      "tf": "1h",
+      "error": "[Errno 2] No such file or directory: 'signal_aggregator/data/backtest/walkforward.json'"
+    },
+    {
+      "symbol": "AUDUSD=X",
+      "strategy": "rsi",
+      "tf": "1d",
+      "error": "[Errno 2] No such file or directory: 'signal_aggregator/data/backtest/walkforward.json'"
+    }
+  ]
+}

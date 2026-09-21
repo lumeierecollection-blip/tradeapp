@@ -80,12 +80,47 @@ class SignalCard extends StatelessWidget {
                     ),
                   ),
                   const Spacer(),
+                  _freshnessBadge(vs.signal.postedAt),
+                  const SizedBox(width: 6),
                   const Icon(Icons.chevron_right, size: 18, color: AppTheme.textMuted),
                 ],
               ),
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  /// Shows a colored dot indicating signal freshness:
+  /// green < 1h, yellow < 6h, red > 6h.
+  Widget _freshnessBadge(DateTime postedAt) {
+    final age = DateTime.now().difference(postedAt);
+    final Color dotColor;
+    String label;
+    if (age.inMinutes < 60) {
+      dotColor = AppTheme.buy;
+      label = 'fresh';
+    } else if (age.inHours < 6) {
+      dotColor = AppTheme.warn;
+      label = '${age.inHours}h old';
+    } else {
+      dotColor = AppTheme.sell;
+      label = '${age.inHours}h old';
+    }
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+      decoration: BoxDecoration(
+        color: dotColor.withValues(alpha: 0.15),
+        borderRadius: BorderRadius.circular(4),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(width: 6, height: 6, decoration: BoxDecoration(color: dotColor, shape: BoxShape.circle)),
+          const SizedBox(width: 4),
+          Text(label, style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: dotColor)),
+        ],
       ),
     );
   }

@@ -78,10 +78,10 @@ class MarketService {
     return results;
   }
 
-  /// A degraded snapshot from Coinbase spot: real price, everything else
+  /// A degraded snapshot from Yahoo Finance: real price, everything else
   /// neutralised. Marked stale so signals built on it can be downgraded.
   Future<MarketSnapshot?> _fallbackSnapshot(String symbol) async {
-    final price = await _coinbaseSpot(symbol);
+    final price = await _yahooSpot(symbol);
     if (price == null || price <= 0) return null;
     return MarketSnapshot(
       symbol: symbol,
@@ -96,23 +96,24 @@ class MarketService {
       support: 0,
       resistance: 0,
       at: DateTime.now(),
-      source: 'coinbase',
+      source: 'yahoo',
       stale: true,
     );
   }
 
-  Future<double?> _coinbaseSpot(String symbol) async {
+  Future<double?> _yahooSpot(String symbol) async {
     try {
+      final ticker = symbol == 'BTC' ? 'BTC-USD' : '$symbol-USD';
       final uri = Uri.parse(
-          'https://api.coinbase.com/v2/prices/${symbol.toUpperCase()}-USD/spot');
+          'https://query1.finance.yahoo.com/v8/finance/chart/$ticker?range=1d&interval=1d');
       final res = await _client.get(uri).timeout(const Duration(seconds: 10));
       if (res.statusCode != 200) return null;
       final data = jsonDecode(res.body);
-      if (data is! Map) return null;
-      final inner = data['data'];
-      if (inner is! Map) return null;
-      final amount = inner['amount'];
-      return amount == null ? null : double.tryParse(amount.toString());
+      final result = data['chart']?['result'];
+      if (result == null || result is! List || result.isEmpty) return null;
+      final meta = result[0]['meta'];
+      if (meta == null || meta is! Map) return null;
+      return (meta['regularMarketPrice'] as num?)?.toDouble();
     } catch (_) {
       return null;
     }

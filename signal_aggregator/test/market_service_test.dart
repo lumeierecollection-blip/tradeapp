@@ -7,19 +7,24 @@ import 'package:http/testing.dart';
 import 'package:signal_aggregator/services/market_service.dart';
 
 void main() {
-  test('falls back to Coinbase spot when Binance fails, marked stale', () async {
+  test('falls back to Yahoo Finance spot when Binance fails, marked stale', () async {
     final client = MockClient((req) async {
       if (req.url.host.contains('binance')) {
         return http.Response('down', 503);
       }
-      return http.Response(jsonEncode({'data': {'amount': '123.45'}}), 200);
+      // Yahoo Finance v8 chart response
+      return http.Response(jsonEncode({
+        'chart': {
+          'result': [{'meta': {'regularMarketPrice': 123.45}}]
+        }
+      }), 200);
     });
 
     final snaps = await MarketService(client: client).fetchSnapshots(['BTC']);
     final btc = snaps['BTC'];
 
     expect(btc, isNotNull);
-    expect(btc!.source, 'coinbase');
+    expect(btc!.source, 'yahoo');
     expect(btc.stale, isTrue);
     expect(btc.price, closeTo(123.45, 1e-9));
     expect(btc.rsi14, 50); // neutralised

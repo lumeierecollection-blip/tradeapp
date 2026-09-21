@@ -1,15 +1,8 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 
-import '../../backtesting/backtest_engine.dart';
-import '../../backtesting/binance_history.dart';
-import '../../backtesting/performance_metrics.dart';
-import '../../backtesting/strategy.dart';
+import '../../services/github_data_service.dart';
 import '../theme.dart';
 
-/// Runs the RSI-dip strategy over recent Binance candles and shows the result.
-/// Costs (spread, slippage, taker fee) are applied to every fill by the engine.
 class BacktestScreen extends StatefulWidget {
   const BacktestScreen({super.key});
 
@@ -18,325 +11,221 @@ class BacktestScreen extends StatefulWidget {
 }
 
 class _BacktestScreenState extends State<BacktestScreen> {
-  static const _symbols = [
-    'BTC', 'ETH', 'SOL', 'BNB', 'XRP', 'ADA', 'DOGE', 'AVAX', 'LINK'
-  ];
-  static const _intervals = ['1h', '4h', '1d'];
-
-  String _symbol = 'BTC';
-  String _interval = '1h';
-  double _stopPct = 5;
-  double _targetPct = 10;
-  double _riskPct = 2;
-
-  bool _running = false;
+  final _data = GithubDataService();
+  bool _loading = true;
   String? _error;
-  BacktestResult? _result;
-  PerformanceMetrics? _metrics;
+  List<Map<String, dynamic>> _matrixRows = [];
+  String _sortBy = 'sharpe';
+  bool _sortAsc = false;
 
-  Future<void> _run() async {
-    setState(() {
-      _running = true;
-      _error = null;
-    });
-    final api = BinanceHistory();
+  @override
+  void initState() {
+    super.initState();
+    _load();
+  }
+
+  Future<void> _load() async {
+    setState(() { _loading = true; _error = null; });
     try {
-      final bars = await api.fetch(symbol: _symbol, interval: _interval, limit: 500);
-      if (bars.length < 30) {
-        throw Exception('Only ${bars.length} candles came back — need at least 30.');
-      }
-      final result = runBacktest(
-        bars: bars,
-        strategy: const RsiDipStrategy(),
-        config: BacktestConfig(
-          initialBalance: 500,
-          stopLossPct: _stopPct / 100,
-          takeProfitPct: _targetPct / 100,
-          riskPerTradePct: _riskPct / 100,
-        ),
-      );
+      final matrix = await _data.getBacktestMatrix();
+      final rows = (matrix['results'] as List<dynamic>? ?? [])
+          .map((r) => Map<String, dynamic>.from(r as Map))
+          .toList();
       if (!mounted) return;
-      setState(() {
-        _result = result;
-        _metrics = PerformanceMetrics.of(result);
-        _running = false;
-      });
+      setState(() { _matrixRows = rows; _loading = false; });
     } catch (e) {
       if (!mounted) return;
-      setState(() {
-        _error = '$e';
-        _running = false;
-      });
-    } finally {
-      api.dispose();
+      setState(() { _error = '$e'; _loading = false; });
     }
+  }
+
+  void _sort(String field) {
+    setState(() {
+      if (_sortBy == field) {
+        _sortAsc = !_sortAsc;
+      } else {
+        _sortBy = field;
+        _sortAsc = field == 'symbol' || field == 'strategy';
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+    final sorted = List<Map<String, dynamic>>.from(_matrixRows)
+      ..sort((a, b) {
+        final av = a[_sortBy] ?? 0;
+        final bv = b[_sortBy] ?? 0;
+        int cmp;
+        if (av is String && bv is String) {
+          cmp = av.compareTo(bv);
+        } else {
+          cmp = (av is num ? av : 0).compareTo(bv is num ? bv : 0);
+        }
+        return _sortAsc ? cmp : -cmp;
+      });
+
     return Scaffold(
-      appBar: AppBar(title: const Text('Backtest')),
-      body: ListView(
-        padding: const EdgeInsets.all(16),
-        children: [
-          _configCard(),
-          const SizedBox(height: 16),
-          if (_running)
-            const Center(
-              child: Padding(padding: EdgeInsets.all(32), child: CircularProgressIndicator()),
-            ),
-          if (_error != null && !_running)
-            Container(
-              padding: const EdgeInsets.all(14),
-              decoration: BoxDecoration(
-                color: AppTheme.sell.withValues(alpha: 0.12),
-                borderRadius: BorderRadius.circular(10),
-                border: Border.all(color: AppTheme.sell.withValues(alpha: 0.4)),
-              ),
-              child: Text(_error!, style: const TextStyle(fontSize: 13, color: AppTheme.textSecondary)),
-            ),
-          if (_result != null && !_running) ...[
-            _EquityChart(points: _result!.equityCurve, initial: _result!.config.initialBalance),
-            const SizedBox(height: 16),
-            _MetricsTable(rows: _metrics!.table()),
-            const SizedBox(height: 16),
-            _TradesList(trades: _result!.trades),
-          ],
-          if (_result == null && !_running && _error == null)
-            const Padding(
-              padding: EdgeInsets.only(top: 40),
-              child: Text(
-                'Runs the RSI-dip strategy over the last 500 candles from Binance. '
-                'Entries fill on the next bar open; spread, slippage and taker fees '
-                'are charged on every fill.',
-                textAlign: TextAlign.center,
-                style: TextStyle(color: AppTheme.textMuted, height: 1.5),
-              ),
-            ),
+      appBar: AppBar(
+        title: const Text('Strategy Matrix'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.refresh),
+            onPressed: _loading ? null : _load,
+          ),
         ],
       ),
+      body: _loading
+          ? const Center(child: CircularProgressIndicator())
+          : _error != null
+              ? Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(32),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(Icons.error_outline, size: 40, color: AppTheme.sell),
+                        const SizedBox(height: 12),
+                        Text(_error!, style: const TextStyle(color: AppTheme.textSecondary)),
+                        const SizedBox(height: 16),
+                        FilledButton(onPressed: _load, child: const Text('Retry')),
+                      ],
+                    ),
+                  ),
+                )
+              : _matrixRows.isEmpty
+                  ? const Center(
+                      child: Text('No backtest results yet.',
+                          style: TextStyle(color: AppTheme.textMuted)),
+                    )
+                  : RefreshIndicator(
+                      onRefresh: _load,
+                      child: ListView(
+                        padding: const EdgeInsets.all(12),
+                        children: [
+                          _summaryCard(),
+                          const SizedBox(height: 12),
+                          _tableCard(sorted),
+                        ],
+                      ),
+                    ),
     );
   }
 
-  Widget _configCard() {
+  Widget _summaryCard() {
+    if (_matrixRows.isEmpty) return const SizedBox.shrink();
+    final sharpes = _matrixRows.map((r) => (r['sharpe'] ?? 0).toDouble()).toList();
+    final avg = sharpes.reduce((a, b) => a + b) / sharpes.length;
+    final best = sharpes.reduce((a, b) => a > b ? a : b);
+    final worst = sharpes.reduce((a, b) => a < b ? a : b);
+    final profitable = sharpes.where((s) => s > 0).length;
+    final bestRow = _matrixRows.firstWhere(
+      (r) => (r['sharpe'] ?? 0).toDouble() == best,
+      orElse: () => {},
+    );
+
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            const Text('Summary', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
+            const SizedBox(height: 12),
             Row(
               children: [
-                Expanded(
-                  child: DropdownButtonFormField<String>(
-                    initialValue: _symbol,
-                    decoration: const InputDecoration(labelText: 'Coin', isDense: true),
-                    items: [
-                      for (final s in _symbols) DropdownMenuItem(value: s, child: Text(s)),
-                    ],
-                    onChanged: _running ? null : (v) => setState(() => _symbol = v ?? _symbol),
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: SegmentedButton<String>(
-                    segments: [
-                      for (final i in _intervals) ButtonSegment(value: i, label: Text(i)),
-                    ],
-                    selected: {_interval},
-                    onSelectionChanged:
-                        _running ? null : (s) => setState(() => _interval = s.first),
-                  ),
-                ),
+                _stat('Avg Sharpe', avg.toStringAsFixed(2), avg > 0 ? AppTheme.buy : AppTheme.sell),
+                const SizedBox(width: 16),
+                _stat('Best', best.toStringAsFixed(2), AppTheme.buy),
+                const SizedBox(width: 16),
+                _stat('Worst', worst.toStringAsFixed(2), AppTheme.sell),
+                const SizedBox(width: 16),
+                _stat('Profitable', '$profitable/${_matrixRows.length}', AppTheme.textPrimary),
               ],
             ),
-            const SizedBox(height: 8),
-            _slider('Stop loss', _stopPct, 1, 20, (v) => setState(() => _stopPct = v)),
-            _slider('Take profit', _targetPct, 2, 40, (v) => setState(() => _targetPct = v)),
-            _slider('Risk per trade', _riskPct, 1, 10, (v) => setState(() => _riskPct = v)),
-            const SizedBox(height: 8),
-            SizedBox(
-              width: double.infinity,
-              child: FilledButton(
-                onPressed: _running ? null : _run,
-                child: Text(_running ? 'Running…' : 'Run backtest'),
+            if (bestRow.isNotEmpty) ...[
+              const SizedBox(height: 12),
+              Text(
+                'Best combo: ${bestRow['symbol']} · ${bestRow['strategy']} · ${bestRow['timeframe']}',
+                style: const TextStyle(fontSize: 12, color: AppTheme.textMuted),
               ),
-            ),
+            ],
           ],
         ),
       ),
     );
   }
 
-  Widget _slider(String label, double value, double min, double max, ValueChanged<double> onChanged) {
-    return Row(
+  Widget _stat(String label, String value, Color color) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        SizedBox(
-          width: 110,
-          child: Text(label, style: const TextStyle(fontSize: 13, color: AppTheme.textSecondary)),
-        ),
-        Expanded(
-          child: Slider(
-            value: value,
-            min: min,
-            max: max,
-            divisions: (max - min).round(),
-            label: '${value.round()}%',
-            onChanged: _running ? null : onChanged,
-          ),
-        ),
-        SizedBox(
-          width: 42,
-          child: Text('${value.round()}%',
-              textAlign: TextAlign.right,
-              style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w700)),
-        ),
+        Text(label, style: const TextStyle(fontSize: 11, color: AppTheme.textMuted)),
+        const SizedBox(height: 2),
+        Text(value, style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: color)),
       ],
     );
   }
-}
 
-class _EquityChart extends StatelessWidget {
-  final List<EquityPoint> points;
-  final double initial;
-  const _EquityChart({required this.points, required this.initial});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 170,
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: AppTheme.surfaceAlt,
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: AppTheme.line),
-      ),
-      child: points.length < 2
-          ? const Center(
-              child: Text('Not enough data for a curve',
-                  style: TextStyle(color: AppTheme.textMuted)))
-          : CustomPaint(painter: _EquityPainter(points, initial), size: Size.infinite),
-    );
-  }
-}
-
-class _EquityPainter extends CustomPainter {
-  final List<EquityPoint> points;
-  final double initial;
-  const _EquityPainter(this.points, this.initial);
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final values = points.map((p) => p.equity).toList();
-    var lo = initial;
-    var hi = initial;
-    for (final v in values) {
-      lo = min(lo, v);
-      hi = max(hi, v);
-    }
-    if (hi - lo < 1e-9) hi = lo + 1;
-
-    double px(int i) => size.width * i / (points.length - 1);
-    double py(double v) => size.height * (1 - (v - lo) / (hi - lo));
-
-    final base = Paint()
-      ..color = AppTheme.textMuted.withValues(alpha: 0.4)
-      ..strokeWidth = 1;
-    canvas.drawLine(Offset(0, py(initial)), Offset(size.width, py(initial)), base);
-
-    final path = Path()..moveTo(px(0), py(values.first));
-    for (var i = 1; i < values.length; i++) {
-      path.lineTo(px(i), py(values[i]));
-    }
-    canvas.drawPath(
-      path,
-      Paint()
-        ..color = values.last >= initial ? AppTheme.buy : AppTheme.sell
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 2
-        ..strokeJoin = StrokeJoin.round,
-    );
-  }
-
-  @override
-  bool shouldRepaint(covariant _EquityPainter old) =>
-      old.points != points || old.initial != initial;
-}
-
-class _MetricsTable extends StatelessWidget {
-  final Map<String, String> rows;
-  const _MetricsTable({required this.rows});
-
-  @override
-  Widget build(BuildContext context) {
-    final entries = rows.entries.toList();
+  Widget _tableCard(List<Map<String, dynamic>> rows) {
     return Card(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        child: Column(
-          children: [
-            for (final e in entries)
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 7),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Text(e.key,
-                          style: const TextStyle(fontSize: 13, color: AppTheme.textSecondary)),
-                    ),
-                    Text(e.value,
-                        style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700)),
-                  ],
-                ),
-              ),
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        padding: const EdgeInsets.all(12),
+        child: DataTable(
+          headingTextStyle: const TextStyle(
+            fontSize: 11, fontWeight: FontWeight.w700, color: AppTheme.textMuted, letterSpacing: 0.5),
+          dataTextStyle: const TextStyle(fontSize: 12.5, color: AppTheme.textPrimary),
+          columnSpacing: 16,
+          columns: [
+            _col('Symbol', 'symbol'),
+            _col('Strategy', 'strategy'),
+            _col('TF', 'timeframe'),
+            _col('Sharpe', 'sharpe'),
+            _col('Max DD', 'max_dd'),
+            _col('Win%', 'win_rate'),
+            _col('Return%', 'total_return'),
+            _col('Trades', 'trades'),
           ],
+          rows: rows.map((r) {
+            final sharpe = (r['sharpe'] ?? 0).toDouble();
+            final ret = (r['total_return'] ?? 0).toDouble();
+            final maxDd = (r['max_dd'] ?? 0).toDouble();
+            return DataRow(cells: [
+              DataCell(Text(r['symbol'] ?? '', style: const TextStyle(fontWeight: FontWeight.w600))),
+              DataCell(Text(r['strategy'] ?? '')),
+              DataCell(Text(r['timeframe'] ?? '')),
+              DataCell(Text(sharpe.toStringAsFixed(2),
+                  style: TextStyle(color: sharpe > 0 ? AppTheme.buy : AppTheme.sell, fontWeight: FontWeight.w700))),
+              DataCell(Text(maxDd.toStringAsFixed(1),
+                  style: TextStyle(color: maxDd > 10 ? AppTheme.sell : AppTheme.textSecondary))),
+              DataCell(Text('${(r['win_rate'] ?? 0).toDouble().toStringAsFixed(0)}%')),
+              DataCell(Text(ret.toStringAsFixed(1),
+                  style: TextStyle(color: ret > 0 ? AppTheme.buy : AppTheme.sell))),
+              DataCell(Text('${r['trades'] ?? 0}')),
+            ]);
+          }).toList(),
         ),
       ),
     );
   }
-}
 
-class _TradesList extends StatelessWidget {
-  final List<BacktestTrade> trades;
-  const _TradesList({required this.trades});
-
-  @override
-  Widget build(BuildContext context) {
-    if (trades.isEmpty) {
-      return const Text('No trades were taken over this window.',
-          style: TextStyle(color: AppTheme.textMuted));
-    }
-    final shown = trades.length > 40 ? trades.sublist(trades.length - 40) : trades;
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        child: Column(
-          children: [
-            for (final t in shown)
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 6),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        '${AppTheme.fmtClock(t.entryTime)} → ${AppTheme.fmtClock(t.exitTime)} · ${t.reason.label}',
-                        style: const TextStyle(fontSize: 12.5, color: AppTheme.textSecondary),
-                      ),
-                    ),
-                    Text(
-                      '${t.netPnl >= 0 ? '+' : ''}${t.netPnl.toStringAsFixed(2)}',
-                      style: TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w800,
-                        color: t.netPnl >= 0 ? AppTheme.buy : AppTheme.sell,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-          ],
-        ),
+  DataColumn _col(String label, String field) {
+    final isSorted = _sortBy == field;
+    return DataColumn(
+      label: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(label),
+          if (isSorted)
+            Icon(
+              _sortAsc ? Icons.arrow_upward : Icons.arrow_downward,
+              size: 12,
+              color: AppTheme.accent,
+            ),
+        ],
       ),
+      onSort: (_, __) => _sort(field),
     );
   }
 }
