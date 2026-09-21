@@ -1,0 +1,20 @@
+name: Refresh Forex Data
+on:
+  schedule: [{ cron: '0 */6 * * *' }]
+  workflow_dispatch:
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    permissions: { contents: write }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.11' }
+      - run: pip install pandas numpy requests yfinance
+      - run: python signal_aggregator/backend/data/forex_fetcher.py
+      - run: |
+          git config user.name  "GitHub Actions"
+          git config user.email "actions@github.com"
+          git add signal_aggregator/data/raw/
+          git commit -m "Update raw data [skip ci]" || echo "no changes"
+          git push

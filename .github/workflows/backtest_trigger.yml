@@ -1,0 +1,29 @@
+name: Run Backtest
+on:
+  workflow_dispatch:
+    inputs:
+      symbol:    { required: true, default: 'EURUSD=X' }
+      strategy:  { required: true, default: 'ma_cross' }
+      timeframe: { required: true, default: '1h' }
+  repository_dispatch:
+    types: [backtest]
+jobs:
+  backtest:
+    runs-on: ubuntu-latest
+    permissions: { contents: write }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.11' }
+      - run: pip install pandas numpy requests yfinance
+      - run: |
+          python signal_aggregator/backend/backtest/engine.py \
+            --symbol ${{ github.event.inputs.symbol || github.event.client_payload.symbol }} \
+            --strategy ${{ github.event.inputs.strategy || github.event.client_payload.strategy }} \
+            --timeframe ${{ github.event.inputs.timeframe || github.event.client_payload.timeframe }}
+      - run: |
+          git config user.name  "GitHub Actions"
+          git config user.email "actions@github.com"
+          git add signal_aggregator/data/backtest/
+          git commit -m "Update backtest [skip ci]" || echo "no changes"
+          git push
