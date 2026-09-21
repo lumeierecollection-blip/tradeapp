@@ -15,7 +15,7 @@ SYMBOLS = [
 STRATEGIES = ['ma_cross', 'rsi']
 TIMEFRAMES = ['1h', '1d']
 OUTPUT = 'data/backtest/wf_matrix.json'
-WF_TRAIN = 3
+WF_TRAIN = 12
 WF_TEST = 2
 
 

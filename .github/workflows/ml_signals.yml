@@ -10,14 +10,23 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with: { python-version: '3.11' }
-      - run: pip install pandas numpy requests yfinance lightgbm
+      - run: pip install pandas numpy requests yfinance lightgbm scikit-learn
       - name: Train models
         run: |
           for s in "EURUSD=X" "GBPUSD=X" "USDJPY=X" "AUDUSD=X" "NZDUSD=X" "GBPJPY=X" "EURJPY=X" "AUDJPY=X" "USDCAD=X" "GC=F" "SI=F" "CL=F" "NG=F" "BTC-USD" "ETH-USD" "^GSPC" "^NDX"; do
             python signal_aggregator/backend/ml/train.py --symbol "$s" || true
           done
-      - name: Generate signals
+      - name: Generate ML signals
         run: python signal_aggregator/backend/signals/ml_signal.py
+      - name: Fallback to rule-based if ML failed
+        run: |
+          if [ ! -s signal_aggregator/data/signals/ml_latest.json ] || \
+             python -c "import json; d=json.load(open('signal_aggregator/data/signals/ml_latest.json')); exit(0 if d.get('signals') else 1)"; then
+            echo "ML signals OK, skipping rule-based fallback"
+          else
+            echo "ML signals empty or missing, running rule-based fallback"
+            python signal_aggregator/backend/signals/signal_aggregator.py || true
+          fi
       - name: Commit results
         run: |
           git config user.name  "GitHub Actions"

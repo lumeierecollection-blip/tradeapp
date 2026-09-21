@@ -132,11 +132,11 @@ def compute_win_rate(trades):
     return winning / len(trades)
 
 
-def run_backtest(symbol, strategy, timeframe):
+def run_backtest(symbol, strategy, timeframe, period='10y'):
     random.seed(42)
 
     ticker = yf.Ticker(symbol)
-    hist = ticker.history(period='1y', interval=timeframe if timeframe in ('1d', '1h', '5m') else '1d')
+    hist = ticker.history(period=period, interval=timeframe if timeframe in ('1d', '1h', '5m') else '1d')
     if hist.empty:
         hist = pd.DataFrame({'Open': [1.0], 'High': [1.0], 'Low': [1.0], 'Close': [1.0], 'Volume': [0]})
 
@@ -170,9 +170,9 @@ def run_backtest(symbol, strategy, timeframe):
     return results
 
 
-def _fetch_history(symbol, timeframe):
+def _fetch_history(symbol, timeframe, period='10y'):
     ticker = yf.Ticker(symbol)
-    hist = ticker.history(period='1y', interval=timeframe if timeframe in ('1d', '1h', '5m') else '1d')
+    hist = ticker.history(period=period, interval=timeframe if timeframe in ('1d', '1h', '5m') else '1d')
     if hist.empty:
         return pd.DataFrame()
     return hist
@@ -211,8 +211,8 @@ def _windows_from_hist(hist, train_months, test_months):
     return windows
 
 
-def run_walk_forward(symbol, strategy, timeframe, train_months=6, test_months=1):
-    hist = _fetch_history(symbol, timeframe)
+def run_walk_forward(symbol, strategy, timeframe, train_months=12, test_months=2, period='10y'):
+    hist = _fetch_history(symbol, timeframe, period)
     if hist.empty:
         print(f'No data for {symbol}')
         return None
@@ -277,13 +277,14 @@ if __name__ == '__main__':
     parser.add_argument('--symbol', default='EURUSD=X')
     parser.add_argument('--strategy', default='ma_cross')
     parser.add_argument('--timeframe', default='1h')
+    parser.add_argument('--period', default='10y')
     parser.add_argument('--walk-forward', action='store_true')
-    parser.add_argument('--wf-train-months', type=int, default=6)
-    parser.add_argument('--wf-test-months', type=int, default=1)
+    parser.add_argument('--wf-train-months', type=int, default=12)
+    parser.add_argument('--wf-test-months', type=int, default=2)
     args = parser.parse_args()
 
     if args.walk_forward:
         run_walk_forward(args.symbol, args.strategy, args.timeframe,
-                         args.wf_train_months, args.wf_test_months)
+                         args.wf_train_months, args.wf_test_months, args.period)
     else:
-        run_backtest(args.symbol, args.strategy, args.timeframe)
+        run_backtest(args.symbol, args.strategy, args.timeframe, args.period)

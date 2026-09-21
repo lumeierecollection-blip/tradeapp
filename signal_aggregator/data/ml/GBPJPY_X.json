@@ -1,6 +1,6 @@
 {
-  "symbol": "EURUSD=X",
-  "trained_at": "2026-09-21T08:25:59.290324+00:00",
+  "symbol": "GBPJPY=X",
+  "trained_at": "2026-09-21T08:26:54.840043+00:00",
   "n_features": 35,
   "feature_cols": [
     "ret_1",
@@ -39,30 +39,30 @@
     "vol_percentile",
     "trend_strength"
   ],
-  "avg_accuracy": 0.675,
+  "avg_accuracy": 0.4667,
   "windows": [
     {
       "window_start": "2025-10-09",
       "window_end": "2026-01-02",
-      "accuracy": 0.6667,
+      "accuracy": 0.4333,
       "test_size": 60
     },
     {
       "window_start": "2026-01-05",
       "window_end": "2026-03-27",
-      "accuracy": 0.6833,
+      "accuracy": 0.5333,
       "test_size": 60
     },
     {
       "window_start": "2026-03-30",
       "window_end": "2026-06-19",
-      "accuracy": 0.6667,
+      "accuracy": 0.45,
       "test_size": 60
     },
     {
       "window_start": "2026-06-22",
       "window_end": "2026-09-11",
-      "accuracy": 0.6833,
+      "accuracy": 0.45,
       "test_size": 60
     }
   ]

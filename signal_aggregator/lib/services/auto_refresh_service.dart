@@ -34,15 +34,15 @@ class AutoRefreshService extends ChangeNotifier {
     _timer = null;
   }
 
-  /// Fetches all GitHub JSON endpoints in parallel. Errors are swallowed so
-  /// a single failed fetch doesn't crash the app.
+  /// Fetches all GitHub JSON endpoints in parallel. Prefers ML signals;
+  /// falls back to rule-based if ML file is missing or empty.
   Future<void> _refreshData() async {
     if (_isRefreshing) return;
     _isRefreshing = true;
 
     try {
       final results = await Future.wait([
-        _dataService.getLatestSignals(),
+        _fetchSignalsWithFallback(),
         _dataService.getBacktestResults(),
         _dataService.getTradeHistory(),
       ]);
@@ -56,6 +56,18 @@ class AutoRefreshService extends ChangeNotifier {
       _isRefreshing = false;
       notifyListeners();
     }
+  }
+
+  /// Prefers ML signals; falls back to rule-based if ML is missing/empty.
+  Future<Map<String, dynamic>> _fetchSignalsWithFallback() async {
+    try {
+      final ml = await _dataService.getMlSignals();
+      final mlSignals = ml['signals'];
+      if (mlSignals != null && mlSignals is List && mlSignals.isNotEmpty) {
+        return ml;
+      }
+    } catch (_) {}
+    return _dataService.getLatestSignals();
   }
 
   @override

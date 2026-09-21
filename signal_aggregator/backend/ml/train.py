@@ -21,7 +21,7 @@ except ImportError:
     sys.exit(1)
 
 
-def load_ohlcv(symbol, period='2y', interval='1d'):
+def load_ohlcv(symbol, period='10y', interval='1d'):
     df = yf.download(symbol, period=period, interval=interval,
                      progress=False, auto_adjust=True)
     if hasattr(df.columns, 'get_level_values'):
