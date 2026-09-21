@@ -13,3 +13,10 @@ github-token.txt
 /colour.txt
 /needed.txt
 /new direction.txt
+
+# Test artifacts
+signal_aggregator/verify-out/
+signal_aggregator/data/audit/
+signal_aggregator/data/raw/
+signal_aggregator/data/ml/*_model.txt
+*.log
