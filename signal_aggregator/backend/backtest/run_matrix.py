@@ -6,8 +6,8 @@ import subprocess
 import sys
 from datetime import datetime
 
-SYMBOLS = ['EURUSD=X', 'GBPUSD=X', 'USDJPY=X', 'XAUUSD=X', 'AUDUSD=X']
-STRATEGIES = ['ma_cross', 'rsi', 'vwap']
+SYMBOLS = ['EURUSD=X', 'GBPUSD=X', 'USDJPY=X', 'GC=F', 'AUDUSD=X']
+STRATEGIES = ['ma_cross', 'rsi']
 TIMEFRAMES = ['1h', '1d']
 OUTPUT = 'signal_aggregator/data/backtest/matrix.json'
 

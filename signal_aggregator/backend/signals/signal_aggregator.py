@@ -244,7 +244,7 @@ def determine_signals(symbol='EURUSD=X'):
 
 
 if __name__ == '__main__':
-    symbols = ['EURUSD=X', 'GBPUSD=X', 'USDJPY=X', 'XAUUSD=X', 'AUDUSD=X']
+    symbols = ['EURUSD=X', 'GBPUSD=X', 'USDJPY=X', 'GC=F', 'AUDUSD=X']
     all_signals = []
     for sym in symbols:
         result = determine_signals(sym)

@@ -20,7 +20,7 @@ def fetch_forex_ohlcv(symbol, interval='1h', period='7d'):
 
 
 def main():
-    symbols = ['EURUSD=X', 'GBPUSD=X', 'USDJPY=X', 'XAUUSD=X', 'AUDUSD=X']
+    symbols = ['EURUSD=X', 'GBPUSD=X', 'USDJPY=X', 'GC=F', 'AUDUSD=X']
     os.makedirs('data/raw', exist_ok=True)
 
     for symbol in symbols:
