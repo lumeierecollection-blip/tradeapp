@@ -1,6 +1,6 @@
 {
   "symbol": "ETH-USD",
-  "trained_at": "2026-09-21T08:28:53.584578+00:00",
+  "trained_at": "2026-09-21T08:47:59.651362+00:00",
   "n_features": 35,
   "feature_cols": [
     "ret_1",

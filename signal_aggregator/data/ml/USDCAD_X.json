@@ -1,6 +1,6 @@
 {
   "symbol": "USDCAD=X",
-  "trained_at": "2026-09-21T08:27:27.745599+00:00",
+  "trained_at": "2026-09-21T08:47:40.511798+00:00",
   "n_features": 35,
   "feature_cols": [
     "ret_1",

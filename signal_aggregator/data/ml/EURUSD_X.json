@@ -1,6 +1,6 @@
 {
   "symbol": "EURUSD=X",
-  "trained_at": "2026-09-21T08:25:59.290324+00:00",
+  "trained_at": "2026-09-21T08:47:14.748165+00:00",
   "n_features": 35,
   "feature_cols": [
     "ret_1",
