@@ -38,8 +38,8 @@ def write_json(path, payload):
         json.dump(payload, f, indent=2)
 
 
-def trigger_holdout(symbol, holdout_start, holdout_end=None):
-    """Run engine.py holdout via subprocess; returns parsed holdout.json result."""
+def trigger_holdout(symbol, holdout_start, holdout_end=None, regime_filter=False):
+    """Run engine.py holdout via subprocess; returns parsed holdout result."""
     cmd = [sys.executable, str(ENGINE),
            '--symbol', symbol,
            '--strategy', STRATEGY,
@@ -47,16 +47,20 @@ def trigger_holdout(symbol, holdout_start, holdout_end=None):
            '--holdout-start', holdout_start]
     if holdout_end:
         cmd += ['--holdout-end', holdout_end]
+    if regime_filter:
+        cmd += ['--regime-filter']
     try:
         r = subprocess.run(cmd, capture_output=True, text=True, timeout=300, cwd=str(REPO_ROOT))
     except subprocess.TimeoutExpired:
         return {'error': 'timeout'}
     if r.returncode != 0:
         return {'error': (r.stderr or r.stdout)[-300:]}
-    out = BACKTEST_DIR / 'holdout.json'
+    out = BACKTEST_DIR / 'results_holdout.json'
     if not os.path.exists(out):
-        return {'error': 'missing data/backtest/holdout.json'}
-    return read_json(out, {'error': 'empty holdout.json'})
+        out = BACKTEST_DIR / 'holdout.json'
+    if not os.path.exists(out):
+        return {'error': 'missing holdout output json'}
+    return read_json(out, {'error': 'empty holdout json'})
 
 
 def passes(result):

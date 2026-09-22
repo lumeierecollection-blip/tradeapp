@@ -1,126 +1,87 @@
-# OpenCode Task: Sibling-Asset + Third-Period Validation
+# OpenCode Task: Regime-Conditioned Backtest
 
 **Repo**: https://github.com/lumeierecollection-blip/tradeapp
-**Goal**: Test whether the 4 holdout survivors are structural edge or ticker-specific luck.
+**Goal**: Test if regime filtering rescues the 3 partial survivors.
 
 ## Rules
-- Read first. Report findings. Fix only if the tests fail to run.
-- No strategy logic changes.
+- Read first. Report findings. Do NOT change strategy logic.
+- The regime classifier already exists in `signal_aggregator/backend/ml/regime.py`.
 
-## TASK 1 — Sibling-asset holdout test
+## TASK 1 — Add regime filter to engine
 
-Add to `engine.py` a `--sibling-check` mode OR create `run_sibling_check.py`:
+In `signal_aggregator/backend/backtest/engine.py`:
+- Add `--regime-filter` flag (default off)
+- When on: only open trades when `classify_regime(features).iloc[i] == 'trend'`
+- Keep everything else identical
 
-Test set:
+Verify no existing behaviour changes when flag is off:
 ```
-SIBLING_MAP = {
-    'GC=F':     ['SI=F', 'PL=F'],           # gold → silver, platinum
-    'USDJPY=X': ['USDCHF=X', 'EURJPY=X', 'GBPJPY=X'],
-    '^GSPC':    ['^NDX', '^DJI', '^RUT'],
-    '^NDX':     ['^GSPC', '^RUT', '^DJI'],
-}
+python signal_aggregator/backend/backtest/engine.py --symbol GC=F --strategy ma_cross --timeframe 1d
+python signal_aggregator/backend/backtest/engine.py --symbol GC=F --strategy ma_cross --timeframe 1d --regime-filter
 ```
+Both must exit 0. Compare trade counts (with-filter should be lower).
 
-For each survivor `S` and each sibling `X` in `SIBLING_MAP[S]`:
-- Run holdout validation on `X` with `ma_cross 1d`
-- Train 2016-2022, test 2023-2026 (same as before)
-- Record: symbol, sharpe, trades, win_rate
+## TASK 2 — Re-run validation with regime filter
 
-Run:
+For each of the 4 survivors, run 3 tests WITH regime filter:
+- Walk-forward (8 windows)
+- Holdout 2023-2026
+- Holdout 2021-2022
+
+Report table:
 ```
-python signal_aggregator/backend/backtest/run_sibling_check.py
-```
-
-Output `data/backtest/sibling_check.json`.
-
-Report:
-```
-Survivor      Sibling    Sharpe  Trades  Pass?
-GC=F          SI=F       X.XX    N       [YES|NO]
-GC=F          PL=F       X.XX    N       [YES|NO]
-USDJPY=X      USDCHF=X   X.XX    N       [YES|NO]
-...
+Symbol        Test       NoFilter   WithFilter   Delta
+GC=F          WF         0.85       X.XX         +/-X.XX
+GC=F          HO23-26    1.00       X.XX         +/-X.XX
+GC=F          HO21-22   -0.09       X.XX         +/-X.XX
+USDJPY=X      ...
+^GSPC         ...
+^NDX          ...
 ```
 
-Pass criteria: `sharpe > 0.5 AND trades >= 5`.
+## TASK 3 — Update verdicts
 
-Count:
-```
-Total sibling tests: N
-Passed: N
-Pass rate: X%
-```
-
-## TASK 2 — Third-period validation (2021-2022)
-
-Add `--holdout-start 2021-01-01 --holdout-end 2023-01-01` to the existing holdout flow.
-
-Run only on the 4 survivors with `ma_cross 1d`:
-```
-GC=F, USDJPY=X, ^GSPC, ^NDX
-```
-
-Train: 2016-2020. Test: 2021-2022.
-
-Report:
-```
-Symbol        WF Sharpe  HO23-26  HO21-22  Both Pass?
-GC=F          X.XX       X.XX     X.XX     [YES|NO]
-USDJPY=X      X.XX       X.XX     X.XX     [YES|NO]
-^GSPC         X.XX       X.XX     X.XX     [YES|NO]
-^NDX          X.XX       X.XX     X.XX     [YES|NO]
-```
-
-## TASK 3 — Combined verdict
-
-Produce `data/backtest/validation_summary.json`:
-```json
-{
-  "survivors": [
-    {"symbol": "GC=F", "wf": X.XX, "holdout_23_26": X.XX, "holdout_21_22": X.XX,
-     "siblings_pass_rate": X.XX, "verdict": "confirmed|partial|failed"}
-  ],
-  "overall": {
-    "confirmed_count": N,
-    "partial_count": N,
-    "failed_count": N
-  }
-}
-```
-
-Verdict rules:
-- **confirmed**: survivor passed holdout23-26 AND holdout21-22 AND >=60% of siblings pass
-- **partial**: passed 2 of 3 tests
-- **failed**: passed 0-1 tests
+For each symbol, apply rule:
+- **confirmed**: all 3 tests pass (sharpe > 0.5) with regime filter
+- **improved**: 1-2 tests went from fail to pass
+- **unchanged**: same pass/fail pattern
+- **worsened**: any test went from pass to fail
 
 ## TASK 4 — Commit
 ```
 git add -A
-git commit -m "feat: sibling-asset + third-period validation on survivors"
+git commit -m "feat: regime-conditioned backtest on survivors"
 git push origin main
 ```
 
 ## FINAL REPORT
 ```
-===== VALIDATION SUMMARY =====
+===== REGIME FILTER TEST =====
 
-Sibling test:
-  Total siblings tested: N
-  Passed: N (X%)
-  Most-consistent class: <precious metals | JPY crosses | indices>
+GC=F:
+  Without filter: WF=0.85, HO23=1.00, HO21=-0.09  (2/3)
+  With filter:    WF=X.XX, HO23=X.XX, HO21=X.XX   (N/3)
+  Verdict:        [confirmed|improved|unchanged|worsened]
 
-Third-period test (2021-2022):
-  GC=F:     [PASS|FAIL]
-  USDJPY=X: [PASS|FAIL]
-  ^GSPC:    [PASS|FAIL]
-  ^NDX:     [PASS|FAIL]
+USDJPY=X:
+  ...
 
-Combined verdict:
-  Confirmed: N
-  Partial:   N
-  Failed:    N
+^GSPC:
+  ...
+
+^NDX:
+  ...
+
+SUMMARY:
+  Confirmed after filter: N
+  Improved:               N
+  Unchanged:              N
+  Worsened:               N
+
+TRADEABLE CANDIDATES (3/3 pass with filter):
+  <list>
 
 Interpretation:
-  <2-3 sentences. Is the edge real, ticker-specific, or dead?>
+  <2-3 sentences. Does regime filtering make the edge tradeable?>
 =====
 ```

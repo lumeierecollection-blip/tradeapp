@@ -22,7 +22,28 @@ def compute_atr(df, period=14):
     return tr.rolling(period).mean()
 
 
-def _execute_backtest(hist, strategy, symbol, initial_capital=10000.0):
+try:
+    sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..'))
+    from backend.ml.regime import classify_regime
+except Exception:
+    classify_regime = None
+
+
+def compute_regime(hist):
+    """Regime labels aligned to hist index. Only trend-gating features needed.
+    Matches the definitions in backend/ml/features.py (vol_percentile,
+    trend_strength) so classify_regime() can be reused unchanged."""
+    close = hist['Close']
+    vol_20 = close.pct_change().rolling(20).std()
+    features = pd.DataFrame({
+        'vol_percentile': vol_20.rolling(100).rank(pct=True),
+        'trend_strength': (close - close.rolling(50).mean()) / close.rolling(50).std(),
+    }, index=hist.index)
+    return classify_regime(features)
+
+
+def _execute_backtest(hist, strategy, symbol, initial_capital=10000.0, regime_filter=False,
+                      feature_base=None):
     """Run backtest on a slice of OHLCV data. Returns (trades, equity_curve, exit_reason_counts)."""
     capital = initial_capital
     position = 0
@@ -38,6 +59,13 @@ def _execute_backtest(hist, strategy, symbol, initial_capital=10000.0):
     spread_cost = spread_pips * pip_size
 
     atr = compute_atr(hist, period=14)
+
+    regime = None
+    if regime_filter and classify_regime is not None:
+        base = feature_base if feature_base is not None else hist
+        regime = compute_regime(base)
+        if len(regime) != len(hist):
+            regime = regime.reindex(hist.index)
 
     for i in range(1, len(hist)):
         price = hist['Close'].iloc[i]
@@ -79,14 +107,16 @@ def _execute_backtest(hist, strategy, symbol, initial_capital=10000.0):
                     should_buy = True
 
             if should_buy:
-                atr_val = atr.iloc[i] if not pd.isna(atr.iloc[i]) else price * 0.01
-                fill_price = next_open + spread_cost / 2
-                position = capital / fill_price
-                entry_price = fill_price
-                stop = entry_price - 2.5 * atr_val
-                target = entry_price + 3.5 * atr_val
-                capital = 0.0
-                trades.append({'type': 'BUY', 'price': fill_price, 'equity': position * price, 'exit_reason': None})
+                regime_allowed = regime is None or regime.iloc[i] == 'trend'
+                if regime_allowed:
+                    atr_val = atr.iloc[i] if not pd.isna(atr.iloc[i]) else price * 0.01
+                    fill_price = next_open + spread_cost / 2
+                    position = capital / fill_price
+                    entry_price = fill_price
+                    stop = entry_price - 2.5 * atr_val
+                    target = entry_price + 3.5 * atr_val
+                    capital = 0.0
+                    trades.append({'type': 'BUY', 'price': fill_price, 'equity': position * price, 'exit_reason': None})
 
         portfolio_value = capital + position * price
         equity_curve.append(portfolio_value)
@@ -133,7 +163,7 @@ def compute_win_rate(trades):
     return winning / len(trades)
 
 
-def run_backtest(symbol, strategy, timeframe, period='10y'):
+def run_backtest(symbol, strategy, timeframe, period='10y', regime_filter=False):
     random.seed(42)
 
     ticker = yf.Ticker(symbol)
@@ -141,7 +171,7 @@ def run_backtest(symbol, strategy, timeframe, period='10y'):
     if hist.empty:
         hist = pd.DataFrame({'Open': [1.0], 'High': [1.0], 'Low': [1.0], 'Close': [1.0], 'Volume': [0]})
 
-    trades, equity_curve, exit_reason_counts = _execute_backtest(hist, strategy, symbol)
+    trades, equity_curve, exit_reason_counts = _execute_backtest(hist, strategy, symbol, regime_filter=regime_filter)
 
     final_equity = equity_curve[-1]
     total_return = (final_equity - 10000.0) / 10000.0 * 100
@@ -154,6 +184,7 @@ def run_backtest(symbol, strategy, timeframe, period='10y'):
         'symbol': symbol,
         'strategy': strategy,
         'timeframe': timeframe,
+        'regime_filter': bool(regime_filter),
         'sharpe_ratio': round(sharpe_ratio, 2) if np.isfinite(sharpe_ratio) else 0.0,
         'max_drawdown': round(max_drawdown * 100, 2),
         'win_rate': round(win_rate * 100, 2),
@@ -212,7 +243,7 @@ def _windows_from_hist(hist, train_months, test_months):
     return windows
 
 
-def run_walk_forward(symbol, strategy, timeframe, train_months=12, test_months=2, period='10y'):
+def run_walk_forward(symbol, strategy, timeframe, train_months=12, test_months=2, period='10y', regime_filter=False):
     hist = _fetch_history(symbol, timeframe, period)
     if hist.empty:
         print(f'No data for {symbol}')
@@ -227,7 +258,10 @@ def run_walk_forward(symbol, strategy, timeframe, train_months=12, test_months=2
 
     window_results = []
     for idx, (train, test) in enumerate(windows):
-        trades, equity_curve, _ = _execute_backtest(test, strategy, symbol)
+        feature_base = pd.concat([train, test]) if regime_filter else None
+        trades, equity_curve, _ = _execute_backtest(test, strategy, symbol,
+                                                    regime_filter=regime_filter,
+                                                    feature_base=feature_base)
         test_return = (equity_curve[-1] - 10000.0) / 10000.0 * 100
         test_sharpe = compute_sharpe(equity_curve)
 
@@ -252,6 +286,7 @@ def run_walk_forward(symbol, strategy, timeframe, train_months=12, test_months=2
         'timeframe': timeframe,
         'train_months': train_months,
         'test_months': test_months,
+        'regime_filter': bool(regime_filter),
         'windows': window_results,
         'avg_test_sharpe': round(avg_sharpe, 2),
         'std_test_sharpe': round(std_sharpe, 2),
@@ -273,7 +308,7 @@ def run_walk_forward(symbol, strategy, timeframe, train_months=12, test_months=2
     return output
 
 
-def run_holdout(symbol, strategy, timeframe, holdout_start, holdout_end=None, period='10y'):
+def run_holdout(symbol, strategy, timeframe, holdout_start, holdout_end=None, period='10y', regime_filter=False):
     """Test on data AFTER holdout_start (optionally bounded by holdout_end)."""
     hist = _fetch_history(symbol, timeframe, period)
     if hist.empty:
@@ -302,7 +337,7 @@ def run_holdout(symbol, strategy, timeframe, holdout_start, holdout_end=None, pe
         print(f'Not enough post-holdout data ({len(post)} bars)')
         return None
 
-    trades, equity_curve, exit_reason_counts = _execute_backtest(post, strategy, symbol)
+    trades, equity_curve, exit_reason_counts = _execute_backtest(post, strategy, symbol, regime_filter=regime_filter)
     total_return = (equity_curve[-1] - 10000.0) / 10000.0 * 100
     sharpe_ratio = compute_sharpe(equity_curve)
     max_drawdown = compute_max_drawdown(equity_curve)
@@ -317,6 +352,7 @@ def run_holdout(symbol, strategy, timeframe, holdout_start, holdout_end=None, pe
         'timeframe': timeframe,
         'holdout_start': holdout_start,
         'holdout_end': holdout_end,
+        'regime_filter': bool(regime_filter),
         'train_bars': len(pre),
         'test_bars': len(post),
         'total_return': round(total_return, 2),
@@ -353,15 +389,19 @@ if __name__ == '__main__':
     parser.add_argument('--holdout-end', default=None)
     parser.add_argument('--wf-train-months', type=int, default=12)
     parser.add_argument('--wf-test-months', type=int, default=2)
+    parser.add_argument('--regime-filter', action='store_true')
     args = parser.parse_args()
 
     if args.holdout_start:
         result = run_holdout(args.symbol, args.strategy, args.timeframe,
-                             args.holdout_start, args.holdout_end, args.period)
+                             args.holdout_start, args.holdout_end, args.period,
+                             regime_filter=args.regime_filter)
         if result is None:
             sys.exit(1)
     elif args.walk_forward:
         run_walk_forward(args.symbol, args.strategy, args.timeframe,
-                         args.wf_train_months, args.wf_test_months, args.period)
+                         args.wf_train_months, args.wf_test_months, args.period,
+                         regime_filter=args.regime_filter)
     else:
-        run_backtest(args.symbol, args.strategy, args.timeframe, args.period)
+        run_backtest(args.symbol, args.strategy, args.timeframe, args.period,
+                     regime_filter=args.regime_filter)
