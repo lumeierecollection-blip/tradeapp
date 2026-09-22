@@ -1,6 +1,6 @@
 {
   "symbol": "GBPJPY=X",
-  "trained_at": "2026-09-21T11:38:42.647128+00:00",
+  "trained_at": "2026-09-22T10:43:27.817968+00:00",
   "n_features": 35,
   "feature_cols": [
     "ret_1",

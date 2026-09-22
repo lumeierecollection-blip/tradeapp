@@ -1,6 +1,6 @@
 {
   "symbol": "GBPUSD=X",
-  "trained_at": "2026-09-21T11:38:31.272669+00:00",
+  "trained_at": "2026-09-22T10:43:16.660951+00:00",
   "n_features": 35,
   "feature_cols": [
     "ret_1",
