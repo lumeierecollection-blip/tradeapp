@@ -1,0 +1,136 @@
+{
+  "generated_at": "2026-09-22T08:32:44.077379+00:00",
+  "holdout_start": "2023-01-01",
+  "strategy": "ma_cross",
+  "timeframe": "1d",
+  "pass_criteria": "sharpe > 0.5 AND trades >= 5",
+  "rows": [
+    {
+      "survivor": "GC=F",
+      "symbol": "SI=F",
+      "strategy": "ma_cross",
+      "timeframe": "1d",
+      "sharpe": 0.58,
+      "trades": 118,
+      "win_rate": 50.0,
+      "total_return": 71.26,
+      "pass": true
+    },
+    {
+      "survivor": "GC=F",
+      "symbol": "PL=F",
+      "strategy": "ma_cross",
+      "timeframe": "1d",
+      "sharpe": 0.63,
+      "trades": 116,
+      "win_rate": 50.0,
+      "total_return": 83.28,
+      "pass": true
+    },
+    {
+      "survivor": "USDJPY=X",
+      "symbol": "USDCHF=X",
+      "strategy": "ma_cross",
+      "timeframe": "1d",
+      "sharpe": -0.09,
+      "trades": 52,
+      "win_rate": 50.0,
+      "total_return": -3.1,
+      "pass": false
+    },
+    {
+      "survivor": "USDJPY=X",
+      "symbol": "EURJPY=X",
+      "strategy": "ma_cross",
+      "timeframe": "1d",
+      "sharpe": 0.54,
+      "trades": 46,
+      "win_rate": 50.0,
+      "total_return": 16.34,
+      "pass": true
+    },
+    {
+      "survivor": "USDJPY=X",
+      "symbol": "GBPJPY=X",
+      "strategy": "ma_cross",
+      "timeframe": "1d",
+      "sharpe": 0.92,
+      "trades": 46,
+      "win_rate": 50.0,
+      "total_return": 31.91,
+      "pass": true
+    },
+    {
+      "survivor": "^GSPC",
+      "symbol": "^NDX",
+      "strategy": "ma_cross",
+      "timeframe": "1d",
+      "sharpe": 0.84,
+      "trades": 74,
+      "win_rate": 50.0,
+      "total_return": 57.79,
+      "pass": true
+    },
+    {
+      "survivor": "^GSPC",
+      "symbol": "^DJI",
+      "strategy": "ma_cross",
+      "timeframe": "1d",
+      "sharpe": 0.83,
+      "trades": 64,
+      "win_rate": 50.0,
+      "total_return": 35.3,
+      "pass": true
+    },
+    {
+      "survivor": "^GSPC",
+      "symbol": "^RUT",
+      "strategy": "ma_cross",
+      "timeframe": "1d",
+      "sharpe": 0.55,
+      "trades": 64,
+      "win_rate": 50.0,
+      "total_return": 33.77,
+      "pass": true
+    },
+    {
+      "survivor": "^NDX",
+      "symbol": "^GSPC",
+      "strategy": "ma_cross",
+      "timeframe": "1d",
+      "sharpe": 0.85,
+      "trades": 76,
+      "win_rate": 50.0,
+      "total_return": 37.78,
+      "pass": true
+    },
+    {
+      "survivor": "^NDX",
+      "symbol": "^RUT",
+      "strategy": "ma_cross",
+      "timeframe": "1d",
+      "sharpe": 0.55,
+      "trades": 64,
+      "win_rate": 50.0,
+      "total_return": 33.77,
+      "pass": true
+    },
+    {
+      "survivor": "^NDX",
+      "symbol": "^DJI",
+      "strategy": "ma_cross",
+      "timeframe": "1d",
+      "sharpe": 0.83,
+      "trades": 64,
+      "win_rate": 50.0,
+      "total_return": 35.3,
+      "pass": true
+    }
+  ],
+  "summary": {
+    "total_sibling_tests": 11,
+    "errors": 0,
+    "passed": 10,
+    "pass_rate": 90.9
+  }
+}

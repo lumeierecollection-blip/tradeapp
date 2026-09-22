@@ -1,0 +1,126 @@
+# OpenCode Task: Sibling-Asset + Third-Period Validation
+
+**Repo**: https://github.com/lumeierecollection-blip/tradeapp
+**Goal**: Test whether the 4 holdout survivors are structural edge or ticker-specific luck.
+
+## Rules
+- Read first. Report findings. Fix only if the tests fail to run.
+- No strategy logic changes.
+
+## TASK 1 — Sibling-asset holdout test
+
+Add to `engine.py` a `--sibling-check` mode OR create `run_sibling_check.py`:
+
+Test set:
+```
+SIBLING_MAP = {
+    'GC=F':     ['SI=F', 'PL=F'],           # gold → silver, platinum
+    'USDJPY=X': ['USDCHF=X', 'EURJPY=X', 'GBPJPY=X'],
+    '^GSPC':    ['^NDX', '^DJI', '^RUT'],
+    '^NDX':     ['^GSPC', '^RUT', '^DJI'],
+}
+```
+
+For each survivor `S` and each sibling `X` in `SIBLING_MAP[S]`:
+- Run holdout validation on `X` with `ma_cross 1d`
+- Train 2016-2022, test 2023-2026 (same as before)
+- Record: symbol, sharpe, trades, win_rate
+
+Run:
+```
+python signal_aggregator/backend/backtest/run_sibling_check.py
+```
+
+Output `data/backtest/sibling_check.json`.
+
+Report:
+```
+Survivor      Sibling    Sharpe  Trades  Pass?
+GC=F          SI=F       X.XX    N       [YES|NO]
+GC=F          PL=F       X.XX    N       [YES|NO]
+USDJPY=X      USDCHF=X   X.XX    N       [YES|NO]
+...
+```
+
+Pass criteria: `sharpe > 0.5 AND trades >= 5`.
+
+Count:
+```
+Total sibling tests: N
+Passed: N
+Pass rate: X%
+```
+
+## TASK 2 — Third-period validation (2021-2022)
+
+Add `--holdout-start 2021-01-01 --holdout-end 2023-01-01` to the existing holdout flow.
+
+Run only on the 4 survivors with `ma_cross 1d`:
+```
+GC=F, USDJPY=X, ^GSPC, ^NDX
+```
+
+Train: 2016-2020. Test: 2021-2022.
+
+Report:
+```
+Symbol        WF Sharpe  HO23-26  HO21-22  Both Pass?
+GC=F          X.XX       X.XX     X.XX     [YES|NO]
+USDJPY=X      X.XX       X.XX     X.XX     [YES|NO]
+^GSPC         X.XX       X.XX     X.XX     [YES|NO]
+^NDX          X.XX       X.XX     X.XX     [YES|NO]
+```
+
+## TASK 3 — Combined verdict
+
+Produce `data/backtest/validation_summary.json`:
+```json
+{
+  "survivors": [
+    {"symbol": "GC=F", "wf": X.XX, "holdout_23_26": X.XX, "holdout_21_22": X.XX,
+     "siblings_pass_rate": X.XX, "verdict": "confirmed|partial|failed"}
+  ],
+  "overall": {
+    "confirmed_count": N,
+    "partial_count": N,
+    "failed_count": N
+  }
+}
+```
+
+Verdict rules:
+- **confirmed**: survivor passed holdout23-26 AND holdout21-22 AND >=60% of siblings pass
+- **partial**: passed 2 of 3 tests
+- **failed**: passed 0-1 tests
+
+## TASK 4 — Commit
+```
+git add -A
+git commit -m "feat: sibling-asset + third-period validation on survivors"
+git push origin main
+```
+
+## FINAL REPORT
+```
+===== VALIDATION SUMMARY =====
+
+Sibling test:
+  Total siblings tested: N
+  Passed: N (X%)
+  Most-consistent class: <precious metals | JPY crosses | indices>
+
+Third-period test (2021-2022):
+  GC=F:     [PASS|FAIL]
+  USDJPY=X: [PASS|FAIL]
+  ^GSPC:    [PASS|FAIL]
+  ^NDX:     [PASS|FAIL]
+
+Combined verdict:
+  Confirmed: N
+  Partial:   N
+  Failed:    N
+
+Interpretation:
+  <2-3 sentences. Is the edge real, ticker-specific, or dead?>
+=====
+```

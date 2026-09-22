@@ -1,0 +1,66 @@
+{
+  "generated_at": "2026-09-22T08:33:56.355027+00:00",
+  "strategy": "ma_cross",
+  "timeframe": "1d",
+  "rows": [
+    {
+      "symbol": "GC=F",
+      "strategy": "ma_cross",
+      "timeframe": "1d",
+      "holdout_start": "2021-01-01",
+      "holdout_end": "2023-01-01",
+      "sharpe": -0.09,
+      "trades": 32,
+      "total_return": -3.59,
+      "win_rate": 50.0,
+      "train_bars": 1074,
+      "test_bars": 503,
+      "pass": false
+    },
+    {
+      "symbol": "USDJPY=X",
+      "strategy": "ma_cross",
+      "timeframe": "1d",
+      "holdout_start": "2021-01-01",
+      "holdout_end": "2023-01-01",
+      "sharpe": 1.7,
+      "trades": 32,
+      "total_return": 28.46,
+      "win_rate": 50.0,
+      "train_bars": 1113,
+      "test_bars": 521,
+      "pass": true
+    },
+    {
+      "symbol": "^GSPC",
+      "strategy": "ma_cross",
+      "timeframe": "1d",
+      "holdout_start": "2021-01-01",
+      "holdout_end": "2023-01-01",
+      "sharpe": -0.22,
+      "trades": 34,
+      "total_return": -7.77,
+      "win_rate": 50.0,
+      "train_bars": 1077,
+      "test_bars": 503,
+      "pass": false
+    },
+    {
+      "symbol": "^NDX",
+      "strategy": "ma_cross",
+      "timeframe": "1d",
+      "holdout_start": "2021-01-01",
+      "holdout_end": "2023-01-01",
+      "sharpe": -0.35,
+      "trades": 36,
+      "total_return": -15.17,
+      "win_rate": 50.0,
+      "train_bars": 1077,
+      "test_bars": 503,
+      "pass": false
+    }
+  ],
+  "summary": {
+    "passed": 1
+  }
+}

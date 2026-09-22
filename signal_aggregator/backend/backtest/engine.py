@@ -273,8 +273,8 @@ def run_walk_forward(symbol, strategy, timeframe, train_months=12, test_months=2
     return output
 
 
-def run_holdout(symbol, strategy, timeframe, holdout_start, period='10y'):
-    """Train on data BEFORE holdout_start, test ONLY on data AFTER."""
+def run_holdout(symbol, strategy, timeframe, holdout_start, holdout_end=None, period='10y'):
+    """Test on data AFTER holdout_start (optionally bounded by holdout_end)."""
     hist = _fetch_history(symbol, timeframe, period)
     if hist.empty:
         print(f'No data for {symbol}')
@@ -284,8 +284,16 @@ def run_holdout(symbol, strategy, timeframe, holdout_start, period='10y'):
     if hist.index.tz is not None:
         holdout_dt = holdout_dt.tz_localize(hist.index.tz)
 
+    holdout_end_dt = None
+    if holdout_end is not None:
+        holdout_end_dt = pd.Timestamp(holdout_end)
+        if hist.index.tz is not None:
+            holdout_end_dt = holdout_end_dt.tz_localize(hist.index.tz)
+
     pre = hist[hist.index < holdout_dt]
     post = hist[hist.index >= holdout_dt]
+    if holdout_end_dt is not None:
+        post = post[post.index < holdout_end_dt]
 
     if len(pre) < 30:
         print(f'Not enough pre-holdout data ({len(pre)} bars)')
@@ -308,6 +316,7 @@ def run_holdout(symbol, strategy, timeframe, holdout_start, period='10y'):
         'strategy': strategy,
         'timeframe': timeframe,
         'holdout_start': holdout_start,
+        'holdout_end': holdout_end,
         'train_bars': len(pre),
         'test_bars': len(post),
         'total_return': round(total_return, 2),
@@ -326,7 +335,8 @@ def run_holdout(symbol, strategy, timeframe, holdout_start, period='10y'):
     with open('data/backtest/results_holdout.json', 'w') as f:
         json.dump(output, f, indent=2)
 
-    print(f'  Holdout: {holdout_start} to {str(post.index[-1])[:10]}, '
+    end_label = str(post.index[-1])[:10] if len(post) else '(empty)'
+    print(f'  Holdout: {holdout_start} -> {end_label}, '
           f'sharpe={sharpe_ratio:.2f}, ret={total_return:.2f}%, trades={len(trades)}')
 
     return output
@@ -340,13 +350,14 @@ if __name__ == '__main__':
     parser.add_argument('--period', default='10y')
     parser.add_argument('--walk-forward', action='store_true')
     parser.add_argument('--holdout-start', default=None)
+    parser.add_argument('--holdout-end', default=None)
     parser.add_argument('--wf-train-months', type=int, default=12)
     parser.add_argument('--wf-test-months', type=int, default=2)
     args = parser.parse_args()
 
     if args.holdout_start:
         result = run_holdout(args.symbol, args.strategy, args.timeframe,
-                             args.holdout_start, args.period)
+                             args.holdout_start, args.holdout_end, args.period)
         if result is None:
             sys.exit(1)
     elif args.walk_forward:
