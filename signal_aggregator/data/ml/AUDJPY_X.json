@@ -1,6 +1,6 @@
 {
   "symbol": "AUDJPY=X",
-  "trained_at": "2026-09-22T10:43:33.221972+00:00",
+  "trained_at": "2026-09-23T10:34:48.098685+00:00",
   "n_features": 35,
   "feature_cols": [
     "ret_1",
