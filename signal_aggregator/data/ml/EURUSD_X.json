@@ -1,6 +1,6 @@
 {
   "symbol": "EURUSD=X",
-  "trained_at": "2026-09-23T10:34:28.416904+00:00",
+  "trained_at": "2026-09-24T10:53:06.522463+00:00",
   "n_features": 35,
   "feature_cols": [
     "ret_1",
@@ -39,30 +39,30 @@
     "vol_percentile",
     "trend_strength"
   ],
-  "avg_accuracy": 0.675,
+  "avg_accuracy": 0.6458,
   "windows": [
     {
-      "window_start": "2025-10-09",
-      "window_end": "2026-01-02",
+      "window_start": "2025-10-10",
+      "window_end": "2026-01-05",
+      "accuracy": 0.6333,
+      "test_size": 60
+    },
+    {
+      "window_start": "2026-01-06",
+      "window_end": "2026-03-30",
+      "accuracy": 0.65,
+      "test_size": 60
+    },
+    {
+      "window_start": "2026-03-31",
+      "window_end": "2026-06-22",
+      "accuracy": 0.6333,
+      "test_size": 60
+    },
+    {
+      "window_start": "2026-06-23",
+      "window_end": "2026-09-14",
       "accuracy": 0.6667,
-      "test_size": 60
-    },
-    {
-      "window_start": "2026-01-05",
-      "window_end": "2026-03-27",
-      "accuracy": 0.6833,
-      "test_size": 60
-    },
-    {
-      "window_start": "2026-03-30",
-      "window_end": "2026-06-19",
-      "accuracy": 0.6667,
-      "test_size": 60
-    },
-    {
-      "window_start": "2026-06-22",
-      "window_end": "2026-09-11",
-      "accuracy": 0.6833,
       "test_size": 60
     }
   ]
