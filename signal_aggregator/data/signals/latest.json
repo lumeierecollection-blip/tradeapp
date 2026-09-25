@@ -1,11 +1,11 @@
 {
-  "timestamp": "2026-09-25T13:23:26Z",
+  "timestamp": "2026-09-25T19:55:17Z",
   "signals": [
     {
       "symbol": "EURUSD=X",
       "signal": "HOLD",
       "confidence": 0.5,
-      "price": 1.1404,
+      "price": 1.14,
       "strategies": {
         "ma_cross": "SELL",
         "rsi_bollinger": "BUY",
@@ -23,7 +23,7 @@
       "symbol": "GBPUSD=X",
       "signal": "HOLD",
       "confidence": 0.5,
-      "price": 1.3257,
+      "price": 1.3252,
       "strategies": {
         "ma_cross": "SELL",
         "rsi_bollinger": "BUY",
@@ -41,7 +41,7 @@
       "symbol": "USDJPY=X",
       "signal": "HOLD",
       "confidence": 0.65,
-      "price": 157.135,
+      "price": 157.22,
       "strategies": {
         "ma_cross": "BUY",
         "rsi_bollinger": "HOLD",
@@ -59,7 +59,7 @@
       "symbol": "AUDUSD=X",
       "signal": "HOLD",
       "confidence": 0.5,
-      "price": 0.7027,
+      "price": 0.7031,
       "strategies": {
         "ma_cross": "SELL",
         "rsi_bollinger": "BUY",
@@ -77,7 +77,7 @@
       "symbol": "GBPJPY=X",
       "signal": "SELL",
       "confidence": 0.35,
-      "price": 208.279,
+      "price": 208.339,
       "strategies": {
         "ma_cross": "SELL",
         "rsi_bollinger": "HOLD",
@@ -95,7 +95,7 @@
       "symbol": "EURJPY=X",
       "signal": "SELL",
       "confidence": 0.35,
-      "price": 179.139,
+      "price": 179.186,
       "strategies": {
         "ma_cross": "SELL",
         "rsi_bollinger": "HOLD",
@@ -113,7 +113,7 @@
       "symbol": "AUDJPY=X",
       "signal": "SELL",
       "confidence": 0.35,
-      "price": 110.383,
+      "price": 110.499,
       "strategies": {
         "ma_cross": "SELL",
         "rsi_bollinger": "HOLD",
@@ -149,7 +149,7 @@
       "symbol": "USDCAD=X",
       "signal": "HOLD",
       "confidence": 0.5,
-      "price": 1.4143,
+      "price": 1.4145,
       "strategies": {
         "ma_cross": "BUY",
         "rsi_bollinger": "SELL",
@@ -167,7 +167,7 @@
       "symbol": "GC=F",
       "signal": "HOLD",
       "confidence": 0.5,
-      "price": 4331.3999,
+      "price": 4328.1001,
       "strategies": {
         "ma_cross": "SELL",
         "rsi_bollinger": "HOLD",
@@ -185,7 +185,7 @@
       "symbol": "SI=F",
       "signal": "HOLD",
       "confidence": 0.5,
-      "price": 65.085,
+      "price": 64.84,
       "strategies": {
         "ma_cross": "SELL",
         "rsi_bollinger": "HOLD",
@@ -203,7 +203,7 @@
       "symbol": "CL=F",
       "signal": "HOLD",
       "confidence": 0.5,
-      "price": 92.45,
+      "price": 92.35,
       "strategies": {
         "ma_cross": "SELL",
         "rsi_bollinger": "HOLD",
@@ -221,7 +221,7 @@
       "symbol": "NG=F",
       "signal": "HOLD",
       "confidence": 0.5,
-      "price": 3.247,
+      "price": 3.231,
       "strategies": {
         "ma_cross": "BUY",
         "rsi_bollinger": "HOLD",
@@ -239,7 +239,7 @@
       "symbol": "BTC-USD",
       "signal": "HOLD",
       "confidence": 0.5,
-      "price": 84255.3516,
+      "price": 84009.1328,
       "strategies": {
         "ma_cross": "BUY",
         "rsi_bollinger": "HOLD",
@@ -257,7 +257,7 @@
       "symbol": "ETH-USD",
       "signal": "HOLD",
       "confidence": 0.5,
-      "price": 2708.25,
+      "price": 2693.0701,
       "strategies": {
         "ma_cross": "BUY",
         "rsi_bollinger": "HOLD",
@@ -275,7 +275,7 @@
       "symbol": "SOL-USD",
       "signal": "HOLD",
       "confidence": 0.35,
-      "price": 119.98,
+      "price": 121.68,
       "strategies": {
         "ma_cross": "BUY",
         "rsi_bollinger": "SELL",
@@ -293,7 +293,7 @@
       "symbol": "BNB-USD",
       "signal": "HOLD",
       "confidence": 0.5,
-      "price": 776.15,
+      "price": 775.12,
       "strategies": {
         "ma_cross": "BUY",
         "rsi_bollinger": "HOLD",
@@ -311,7 +311,7 @@
       "symbol": "^GSPC",
       "signal": "HOLD",
       "confidence": 0.5,
-      "price": 7704.1299,
+      "price": 7747.3999,
       "strategies": {
         "ma_cross": "BUY",
         "rsi_bollinger": "HOLD",
@@ -329,7 +329,7 @@
       "symbol": "^NDX",
       "signal": "HOLD",
       "confidence": 0.5,
-      "price": 30478.8594,
+      "price": 30626.3535,
       "strategies": {
         "ma_cross": "BUY",
         "rsi_bollinger": "HOLD",
@@ -347,7 +347,7 @@
       "symbol": "^RUT",
       "signal": "HOLD",
       "confidence": 0.5,
-      "price": 2835.5701,
+      "price": 2842.4197,
       "strategies": {
         "ma_cross": "SELL",
         "rsi_bollinger": "BUY",
