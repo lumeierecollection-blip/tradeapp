@@ -1,6 +1,6 @@
 {
   "symbol": "ETH-USD",
-  "trained_at": "2026-09-24T10:53:44.714520+00:00",
+  "trained_at": "2026-09-25T10:56:11.091225+00:00",
   "n_features": 35,
   "feature_cols": [
     "ret_1",
@@ -39,48 +39,48 @@
     "vol_percentile",
     "trend_strength"
   ],
-  "avg_accuracy": 0.4143,
+  "avg_accuracy": 0.4357,
   "windows": [
     {
-      "window_start": "2025-06-21",
-      "window_end": "2025-08-19",
-      "accuracy": 0.35,
-      "test_size": 60
-    },
-    {
-      "window_start": "2025-08-20",
-      "window_end": "2025-10-18",
-      "accuracy": 0.25,
-      "test_size": 60
-    },
-    {
-      "window_start": "2025-10-19",
-      "window_end": "2025-12-17",
+      "window_start": "2025-06-22",
+      "window_end": "2025-08-20",
       "accuracy": 0.4333,
       "test_size": 60
     },
     {
-      "window_start": "2025-12-18",
-      "window_end": "2026-02-15",
-      "accuracy": 0.4833,
+      "window_start": "2025-08-21",
+      "window_end": "2025-10-19",
+      "accuracy": 0.2833,
       "test_size": 60
     },
     {
-      "window_start": "2026-02-16",
-      "window_end": "2026-04-16",
-      "accuracy": 0.3833,
+      "window_start": "2025-10-20",
+      "window_end": "2025-12-18",
+      "accuracy": 0.45,
       "test_size": 60
     },
     {
-      "window_start": "2026-04-17",
-      "window_end": "2026-06-15",
-      "accuracy": 0.5833,
+      "window_start": "2025-12-19",
+      "window_end": "2026-02-16",
+      "accuracy": 0.4333,
       "test_size": 60
     },
     {
-      "window_start": "2026-06-16",
-      "window_end": "2026-08-14",
-      "accuracy": 0.4167,
+      "window_start": "2026-02-17",
+      "window_end": "2026-04-17",
+      "accuracy": 0.45,
+      "test_size": 60
+    },
+    {
+      "window_start": "2026-04-18",
+      "window_end": "2026-06-16",
+      "accuracy": 0.5333,
+      "test_size": 60
+    },
+    {
+      "window_start": "2026-06-17",
+      "window_end": "2026-08-15",
+      "accuracy": 0.4667,
       "test_size": 60
     }
   ]
