@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-09-25T23:10:44Z",
+  "timestamp": "2026-09-26T04:07:08Z",
   "signals": [
     {
       "symbol": "EURUSD=X",
@@ -167,7 +167,7 @@
       "symbol": "GC=F",
       "signal": "HOLD",
       "confidence": 0.5,
-      "price": 4320.5,
+      "price": 4321.2002,
       "strategies": {
         "ma_cross": "SELL",
         "rsi_bollinger": "HOLD",
@@ -185,7 +185,7 @@
       "symbol": "SI=F",
       "signal": "HOLD",
       "confidence": 0.5,
-      "price": 64.71,
+      "price": 64.245,
       "strategies": {
         "ma_cross": "SELL",
         "rsi_bollinger": "HOLD",
@@ -203,7 +203,7 @@
       "symbol": "CL=F",
       "signal": "HOLD",
       "confidence": 0.5,
-      "price": 92.44,
+      "price": 92.41,
       "strategies": {
         "ma_cross": "SELL",
         "rsi_bollinger": "HOLD",
@@ -221,7 +221,7 @@
       "symbol": "NG=F",
       "signal": "HOLD",
       "confidence": 0.5,
-      "price": 3.251,
+      "price": 3.196,
       "strategies": {
         "ma_cross": "BUY",
         "rsi_bollinger": "HOLD",
@@ -239,7 +239,7 @@
       "symbol": "BTC-USD",
       "signal": "HOLD",
       "confidence": 0.5,
-      "price": 84079.2422,
+      "price": 83984.7969,
       "strategies": {
         "ma_cross": "BUY",
         "rsi_bollinger": "HOLD",
@@ -257,7 +257,7 @@
       "symbol": "ETH-USD",
       "signal": "HOLD",
       "confidence": 0.5,
-      "price": 2693.0801,
+      "price": 2689.3999,
       "strategies": {
         "ma_cross": "BUY",
         "rsi_bollinger": "HOLD",
@@ -275,7 +275,7 @@
       "symbol": "SOL-USD",
       "signal": "HOLD",
       "confidence": 0.35,
-      "price": 122.11,
+      "price": 120.84,
       "strategies": {
         "ma_cross": "BUY",
         "rsi_bollinger": "SELL",
@@ -293,7 +293,7 @@
       "symbol": "BNB-USD",
       "signal": "HOLD",
       "confidence": 0.5,
-      "price": 776.43,
+      "price": 774.32,
       "strategies": {
         "ma_cross": "BUY",
         "rsi_bollinger": "HOLD",
@@ -329,7 +329,7 @@
       "symbol": "^NDX",
       "signal": "HOLD",
       "confidence": 0.5,
-      "price": 30608.1348,
+      "price": 30608.1309,
       "strategies": {
         "ma_cross": "BUY",
         "rsi_bollinger": "HOLD",
@@ -347,7 +347,7 @@
       "symbol": "^RUT",
       "signal": "HOLD",
       "confidence": 0.5,
-      "price": 2837.552,
+      "price": 2837.55,
       "strategies": {
         "ma_cross": "SELL",
         "rsi_bollinger": "BUY",
