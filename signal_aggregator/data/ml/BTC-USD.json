@@ -1,6 +1,6 @@
 {
   "symbol": "BTC-USD",
-  "trained_at": "2026-09-26T10:36:31.803503+00:00",
+  "trained_at": "2026-09-27T11:09:21.744252+00:00",
   "n_features": 35,
   "feature_cols": [
     "ret_1",
@@ -39,48 +39,48 @@
     "vol_percentile",
     "trend_strength"
   ],
-  "avg_accuracy": 0.4286,
+  "avg_accuracy": 0.4214,
   "windows": [
     {
-      "window_start": "2025-06-23",
-      "window_end": "2025-08-21",
-      "accuracy": 0.4,
+      "window_start": "2025-06-24",
+      "window_end": "2025-08-22",
+      "accuracy": 0.4167,
       "test_size": 60
     },
     {
-      "window_start": "2025-08-22",
-      "window_end": "2025-10-20",
+      "window_start": "2025-08-23",
+      "window_end": "2025-10-21",
       "accuracy": 0.4833,
       "test_size": 60
     },
     {
-      "window_start": "2025-10-21",
-      "window_end": "2025-12-19",
-      "accuracy": 0.4,
+      "window_start": "2025-10-22",
+      "window_end": "2025-12-20",
+      "accuracy": 0.3833,
       "test_size": 60
     },
     {
-      "window_start": "2025-12-20",
-      "window_end": "2026-02-17",
-      "accuracy": 0.3167,
+      "window_start": "2025-12-21",
+      "window_end": "2026-02-18",
+      "accuracy": 0.3333,
       "test_size": 60
     },
     {
-      "window_start": "2026-02-18",
-      "window_end": "2026-04-18",
-      "accuracy": 0.4833,
+      "window_start": "2026-02-19",
+      "window_end": "2026-04-19",
+      "accuracy": 0.4333,
       "test_size": 60
     },
     {
-      "window_start": "2026-04-19",
-      "window_end": "2026-06-17",
-      "accuracy": 0.55,
+      "window_start": "2026-04-20",
+      "window_end": "2026-06-18",
+      "accuracy": 0.4667,
       "test_size": 60
     },
     {
-      "window_start": "2026-06-18",
-      "window_end": "2026-08-16",
-      "accuracy": 0.3667,
+      "window_start": "2026-06-19",
+      "window_end": "2026-08-17",
+      "accuracy": 0.4333,
       "test_size": 60
     }
   ]

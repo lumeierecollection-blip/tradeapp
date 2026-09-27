@@ -1,6 +1,6 @@
 {
   "symbol": "GBPJPY=X",
-  "trained_at": "2026-09-26T10:36:11.127472+00:00",
+  "trained_at": "2026-09-27T11:09:01.037817+00:00",
   "n_features": 35,
   "feature_cols": [
     "ret_1",
@@ -42,27 +42,27 @@
   "avg_accuracy": 0.4875,
   "windows": [
     {
-      "window_start": "2025-10-14",
-      "window_end": "2026-01-07",
-      "accuracy": 0.45,
+      "window_start": "2025-10-15",
+      "window_end": "2026-01-08",
+      "accuracy": 0.4333,
       "test_size": 60
     },
     {
-      "window_start": "2026-01-08",
-      "window_end": "2026-04-01",
-      "accuracy": 0.5667,
+      "window_start": "2026-01-09",
+      "window_end": "2026-04-02",
+      "accuracy": 0.65,
       "test_size": 60
     },
     {
-      "window_start": "2026-04-02",
-      "window_end": "2026-06-24",
-      "accuracy": 0.4167,
+      "window_start": "2026-04-03",
+      "window_end": "2026-06-25",
+      "accuracy": 0.4,
       "test_size": 60
     },
     {
-      "window_start": "2026-06-25",
-      "window_end": "2026-09-16",
-      "accuracy": 0.5167,
+      "window_start": "2026-06-26",
+      "window_end": "2026-09-17",
+      "accuracy": 0.4667,
       "test_size": 60
     }
   ]
