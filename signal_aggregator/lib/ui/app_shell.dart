@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 
 import 'screens/backtest_screen.dart';
-import 'screens/model_signals_screen.dart';
-import 'screens/portfolio_screen.dart';
-import 'screens/review_screen.dart';
-import 'screens/settings_screen.dart';
-import 'screens/signals_screen.dart';
+import 'screens/more_screen.dart';
+import 'screens/portfolio_hub_screen.dart';
+import 'screens/signals_hub_screen.dart';
 
 class AppShell extends StatefulWidget {
   const AppShell({super.key});
@@ -22,12 +20,10 @@ class _AppShellState extends State<AppShell> {
   @override
   Widget build(BuildContext context) {
     const pages = [
-      ModelSignalsScreen(),
-      SignalsScreen(),
-      PortfolioScreen(),
+      SignalsHubScreen(),
       BacktestScreen(),
-      ReviewScreen(),
-      SettingsScreen(),
+      PortfolioHubScreen(),
+      MoreScreen(),
     ];
 
     return Scaffold(
@@ -45,12 +41,10 @@ class _AppShellState extends State<AppShell> {
               onDestinationSelected: _changeTab,
               backgroundColor: const Color(0xFF121212),
               destinations: const [
-                NavigationDestination(icon: Icon(Icons.insights_outlined), selectedIcon: Icon(Icons.insights), label: 'Model'),
-                NavigationDestination(icon: Icon(Icons.radar_outlined), selectedIcon: Icon(Icons.radar), label: 'Signals'),
-                NavigationDestination(icon: Icon(Icons.account_balance_wallet_outlined), selectedIcon: Icon(Icons.account_balance_wallet), label: 'Portfolio'),
-                NavigationDestination(icon: Icon(Icons.history_outlined), selectedIcon: Icon(Icons.history), label: 'Backtest'),
-                NavigationDestination(icon: Icon(Icons.fact_check_outlined), selectedIcon: Icon(Icons.fact_check), label: 'Review'),
-                NavigationDestination(icon: Icon(Icons.settings_outlined), selectedIcon: Icon(Icons.settings), label: 'Settings'),
+                NavigationDestination(icon: Icon(Icons.show_chart), label: 'Signals'),
+                NavigationDestination(icon: Icon(Icons.analytics), label: 'Backtest'),
+                NavigationDestination(icon: Icon(Icons.account_balance_wallet), label: 'Portfolio'),
+                NavigationDestination(icon: Icon(Icons.more_horiz), label: 'More'),
               ],
             ),
           ),

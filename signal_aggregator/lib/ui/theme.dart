@@ -189,6 +189,18 @@ class AppTheme {
   static String fmtPrice(double v) =>
       v >= 1000 ? v.toStringAsFixed(0) : v >= 1 ? v.toStringAsFixed(4) : v.toStringAsExponential(2);
 
+  /// Price for a Yahoo ticker. FX: 5 decimals (3 for JPY pairs, per pip
+  /// convention); indices, crypto and futures: 2, or 4 for sub-10 prices.
+  static String fmtQuote(String symbol, double price) {
+    final int decimals;
+    if (symbol.endsWith('=X')) {
+      decimals = symbol.contains('JPY') ? 3 : 5;
+    } else {
+      decimals = price < 10 ? 4 : 2;
+    }
+    return price.toStringAsFixed(decimals);
+  }
+
   /// "14:32" — exact clock time, local.
   static String fmtClock(DateTime time) {
     final local = time.toLocal();

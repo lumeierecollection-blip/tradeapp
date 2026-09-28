@@ -1,14 +1,26 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import '../../services/github_data_service.dart';
+import '../../services/price_history_service.dart';
 import '../theme.dart';
+import '../widgets/price_chart.dart';
+import 'signal_detail_screen.dart';
 
 /// Model-published signals (ml_latest.json, falling back to the rule-based
 /// latest.json) fetched from GitHub. Display only — nothing here trades.
 class ModelSignalsScreen extends StatefulWidget {
   final GithubDataService? data;
+  final PriceHistoryService? priceHistory;
+  final Duration refreshInterval;
 
-  const ModelSignalsScreen({super.key, this.data});
+  const ModelSignalsScreen({
+    super.key,
+    this.data,
+    this.priceHistory,
+    this.refreshInterval = const Duration(seconds: 60),
+  });
 
   @override
   State<ModelSignalsScreen> createState() => _ModelSignalsScreenState();
@@ -22,15 +34,39 @@ class _ModelSignalsScreenState extends State<ModelSignalsScreen> {
   DateTime? _timestamp;
   bool _isMl = false;
   String? _filter; // null = All
+  Timer? _refreshTimer;
+  DateTime? _lastUpdate;
 
   @override
   void initState() {
     super.initState();
-    _load();
+    _load().whenComplete(() {
+      if (mounted) _startTimer();
+    });
   }
 
-  Future<void> _load({bool force = false}) async {
-    setState(() { _loading = true; _error = false; });
+  @override
+  void dispose() {
+    _refreshTimer?.cancel();
+    super.dispose();
+  }
+
+  void _startTimer() {
+    _refreshTimer?.cancel();
+    _refreshTimer = Timer.periodic(widget.refreshInterval, (_) => _refresh());
+  }
+
+  /// Timer tick: re-fetch past the cache without blanking the list.
+  Future<void> _refresh() => _load(force: true, silent: true);
+
+  /// Manual refresh (button / pull): fetch now and restart the countdown.
+  Future<void> _refreshNow() async {
+    _startTimer();
+    await _load(force: true, silent: !_error && _signals.isNotEmpty);
+  }
+
+  Future<void> _load({bool force = false, bool silent = false}) async {
+    if (!silent) setState(() { _loading = true; _error = false; });
     final results = await Future.wait([
       _data.getMlSignals(force: force),
       _data.getLatestSignals(force: force),
@@ -51,6 +87,7 @@ class _ModelSignalsScreenState extends State<ModelSignalsScreen> {
       _isMl = useMl;
       _signals = (useMl ? mlSignals : rulesSignals) ?? [];
       _timestamp = DateTime.tryParse(source['timestamp']?.toString() ?? '');
+      _lastUpdate = DateTime.now();
     });
   }
 
@@ -69,14 +106,14 @@ class _ModelSignalsScreenState extends State<ModelSignalsScreen> {
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh),
-            onPressed: _loading ? null : () => _load(force: true),
+            onPressed: _loading ? null : _refreshNow,
           ),
         ],
       ),
       body: _loading
           ? const Center(child: CircularProgressIndicator())
           : RefreshIndicator(
-              onRefresh: () => _load(force: true),
+              onRefresh: _refreshNow,
               child: _error
                   ? _centered(
                       children: [
@@ -86,7 +123,7 @@ class _ModelSignalsScreenState extends State<ModelSignalsScreen> {
                             textAlign: TextAlign.center,
                             style: TextStyle(color: AppTheme.textSecondary)),
                         const SizedBox(height: 16),
-                        FilledButton(onPressed: () => _load(force: true), child: const Text('Retry')),
+                        FilledButton(onPressed: _refreshNow, child: const Text('Retry')),
                       ],
                     )
                   : _signals.isEmpty
@@ -135,7 +172,9 @@ class _ModelSignalsScreenState extends State<ModelSignalsScreen> {
       padding: const EdgeInsets.all(12),
       children: [
         _freshnessBanner(),
-        const SizedBox(height: 12),
+        const SizedBox(height: 8),
+        _statusRow(),
+        const SizedBox(height: 4),
         _filterChips(),
         const SizedBox(height: 8),
         if (visible.isEmpty)
@@ -232,6 +271,34 @@ class _ModelSignalsScreenState extends State<ModelSignalsScreen> {
     }
   }
 
+  Widget _statusRow() {
+    final t = _lastUpdate;
+    final stamp = t == null
+        ? '—'
+        : '${t.hour.toString().padLeft(2, '0')}:${t.minute.toString().padLeft(2, '0')}:${t.second.toString().padLeft(2, '0')}';
+    return Row(
+      children: [
+        Expanded(
+          // Keyed on the update time so the text flashes accent → muted on every refresh.
+          child: TweenAnimationBuilder<Color?>(
+            key: ValueKey(t),
+            tween: ColorTween(begin: AppTheme.accent2, end: AppTheme.textMuted),
+            duration: const Duration(milliseconds: 900),
+            builder: (context, color, _) => Text(
+              'Auto-refresh every ${widget.refreshInterval.inSeconds}s • last update $stamp',
+              style: TextStyle(fontSize: 11, color: color),
+            ),
+          ),
+        ),
+        TextButton.icon(
+          onPressed: _loading ? null : _refreshNow,
+          icon: const Icon(Icons.refresh, size: 16),
+          label: const Text('Refresh now', style: TextStyle(fontSize: 12)),
+        ),
+      ],
+    );
+  }
+
   Widget _signalCard(Map<String, dynamic> s) {
     final symbol = (s['symbol'] ?? '').toString();
     final signal = (s['signal'] ?? 'HOLD').toString().toUpperCase();
@@ -241,38 +308,57 @@ class _ModelSignalsScreenState extends State<ModelSignalsScreen> {
     final color = _signalColor(signal);
 
     return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Row(
-          children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        onTap: () => Navigator.of(context).push(MaterialPageRoute(
+          builder: (_) => SignalDetailScreen(signal: s, priceHistory: widget.priceHistory),
+        )),
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            children: [
+              Row(
                 children: [
-                  Text(symbol, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w800)),
-                  const SizedBox(height: 4),
-                  Row(
-                    children: [
-                      Text(price is num ? _formatPrice(symbol, price.toDouble()) : '—',
-                          style: const TextStyle(fontSize: 13, color: AppTheme.textSecondary)),
-                      if (regime != null) ...[
-                        const SizedBox(width: 8),
-                        _pill(regime.toString(), AppTheme.textSecondary),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(symbol, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w800)),
+                        const SizedBox(height: 4),
+                        Row(
+                          children: [
+                            Text(price is num ? AppTheme.fmtQuote(symbol, price.toDouble()) : '—',
+                                style: const TextStyle(fontSize: 13, color: AppTheme.textSecondary)),
+                            if (regime != null) ...[
+                              const SizedBox(width: 8),
+                              _pill(regime.toString(), AppTheme.textSecondary),
+                            ],
+                          ],
+                        ),
                       ],
+                    ),
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      _pill(signal, color, filled: true),
+                      const SizedBox(height: 6),
+                      if (confidence is num) _confidenceText(confidence.toDouble()),
                     ],
                   ),
                 ],
               ),
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                _pill(signal, color, filled: true),
-                const SizedBox(height: 6),
-                if (confidence is num) _confidenceText(confidence.toDouble()),
-              ],
-            ),
-          ],
+              const SizedBox(height: 10),
+              SizedBox(
+                height: 40,
+                child: PriceHistoryChart(
+                  symbol: symbol,
+                  color: signalLineColor(signal),
+                  service: widget.priceHistory,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -301,17 +387,5 @@ class _ModelSignalsScreenState extends State<ModelSignalsScreen> {
       child: Text(text,
           style: TextStyle(fontSize: filled ? 12 : 10, fontWeight: FontWeight.w700, color: color, letterSpacing: 0.5)),
     );
-  }
-
-  /// FX: 5 decimals (3 for JPY pairs, per pip convention); indices, crypto and
-  /// futures: 2, or 4 for sub-10 prices.
-  static String _formatPrice(String symbol, double price) {
-    final int decimals;
-    if (symbol.endsWith('=X')) {
-      decimals = symbol.contains('JPY') ? 3 : 5;
-    } else {
-      decimals = price < 10 ? 4 : 2;
-    }
-    return price.toStringAsFixed(decimals);
   }
 }
