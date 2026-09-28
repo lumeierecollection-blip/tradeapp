@@ -146,7 +146,7 @@ class _BacktestScreenState extends State<BacktestScreen> {
             child: Text(
               'In-sample results are misleading. Only combinations with avg_sharpe > 0.5 AND '
               '% positive >= 50% AND windows >= 3 are candidates. '
-              'Currently: ${_survivorCount} combos meet this bar.',
+              'Currently: $_survivorCount combos meet this bar.',
               style: const TextStyle(fontSize: 12, color: AppTheme.textPrimary, height: 1.4),
             ),
           ),
@@ -340,7 +340,7 @@ class _BacktestScreenState extends State<BacktestScreen> {
             ),
         ],
       ),
-      onSort: (_, __) => _sort(field),
+      onSort: (_, _) => _sort(field),
     );
   }
 }
