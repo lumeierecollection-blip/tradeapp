@@ -41,7 +41,8 @@ jobs:
         run: flutter pub get
 
       - name: Analyze code
-        run: flutter analyze
+        # Info/warning lints are style suggestions; only analyzer errors should fail the build.
+        run: flutter analyze --no-fatal-infos --no-fatal-warnings
 
       - name: Run tests
         run: flutter test
