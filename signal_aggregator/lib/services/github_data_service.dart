@@ -29,6 +29,10 @@ class GithubDataService {
     return _fetchCached('wf_matrix', '$_baseUrl/data/backtest/wf_matrix.json', (data) => data);
   }
 
+  Future<Map<String, dynamic>> getValidationSummary() async {
+    return _fetchCached('validation', '$_baseUrl/data/backtest/validation_summary.json', (data) => data);
+  }
+
   Future<List<dynamic>> getTradeHistory() async {
     return _fetchCached('trades', '$_baseUrl/data/trades/history.json', (data) => data);
   }

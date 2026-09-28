@@ -21,8 +21,8 @@ class MarketSnapshot {
 
   final DateTime at;
 
-  /// Where the price came from: 'binance' for a full snapshot, 'yahoo' for a
-  /// degraded price-only fallback.
+  /// Where the price came from: 'yahoo' for a full snapshot, 'yahoo-spot' for
+  /// a degraded price-only fallback.
   final String source;
 
   /// True when this data can't be trusted as current — a reused past-TTL cache
@@ -44,7 +44,7 @@ class MarketSnapshot {
     this.atrPct = 0,
     this.recentVolumeRatio = 1.0,
     required this.at,
-    this.source = 'binance',
+    this.source = 'yahoo',
     this.stale = false,
   });
 
@@ -109,7 +109,7 @@ class MarketSnapshot {
         atrPct: (json['atrPct'] as num?)?.toDouble() ?? 0,
         recentVolumeRatio: (json['recentVolumeRatio'] as num?)?.toDouble() ?? 1.0,
         at: DateTime.parse(json['at'] as String),
-        source: json['source'] as String? ?? 'binance',
+        source: json['source'] as String? ?? 'yahoo',
         stale: json['stale'] as bool? ?? false,
       );
 }

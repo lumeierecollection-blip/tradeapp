@@ -6,6 +6,9 @@ import subprocess
 import sys
 from datetime import datetime, UTC
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from paths import BACKTEST_DIR, ENGINE  # noqa: E402
+
 SYMBOLS = [
     'EURUSD=X', 'GBPUSD=X', 'USDJPY=X', 'AUDUSD=X',
     'GBPJPY=X', 'EURJPY=X', 'AUDJPY=X', 'NZDUSD=X', 'USDCAD=X',
@@ -15,7 +18,7 @@ SYMBOLS = [
 ]
 STRATEGIES = ['ma_cross', 'rsi']
 TIMEFRAMES = ['1h', '1d']
-OUTPUT = 'data/backtest/wf_matrix.json'
+OUTPUT = BACKTEST_DIR / 'wf_matrix.json'
 WF_TRAIN = 12
 WF_TEST = 2
 
@@ -27,7 +30,7 @@ def main():
 
     holdout = args.holdout_start
     if holdout:
-        OUTPUT_PATH = 'data/backtest/holdout_matrix.json'
+        OUTPUT_PATH = BACKTEST_DIR / 'holdout_matrix.json'
     else:
         OUTPUT_PATH = OUTPUT
 
@@ -43,12 +46,12 @@ def main():
                 print(f'[{done}/{total}] {key} ...', end=' ', flush=True)
                 try:
                     if holdout:
-                        out_path = 'data/backtest/results_holdout.json'
+                        out_path = BACKTEST_DIR / 'results_holdout.json'
                     else:
-                        out_path = 'data/backtest/walkforward.json'
+                        out_path = BACKTEST_DIR / 'walkforward.json'
                     if os.path.exists(out_path):
                         os.remove(out_path)
-                    cmd = [sys.executable, 'signal_aggregator/backend/backtest/engine.py',
+                    cmd = [sys.executable, str(ENGINE),
                            '--symbol', s, '--strategy', st, '--timeframe', tf]
                     if holdout:
                         cmd += ['--holdout-start', holdout]

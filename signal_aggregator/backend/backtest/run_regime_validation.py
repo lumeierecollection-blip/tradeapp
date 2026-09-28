@@ -67,10 +67,6 @@ def base_val(rows, key):
 def main():
     wf_base = vc.read_json(vc.BACKTEST_DIR / 'wf_matrix.json', {'rows': []})
     ho23_base = vc.read_json(vc.BACKTEST_DIR / 'holdout_matrix.json', {'rows': []})
-    if not ho23_base['rows']:
-        ho23_base = vc.read_json(
-            vc.REPO_ROOT / 'signal_aggregator' / 'data' / 'backtest' / 'holdout_matrix.json',
-            {'rows': []})
     ho21_base = vc.read_json(vc.BACKTEST_DIR / 'holdout_21_22.json', {'rows': []})
 
     tests = ['WF', 'HO23-26', 'HO21-22']

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
+import '../../services/market_service.dart';
 import '../../state/app_state.dart';
 import '../theme.dart';
 
@@ -13,10 +14,7 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
-  static const List<String> _allCoins = [
-    'BTC', 'ETH', 'SOL', 'BNB', 'XRP', 'ADA', 'DOGE', 'AVAX', 'LINK',
-    'DOT', 'MATIC', 'LTC', 'UNI', 'ARB', 'OP', 'SHIB', 'TRX', 'NEAR', 'APT', 'FIL',
-  ];
+  static final List<String> _allCoins = MarketService.allSymbols;
 
   final _channelController = TextEditingController();
   final _balanceController = TextEditingController();

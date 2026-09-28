@@ -1,0 +1,43 @@
+name: Weekly Validation
+on:
+  schedule: [{ cron: '0 2 * * 0' }]
+  workflow_dispatch:
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    permissions: { contents: write }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.11' }
+      - run: pip install pandas numpy requests yfinance lightgbm
+      # Per-step timeouts sum to < 240 so validation_summary + commit always get to run.
+      - name: Walk-forward matrix
+        continue-on-error: true
+        timeout-minutes: 120
+        run: python signal_aggregator/backend/backtest/run_wf_matrix.py
+      - name: Holdout matrix 2023-2026 (read by validation_summary)
+        continue-on-error: true
+        timeout-minutes: 60
+        run: python signal_aggregator/backend/backtest/run_wf_matrix.py --holdout-start 2023-01-01
+      - name: Third period 2021-2022
+        continue-on-error: true
+        timeout-minutes: 20
+        run: python signal_aggregator/backend/backtest/run_third_period.py
+      - name: Sibling-asset check
+        continue-on-error: true
+        timeout-minutes: 30
+        run: python signal_aggregator/backend/backtest/run_sibling_check.py
+      - name: Validation summary
+        run: python signal_aggregator/backend/backtest/validation_summary.py
+      - name: Commit results
+        if: always()
+        run: |
+          git config user.name  "GitHub Actions"
+          git config user.email "actions@github.com"
+          git add signal_aggregator/data/backtest/
+          git commit -m "Update weekly validation [skip ci]" || { echo "no changes"; exit 0; }
+          # Signal workflows push every 4h; rebase onto them so a long run can still push.
+          git pull --rebase origin main
+          git push

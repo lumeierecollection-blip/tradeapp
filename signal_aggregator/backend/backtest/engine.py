@@ -10,6 +10,9 @@ import numpy as np
 import pandas as pd
 import yfinance as yf
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from paths import BACKTEST_DIR
+
 
 def compute_atr(df, period=14):
     high = df['High']
@@ -195,8 +198,7 @@ def run_backtest(symbol, strategy, timeframe, period='10y', regime_filter=False)
         'exit_reason_counts': exit_reason_counts,
     }
 
-    os.makedirs(os.path.dirname('data/backtest/results.json'), exist_ok=True)
-    with open('data/backtest/results.json', 'w') as f:
+    with open(BACKTEST_DIR / 'results.json', 'w') as f:
         json.dump(results, f, indent=2)
 
     return results
@@ -293,8 +295,7 @@ def run_walk_forward(symbol, strategy, timeframe, train_months=12, test_months=2
         'pct_windows_positive': round(pct_positive, 1),
     }
 
-    os.makedirs('data/backtest', exist_ok=True)
-    with open('data/backtest/walkforward.json', 'w') as f:
+    with open(BACKTEST_DIR / 'walkforward.json', 'w') as f:
         json.dump(output, f, indent=2)
 
     for w in window_results:
@@ -367,8 +368,7 @@ def run_holdout(symbol, strategy, timeframe, holdout_start, holdout_end=None, pe
         'test_end': str(post.index[-1]),
     }
 
-    os.makedirs('data/backtest', exist_ok=True)
-    with open('data/backtest/results_holdout.json', 'w') as f:
+    with open(BACKTEST_DIR / 'results_holdout.json', 'w') as f:
         json.dump(output, f, indent=2)
 
     end_label = str(post.index[-1])[:10] if len(post) else '(empty)'

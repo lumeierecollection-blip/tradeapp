@@ -6,6 +6,9 @@ import subprocess
 import sys
 from datetime import datetime
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from paths import BACKTEST_DIR, ENGINE  # noqa: E402
+
 SYMBOLS = [
     'EURUSD=X', 'GBPUSD=X', 'USDJPY=X', 'AUDUSD=X',
     'GBPJPY=X', 'EURJPY=X', 'AUDJPY=X', 'NZDUSD=X', 'USDCAD=X',
@@ -15,7 +18,7 @@ SYMBOLS = [
 ]
 STRATEGIES = ['ma_cross', 'rsi']
 TIMEFRAMES = ['1h', '1d']
-OUTPUT = 'signal_aggregator/data/backtest/matrix.json'
+OUTPUT = BACKTEST_DIR / 'matrix.json'
 
 def main():
     results = []
@@ -26,14 +29,14 @@ def main():
                 key = f"{symbol}|{strategy}|{tf}"
                 try:
                     r = subprocess.run(
-                        [sys.executable, 'signal_aggregator/backend/backtest/engine.py',
+                        [sys.executable, str(ENGINE),
                          '--symbol', symbol, '--strategy', strategy, '--timeframe', tf],
                         capture_output=True, text=True, timeout=120
                     )
                     if r.returncode != 0:
                         failures.append({'key': key, 'error': r.stderr[-400:]})
                         continue
-                    with open('data/backtest/results.json') as f:
+                    with open(BACKTEST_DIR / 'results.json') as f:
                         single = json.load(f)
                     results.append({
                         'symbol': symbol, 'strategy': strategy, 'timeframe': tf,

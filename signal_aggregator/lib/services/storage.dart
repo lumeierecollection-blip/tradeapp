@@ -16,7 +16,7 @@ class Storage {
   static const _kCloudEnabled = 'cloud_enabled';
   static const _kCloudUrl = 'cloud_url';
 
-  static const List<String> defaultWatchlist = ['BTC', 'ETH', 'SOL', 'BNB', 'XRP'];
+  static const List<String> defaultWatchlist = ['BTC', 'ETH', 'SOL', 'BNB', 'EURUSD=X'];
   static const List<String> defaultTelegramChannels = [
     'BitcoinBullets',
     'fatpigsignals',

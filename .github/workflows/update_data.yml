@@ -1,6 +1,7 @@
 name: Refresh Forex Data
 on:
-  schedule: [{ cron: '0 */6 * * *' }]
+  # Disabled 2026-09-28: failed every run (git add on gitignored data/raw/) and nothing reads data/raw.
+  # schedule: [{ cron: '0 */6 * * *' }]
   workflow_dispatch:
 jobs:
   refresh:

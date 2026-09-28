@@ -22,10 +22,7 @@ def holdout_pass(sharpe, trades):
 
 def main():
     wf = vc.read_json(vc.BACKTEST_DIR / 'wf_matrix.json', {'rows': []})
-    ho23 = vc.read_json(vc.BACKTEST_DIR / 'holdout_matrix.json', None)
-    if ho23 is None:
-        ho23 = vc.read_json(vc.REPO_ROOT / 'signal_aggregator' / 'data' / 'backtest' / 'holdout_matrix.json',
-                            {'rows': []})
+    ho23 = vc.read_json(vc.BACKTEST_DIR / 'holdout_matrix.json', {'rows': []})
     tp = vc.read_json(vc.BACKTEST_DIR / 'holdout_21_22.json', {'rows': []})
     sib = vc.read_json(vc.BACKTEST_DIR / 'sibling_check.json', {'rows': []})
 

@@ -6,13 +6,16 @@ class ForexService {
     'EURUSD=X', 'GBPUSD=X', 'USDJPY=X', 'GC=F', 'AUDUSD=X',
   ];
 
+  // Yahoo answers 429 to non-browser user agents.
+  static const Map<String, String> _headers = {'User-Agent': 'Mozilla/5.0'};
+
   /// Yahoo Finance chart endpoint (no API key required)
   Future<double?> fetchRate(String symbol) async {
     final url = Uri.parse(
-      'https://query1.finance.yahoo.com/v8/finance/chart/$symbol?interval=1h&range=1d',
+      'https://query1.finance.yahoo.com/v8/finance/chart/${Uri.encodeComponent(symbol)}?interval=1h&range=1d',
     );
     try {
-      final res = await http.get(url);
+      final res = await http.get(url, headers: _headers);
       if (res.statusCode != 200) return null;
       final data = jsonDecode(res.body);
       final result = data['chart']['result']?[0];

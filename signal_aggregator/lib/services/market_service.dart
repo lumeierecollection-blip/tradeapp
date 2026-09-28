@@ -5,38 +5,49 @@ import 'package:http/http.dart' as http;
 
 import '../models/market_snapshot.dart';
 
+/// Live market snapshots from Yahoo Finance's public chart API (no key).
+///
+/// Two requests per symbol: 1h bars over 5 days (RSI, ATR, support/resistance,
+/// 1h/24h change, volume) and 5m bars over 1 day (5m/15m change). A 1-day range
+/// of 1h bars is too short — index futures return only ~4 bars in that window.
 class MarketService {
-  static const String _base = 'https://api.binance.com';
+  static const String _base = 'https://query1.finance.yahoo.com/v8/finance/chart';
+
+  // Yahoo answers 429 to non-browser user agents.
+  static const Map<String, String> _headers = {'User-Agent': 'Mozilla/5.0'};
+
   final http.Client _client;
 
   MarketService({http.Client? client}) : _client = client ?? http.Client();
 
+  /// App symbol → Yahoo ticker. Crypto keeps its bare ticker so social-signal
+  /// symbol extraction and saved watchlists keep matching; everything else uses
+  /// the Yahoo ticker as-is (same naming as the ML signals).
   static const Map<String, String> symbolToPair = {
-    'BTC': 'BTCUSDT',
-    'ETH': 'ETHUSDT',
-    'SOL': 'SOLUSDT',
-    'BNB': 'BNBUSDT',
-    'XRP': 'XRPUSDT',
-    'ADA': 'ADAUSDT',
-    'DOGE': 'DOGEUSDT',
-    'AVAX': 'AVAXUSDT',
-    'LINK': 'LINKUSDT',
-    'DOT': 'DOTUSDT',
-    'MATIC': 'MATICUSDT',
-    'LTC': 'LTCUSDT',
-    'UNI': 'UNIUSDT',
-    'ARB': 'ARBUSDT',
-    'OP': 'OPUSDT',
-    'SHIB': 'SHIBUSDT',
-    'TRX': 'TRXUSDT',
-    'NEAR': 'NEARUSDT',
-    'APT': 'APTUSDT',
-    'FIL': 'FILUSDT',
+    'EURUSD=X': 'EURUSD=X',
+    'GBPUSD=X': 'GBPUSD=X',
+    'USDJPY=X': 'USDJPY=X',
+    'AUDUSD=X': 'AUDUSD=X',
+    'NZDUSD=X': 'NZDUSD=X',
+    'GBPJPY=X': 'GBPJPY=X',
+    'EURJPY=X': 'EURJPY=X',
+    'AUDJPY=X': 'AUDJPY=X',
+    'USDCAD=X': 'USDCAD=X',
+    'GC=F': 'GC=F',
+    'SI=F': 'SI=F',
+    'CL=F': 'CL=F',
+    'NG=F': 'NG=F',
+    'BTC': 'BTC-USD',
+    'ETH': 'ETH-USD',
+    'SOL': 'SOL-USD',
+    'BNB': 'BNB-USD',
+    '^GSPC': '^GSPC',
+    '^NDX': '^NDX',
   };
 
   static String? toPair(String symbol) => symbolToPair[symbol.toUpperCase()];
 
-  /// The whole supported universe — every coin the app can surface and trade.
+  /// The whole supported universe — every market the app can surface and trade.
   static List<String> get allSymbols => symbolToPair.keys.toList();
 
   final Map<String, MarketSnapshot> _cache = {};
@@ -62,9 +73,9 @@ class MarketService {
         _cacheAt[symbol] = DateTime.now();
         results[symbol] = snap;
       } catch (_) {
-        // Binance failed. Try the price-only fallback; if that fails too, reuse
+        // Bars failed. Try the price-only fallback; if that fails too, reuse
         // the last snapshot but flag it as stale so nothing treats it as live.
-        final fallback = await _fallbackSnapshot(symbol);
+        final fallback = await _fallbackSnapshot(symbol, pair);
         final previous = _cache[symbol];
         if (fallback != null) {
           _cache[symbol] = fallback;
@@ -78,69 +89,63 @@ class MarketService {
     return results;
   }
 
-  /// A degraded snapshot from Yahoo Finance: real price, everything else
+  /// A degraded snapshot: real price from the chart meta, everything else
   /// neutralised. Marked stale so signals built on it can be downgraded.
-  Future<MarketSnapshot?> _fallbackSnapshot(String symbol) async {
-    final price = await _yahooSpot(symbol);
-    if (price == null || price <= 0) return null;
-    return MarketSnapshot(
-      symbol: symbol,
-      price: price,
-      change5m: 0,
-      change15m: 0,
-      change1h: 0,
-      change24h: 0,
-      rsi14: 50,
-      volume24h: 0,
-      avgVolume: 0,
-      support: 0,
-      resistance: 0,
-      at: DateTime.now(),
-      source: 'yahoo',
-      stale: true,
-    );
-  }
-
-  Future<double?> _yahooSpot(String symbol) async {
+  Future<MarketSnapshot?> _fallbackSnapshot(String symbol, String pair) async {
     try {
-      final ticker = symbol == 'BTC' ? 'BTC-USD' : '$symbol-USD';
-      final uri = Uri.parse(
-          'https://query1.finance.yahoo.com/v8/finance/chart/$ticker?range=1d&interval=1d');
-      final res = await _client.get(uri).timeout(const Duration(seconds: 10));
-      if (res.statusCode != 200) return null;
-      final data = jsonDecode(res.body);
-      final result = data['chart']?['result'];
-      if (result == null || result is! List || result.isEmpty) return null;
-      final meta = result[0]['meta'];
-      if (meta == null || meta is! Map) return null;
-      return (meta['regularMarketPrice'] as num?)?.toDouble();
+      final result = await _chart(pair, '1d', '1d');
+      final price = (result['meta']?['regularMarketPrice'] as num?)?.toDouble();
+      if (price == null || price <= 0) return null;
+      return MarketSnapshot(
+        symbol: symbol,
+        price: price,
+        change5m: 0,
+        change15m: 0,
+        change1h: 0,
+        change24h: 0,
+        rsi14: 50,
+        volume24h: 0,
+        avgVolume: 0,
+        support: 0,
+        resistance: 0,
+        at: DateTime.now(),
+        source: 'yahoo-spot',
+        stale: true,
+      );
     } catch (_) {
       return null;
     }
   }
 
   Future<MarketSnapshot> fetchSnapshot(String symbol, String pair) async {
-    final ticker = await _get('/api/v3/ticker/24hr', {'symbol': pair});
-    final lastPrice = double.parse(ticker['lastPrice'].toString());
-    final change24h = double.parse(ticker['priceChangePercent'].toString());
-    final volume24h = double.parse(ticker['volume'].toString());
+    final candles1h = _candles(await _chart(pair, '1h', '5d'));
+    if (candles1h.isEmpty) throw Exception('No 1h bars for $pair');
 
-    final candles5m = await _fetchKlines(pair, '5m', 3);
-    final change5m = _percentChange(candles5m);
-    final candles15m = await _fetchKlines(pair, '15m', 3);
-    final change15m = _percentChange(candles15m);
+    // 5m bars only feed the short-horizon changes; don't lose the snapshot if
+    // they're unavailable.
+    var candles5m = <Candle>[];
+    try {
+      candles5m = _candles(await _chart(pair, '5m', '1d'));
+    } catch (_) {}
 
-    final candles1h = await _fetchKlines(pair, '1h', 96);
-    final change1h = _percentChange(candles1h);
+    final lastPrice = candles5m.isNotEmpty ? candles5m.last.close : candles1h.last.close;
+    final now = DateTime.fromMillisecondsSinceEpoch(
+        max(candles1h.last.openTime, candles5m.isEmpty ? 0 : candles5m.last.openTime));
+
+    final change5m = _changeSince(candles5m, lastPrice, now.subtract(const Duration(minutes: 5)));
+    final change15m = _changeSince(candles5m, lastPrice, now.subtract(const Duration(minutes: 15)));
+    final change1h = _changeSince(candles1h, lastPrice, now.subtract(const Duration(hours: 1)));
+    final change24h = _changeSince(candles1h, lastPrice, now.subtract(const Duration(hours: 24)));
     final rsi14 = _rsi(candles1h, 14);
 
-    final window = candles1h.length >= 24 ? candles1h.sublist(candles1h.length - 24) : candles1h;
-    final highs = window.map((c) => c.high).toList();
-    final lows = window.map((c) => c.low).toList();
-    final support = lows.reduce(min);
-    final resistance = highs.reduce(max);
+    final dayCutoff = now.subtract(const Duration(hours: 24)).millisecondsSinceEpoch;
+    final day = candles1h.where((c) => c.openTime >= dayCutoff).toList();
+    final window = day.isNotEmpty ? day : candles1h;
+    final support = window.map((c) => c.low).reduce(min);
+    final resistance = window.map((c) => c.high).reduce(max);
+    final volume24h = window.map((c) => c.volume).fold(0.0, (a, b) => a + b);
 
-    final avgVolume = candles1h.isEmpty ? 1.0 : candles1h.map((c) => c.volume).reduce((a, b) => a + b) / candles1h.length;
+    final avgVolume = candles1h.map((c) => c.volume).reduce((a, b) => a + b) / candles1h.length;
     final atrPct = _atrPct(candles1h, lastPrice);
     final recentVolumeRatio =
         candles1h.length >= 6 && avgVolume > 0
@@ -165,6 +170,19 @@ class MarketService {
     );
   }
 
+  /// % change from the last close at or before [since] to [price]; 0 when the
+  /// bars don't reach back that far (e.g. market just opened).
+  double _changeSince(List<Candle> candles, double price, DateTime since) {
+    final cutoff = since.millisecondsSinceEpoch;
+    Candle? ref;
+    for (final c in candles) {
+      if (c.openTime > cutoff) break;
+      ref = c;
+    }
+    if (ref == null || ref.close <= 0) return 0;
+    return (price - ref.close) / ref.close * 100;
+  }
+
   /// ATR(14) on 1h candles as a % of price — how much price swings per hour.
   double _atrPct(List<Candle> candles, double price) {
     if (candles.length < 15 || price <= 0) return 0;
@@ -173,33 +191,6 @@ class MarketService {
       sum += candles[i].high - candles[i].low;
     }
     return sum / 14 / price * 100;
-  }
-
-  double _percentChange(List<Candle> candles) {
-    if (candles.length < 2) return 0;
-    final first = candles.first;
-    final last = candles.last;
-    if (first.close <= 0) return 0;
-    return (last.close - first.close) / first.close * 100;
-  }
-
-  Future<List<Candle>> _fetchKlines(String pair, String interval, int limit) async {
-    final data = await _get('/api/v3/klines', {
-      'symbol': pair,
-      'interval': interval,
-      'limit': '$limit',
-    });
-    if (data is! List) return [];
-    return data.map((k) {
-      final row = k as List;
-      return Candle(
-        openTime: (row[0] as num).toInt(),
-        high: double.parse(row[2].toString()),
-        low: double.parse(row[3].toString()),
-        close: double.parse(row[4].toString()),
-        volume: double.parse(row[5].toString()),
-      );
-    }).toList();
   }
 
   double _rsi(List<Candle> candles, int period) {
@@ -226,13 +217,43 @@ class MarketService {
     return 100 - (100 / (1 + rs));
   }
 
-  Future<dynamic> _get(String path, Map<String, String> query) async {
-    final uri = Uri.parse('$_base$path').replace(queryParameters: query);
-    final res = await _client.get(uri).timeout(const Duration(seconds: 20));
-    if (res.statusCode != 200) {
-      throw Exception('Market API ${res.statusCode}: ${res.body}');
+  /// Oldest-first candles from a chart result, skipping bars Yahoo left null.
+  List<Candle> _candles(Map<String, dynamic> result) {
+    final times = (result['timestamp'] as List?) ?? const [];
+    final quotes = result['indicators']?['quote'];
+    if (quotes is! List || quotes.isEmpty) return [];
+    final q = quotes[0] as Map;
+    final highs = q['high'] as List? ?? const [];
+    final lows = q['low'] as List? ?? const [];
+    final closes = q['close'] as List? ?? const [];
+    final volumes = q['volume'] as List? ?? const [];
+    final out = <Candle>[];
+    for (var i = 0; i < times.length; i++) {
+      if (i >= closes.length || i >= highs.length || i >= lows.length) break;
+      final h = highs[i], l = lows[i], c = closes[i];
+      if (h == null || l == null || c == null) continue;
+      final v = i < volumes.length ? volumes[i] : null;
+      out.add(Candle(
+        openTime: (times[i] as num).toInt() * 1000,
+        high: (h as num).toDouble(),
+        low: (l as num).toDouble(),
+        close: (c as num).toDouble(),
+        volume: (v as num?)?.toDouble() ?? 0,
+      ));
     }
-    return jsonDecode(res.body);
+    return out;
+  }
+
+  Future<Map<String, dynamic>> _chart(String pair, String interval, String range) async {
+    final uri = Uri.parse('$_base/${Uri.encodeComponent(pair)}')
+        .replace(queryParameters: {'interval': interval, 'range': range});
+    final res = await _client.get(uri, headers: _headers).timeout(const Duration(seconds: 20));
+    if (res.statusCode != 200) {
+      throw Exception('Yahoo ${res.statusCode} for $pair');
+    }
+    final result = jsonDecode(res.body)['chart']?['result'];
+    if (result is! List || result.isEmpty) throw Exception('Empty chart for $pair');
+    return Map<String, dynamic>.from(result[0] as Map);
   }
 
   void dispose() => _client.close();

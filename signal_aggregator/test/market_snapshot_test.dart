@@ -20,35 +20,35 @@ MarketSnapshot _snap() => MarketSnapshot(
     );
 
 void main() {
-  test('defaults: fresh, binance source', () {
+  test('defaults: fresh, yahoo source', () {
     final s = _snap();
     expect(s.stale, isFalse);
-    expect(s.source, 'binance');
+    expect(s.source, 'yahoo');
   });
 
   test('copyWith flips stale/source and leaves the rest', () {
-    final s = _snap().copyWith(stale: true, source: 'yahoo');
+    final s = _snap().copyWith(stale: true, source: 'yahoo-spot');
     expect(s.stale, isTrue);
-    expect(s.source, 'yahoo');
+    expect(s.source, 'yahoo-spot');
     expect(s.price, 100);
     expect(s.rsi14, 55);
     expect(s.at, DateTime.utc(2026));
   });
 
   test('source and stale round-trip through JSON', () {
-    final s = _snap().copyWith(stale: true, source: 'yahoo');
+    final s = _snap().copyWith(stale: true, source: 'yahoo-spot');
     final r = MarketSnapshot.fromJson(s.toJson());
     expect(r.stale, isTrue);
-    expect(r.source, 'yahoo');
+    expect(r.source, 'yahoo-spot');
     expect(r.price, s.price);
   });
 
-  test('old JSON without the fields loads as fresh/binance', () {
+  test('old JSON without the fields loads as fresh/yahoo', () {
     final json = _snap().toJson()
       ..remove('stale')
       ..remove('source');
     final r = MarketSnapshot.fromJson(json);
     expect(r.stale, isFalse);
-    expect(r.source, 'binance');
+    expect(r.source, 'yahoo');
   });
 }

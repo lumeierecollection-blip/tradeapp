@@ -6,9 +6,8 @@ import sys
 from datetime import datetime, UTC
 from pathlib import Path
 
-REPO_ROOT = Path(__file__).resolve().parents[3]
-ENGINE = REPO_ROOT / 'signal_aggregator' / 'backend' / 'backtest' / 'engine.py'
-BACKTEST_DIR = REPO_ROOT / 'data' / 'backtest'
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from paths import BACKTEST_DIR, ENGINE, REPO_ROOT  # noqa: E402,F401
 HO_2023 = '2023-01-01'
 HO_2021_START = '2021-01-01'
 HO_2021_END = '2023-01-01'

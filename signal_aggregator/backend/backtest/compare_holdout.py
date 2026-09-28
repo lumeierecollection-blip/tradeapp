@@ -1,7 +1,12 @@
 import json
+import os
+import sys
 
-wf = json.load(open('data/backtest/wf_matrix.json'))
-ho = json.load(open('data/backtest/holdout_matrix.json'))
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from paths import BACKTEST_DIR  # noqa: E402
+
+wf = json.load(open(BACKTEST_DIR / 'wf_matrix.json'))
+ho = json.load(open(BACKTEST_DIR / 'holdout_matrix.json'))
 
 wf_rows = {}
 ho_rows = {}

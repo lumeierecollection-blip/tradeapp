@@ -15,6 +15,7 @@ class _BacktestScreenState extends State<BacktestScreen> {
   bool _loading = true;
   String? _error;
   List<Map<String, dynamic>> _matrixRows = [];
+  Map<String, dynamic> _validation = {};
   String _sortBy = 'sharpe';
   bool _sortAsc = false;
 
@@ -27,13 +28,16 @@ class _BacktestScreenState extends State<BacktestScreen> {
   Future<void> _load() async {
     setState(() { _loading = true; _error = null; });
     try {
-      final matrix = await _data.getWalkForwardMatrix();
-      final rows = (matrix['rows'] as List<dynamic>? ?? [])
+      final results = await Future.wait([
+        _data.getWalkForwardMatrix(),
+        _data.getValidationSummary(),
+      ]);
+      final rows = (results[0]['rows'] as List<dynamic>? ?? [])
           .map((r) => Map<String, dynamic>.from(r as Map))
           .where((r) => !r.containsKey('error'))
           .toList();
       if (!mounted) return;
-      setState(() { _matrixRows = rows; _loading = false; });
+      setState(() { _matrixRows = rows; _validation = results[1]; _loading = false; });
     } catch (e) {
       if (!mounted) return;
       setState(() { _error = '$e'; _loading = false; });
@@ -109,6 +113,8 @@ class _BacktestScreenState extends State<BacktestScreen> {
                           _summaryCard(),
                           const SizedBox(height: 12),
                           _tableCard(sorted),
+                          const SizedBox(height: 12),
+                          _validationCard(),
                         ],
                       ),
                     ),
@@ -241,6 +247,79 @@ class _BacktestScreenState extends State<BacktestScreen> {
               DataCell(Text('$windows')),
             ]);
           }).toList(),
+        ),
+      ),
+    );
+  }
+
+  Color _verdictColor(String verdict) {
+    switch (verdict) {
+      case 'confirmed':
+        return AppTheme.buy;
+      case 'partial':
+        return AppTheme.warn;
+      default:
+        return AppTheme.sell;
+    }
+  }
+
+  String _fmt(dynamic v) => v is num ? v.toStringAsFixed(2) : '—';
+
+  Widget _validationCard() {
+    final survivors = (_validation['survivors'] as List<dynamic>? ?? [])
+        .map((r) => Map<String, dynamic>.from(r as Map))
+        .toList();
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text('Survivor Validation', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
+            if (survivors.isEmpty) ...[
+              const SizedBox(height: 12),
+              const Text('No validation yet — weekly job has not run',
+                  style: TextStyle(color: AppTheme.textMuted)),
+            ] else ...[
+              const SizedBox(height: 4),
+              Text(
+                '${_validation['strategy'] ?? ''} · ${_validation['timeframe'] ?? ''} · '
+                'generated ${(_validation['generated_at'] ?? '').toString().split('T').first}',
+                style: const TextStyle(fontSize: 12, color: AppTheme.textMuted),
+              ),
+              const SizedBox(height: 8),
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: DataTable(
+                  headingTextStyle: const TextStyle(
+                      fontSize: 11, fontWeight: FontWeight.w700, color: AppTheme.textMuted, letterSpacing: 0.5),
+                  dataTextStyle: const TextStyle(fontSize: 12.5, color: AppTheme.textPrimary),
+                  columnSpacing: 16,
+                  columns: const [
+                    DataColumn(label: Text('Symbol')),
+                    DataColumn(label: Text('WF')),
+                    DataColumn(label: Text('HO 23-26')),
+                    DataColumn(label: Text('HO 21-22')),
+                    DataColumn(label: Text('Siblings')),
+                    DataColumn(label: Text('Verdict')),
+                  ],
+                  rows: survivors.map((r) {
+                    final verdict = (r['verdict'] ?? 'failed').toString();
+                    final sib = r['siblings_pass_rate'];
+                    return DataRow(cells: [
+                      DataCell(Text(r['symbol'] ?? '', style: const TextStyle(fontWeight: FontWeight.w600))),
+                      DataCell(Text(_fmt(r['wf']))),
+                      DataCell(Text(_fmt(r['holdout_23_26']))),
+                      DataCell(Text(_fmt(r['holdout_21_22']))),
+                      DataCell(Text(sib is num ? '${sib.toStringAsFixed(0)}%' : '—')),
+                      DataCell(Text(verdict.toUpperCase(),
+                          style: TextStyle(color: _verdictColor(verdict), fontWeight: FontWeight.w700))),
+                    ]);
+                  }).toList(),
+                ),
+              ),
+            ],
+          ],
         ),
       ),
     );
