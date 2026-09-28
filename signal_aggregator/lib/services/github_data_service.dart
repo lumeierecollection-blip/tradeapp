@@ -9,12 +9,14 @@ class GithubDataService {
   final Map<String, DateTime> _cacheAt = {};
   static const Duration _cacheTtl = Duration(seconds: 60);
 
-  Future<Map<String, dynamic>> getLatestSignals() async {
-    return _fetchCached('signals', '$_baseUrl/data/signals/latest.json', (data) => data);
+  /// Rule-based signals. `{}` when unreachable (404, network, bad JSON) — never throws.
+  Future<Map<String, dynamic>> getLatestSignals({bool force = false}) async {
+    return _fetchCached('signals', '$_baseUrl/data/signals/latest.json', (data) => data, force: force);
   }
 
-  Future<Map<String, dynamic>> getMlSignals() async {
-    return _fetchCached('ml_signals', '$_baseUrl/data/signals/ml_latest.json', (data) => data);
+  /// LightGBM signals. `{}` when unreachable (404, network, bad JSON) — never throws.
+  Future<Map<String, dynamic>> getMlSignals({bool force = false}) async {
+    return _fetchCached('ml_signals', '$_baseUrl/data/signals/ml_latest.json', (data) => data, force: force);
   }
 
   Future<Map<String, dynamic>> getBacktestResults() async {
@@ -37,14 +39,14 @@ class GithubDataService {
     return _fetchCached('trades', '$_baseUrl/data/trades/history.json', (data) => data);
   }
 
-  Future<T> _fetchCached<T>(String key, String url, T Function(dynamic) parse) async {
+  Future<T> _fetchCached<T>(String key, String url, T Function(dynamic) parse, {bool force = false}) async {
     final cached = _cache[key];
     final cachedAt = _cacheAt[key];
-    if (cached != null && cachedAt != null && DateTime.now().difference(cachedAt) < _cacheTtl) {
+    if (!force && cached != null && cachedAt != null && DateTime.now().difference(cachedAt) < _cacheTtl) {
       return cached as T;
     }
     try {
-      final response = await http.get(Uri.parse(url));
+      final response = await http.get(Uri.parse(url)).timeout(const Duration(seconds: 20));
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         final parsed = parse(data);
