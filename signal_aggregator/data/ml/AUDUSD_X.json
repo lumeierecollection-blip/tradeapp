@@ -1,6 +1,6 @@
 {
   "symbol": "AUDUSD=X",
-  "trained_at": "2026-09-28T12:33:42.671649+00:00",
+  "trained_at": "2026-09-29T11:55:05.497683+00:00",
   "n_features": 35,
   "feature_cols": [
     "ret_1",
