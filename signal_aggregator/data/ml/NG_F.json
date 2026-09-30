@@ -1,6 +1,6 @@
 {
   "symbol": "NG=F",
-  "trained_at": "2026-09-29T11:55:33.624979+00:00",
+  "trained_at": "2026-09-30T11:43:00.700560+00:00",
   "n_features": 35,
   "feature_cols": [
     "ret_1",

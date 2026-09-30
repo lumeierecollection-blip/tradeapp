@@ -1,6 +1,6 @@
 {
   "symbol": "BTC-USD",
-  "trained_at": "2026-09-29T11:55:37.528023+00:00",
+  "trained_at": "2026-09-30T11:43:03.574976+00:00",
   "n_features": 35,
   "feature_cols": [
     "ret_1",

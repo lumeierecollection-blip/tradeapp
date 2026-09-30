@@ -1,6 +1,6 @@
 {
   "symbol": "^NDX",
-  "trained_at": "2026-09-29T11:55:46.821982+00:00",
+  "trained_at": "2026-09-30T11:43:12.629479+00:00",
   "n_features": 35,
   "feature_cols": [
     "ret_1",
