@@ -1,6 +1,6 @@
 {
   "symbol": "^GSPC",
-  "trained_at": "2026-09-30T11:43:10.142954+00:00",
+  "trained_at": "2026-10-01T12:11:59.629859+00:00",
   "n_features": 35,
   "feature_cols": [
     "ret_1",
@@ -39,24 +39,24 @@
     "vol_percentile",
     "trend_strength"
   ],
-  "avg_accuracy": 0.4555,
+  "avg_accuracy": 0.4056,
   "windows": [
     {
-      "window_start": "2025-10-28",
-      "window_end": "2026-01-23",
-      "accuracy": 0.35,
+      "window_start": "2025-10-29",
+      "window_end": "2026-01-26",
+      "accuracy": 0.4,
       "test_size": 60
     },
     {
-      "window_start": "2026-01-26",
-      "window_end": "2026-04-21",
-      "accuracy": 0.5333,
+      "window_start": "2026-01-27",
+      "window_end": "2026-04-22",
+      "accuracy": 0.4,
       "test_size": 60
     },
     {
-      "window_start": "2026-04-22",
-      "window_end": "2026-07-17",
-      "accuracy": 0.4833,
+      "window_start": "2026-04-23",
+      "window_end": "2026-07-20",
+      "accuracy": 0.4167,
       "test_size": 60
     }
   ]
