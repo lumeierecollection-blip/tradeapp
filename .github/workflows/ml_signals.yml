@@ -18,6 +18,8 @@ jobs:
           done
       - name: Generate ML signals
         run: python signal_aggregator/backend/signals/ml_signal.py
+      - name: Log signals to history
+        run: python signal_aggregator/backend/signals/log_signals.py
       - name: Fallback to rule-based if ML failed
         run: |
           if [ ! -s signal_aggregator/data/signals/ml_latest.json ] || \

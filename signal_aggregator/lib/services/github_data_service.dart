@@ -19,6 +19,11 @@ class GithubDataService {
     return _fetchCached('ml_signals', '$_baseUrl/data/signals/ml_latest.json', (data) => data, force: force);
   }
 
+  /// Every ML run ever logged (signal_history.json), oldest first. `[]` when unreachable.
+  Future<List<dynamic>> getSignalHistory({bool force = false}) async {
+    return _fetchCached('signal_history', '$_baseUrl/data/signals/signal_history.json', (data) => data, force: force);
+  }
+
   Future<Map<String, dynamic>> getBacktestResults() async {
     return _fetchCached('backtest', '$_baseUrl/data/backtest/results.json', (data) => data);
   }

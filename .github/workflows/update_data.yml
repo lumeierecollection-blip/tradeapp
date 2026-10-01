@@ -1,21 +1,19 @@
 name: Refresh Forex Data
 on:
-  # Disabled 2026-09-28: failed every run (git add on gitignored data/raw/) and nothing reads data/raw.
-  # schedule: [{ cron: '0 */6 * * *' }]
   workflow_dispatch:
 jobs:
   refresh:
     runs-on: ubuntu-latest
-    permissions: { contents: write }
+    permissions: { contents: read }
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with: { python-version: '3.11' }
       - run: pip install pandas numpy requests yfinance
       - run: python signal_aggregator/backend/data/forex_fetcher.py
-      - run: |
-          git config user.name  "GitHub Actions"
-          git config user.email "actions@github.com"
-          git add signal_aggregator/data/raw/
-          git commit -m "Update raw data [skip ci]" || echo "no changes"
-          git push
+      # data/raw/ is gitignored and nothing reads it, so publish it as a build artifact instead of committing.
+      - uses: actions/upload-artifact@v4
+        with:
+          name: raw-data
+          path: signal_aggregator/data/raw/
+          if-no-files-found: warn
