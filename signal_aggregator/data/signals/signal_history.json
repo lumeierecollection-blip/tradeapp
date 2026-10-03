@@ -282,5 +282,147 @@
         "generated_at": "2026-10-02T11:41:55.623974+00:00"
       }
     ]
+  },
+  {
+    "timestamp": "2026-10-03T10:55:35.496069+00:00",
+    "model": "lightgbm_v1",
+    "signals": [
+      {
+        "symbol": "EURUSD=X",
+        "signal": "BUY",
+        "confidence": 0.9414,
+        "price": 1.1257457733154297,
+        "regime": "trend",
+        "generated_at": "2026-10-03T10:55:34.144693+00:00"
+      },
+      {
+        "symbol": "GBPUSD=X",
+        "signal": "BUY",
+        "confidence": 0.9872,
+        "price": 1.324047327041626,
+        "regime": "trend",
+        "generated_at": "2026-10-03T10:55:34.234028+00:00"
+      },
+      {
+        "symbol": "USDJPY=X",
+        "signal": "BUY",
+        "confidence": 0.5751,
+        "price": 157.8300018310547,
+        "regime": "range",
+        "generated_at": "2026-10-03T10:55:34.321294+00:00"
+      },
+      {
+        "symbol": "AUDUSD=X",
+        "signal": "HOLD",
+        "confidence": 0.5807,
+        "price": 0.6957489848136902,
+        "regime": "trend",
+        "generated_at": "2026-10-03T10:55:34.408838+00:00"
+      },
+      {
+        "symbol": "NZDUSD=X",
+        "signal": "BUY",
+        "confidence": 0.5834,
+        "price": 0.5623031854629517,
+        "regime": "trend",
+        "generated_at": "2026-10-03T10:55:34.497200+00:00"
+      },
+      {
+        "symbol": "GBPJPY=X",
+        "signal": "BUY",
+        "confidence": 0.4483,
+        "price": 209.0709991455078,
+        "regime": "trend",
+        "generated_at": "2026-10-03T10:55:34.575237+00:00"
+      },
+      {
+        "symbol": "EURJPY=X",
+        "signal": "BUY",
+        "confidence": 0.7052,
+        "price": 177.25,
+        "regime": "trend",
+        "generated_at": "2026-10-03T10:55:34.701216+00:00"
+      },
+      {
+        "symbol": "AUDJPY=X",
+        "signal": "BUY",
+        "confidence": 0.9806,
+        "price": 109.802001953125,
+        "regime": "trend",
+        "generated_at": "2026-10-03T10:55:34.780877+00:00"
+      },
+      {
+        "symbol": "USDCAD=X",
+        "signal": "HOLD",
+        "confidence": 0.5477,
+        "price": 1.4247000217437744,
+        "regime": "trend",
+        "generated_at": "2026-10-03T10:55:34.857675+00:00"
+      },
+      {
+        "symbol": "GC=F",
+        "signal": "BUY",
+        "confidence": 0.972,
+        "price": 4162.2998046875,
+        "regime": "trend",
+        "generated_at": "2026-10-03T10:55:34.947525+00:00"
+      },
+      {
+        "symbol": "SI=F",
+        "signal": "BUY",
+        "confidence": 0.5254,
+        "price": 59.97700119018555,
+        "regime": "trend",
+        "generated_at": "2026-10-03T10:55:35.019917+00:00"
+      },
+      {
+        "symbol": "CL=F",
+        "signal": "BUY",
+        "confidence": 0.8806,
+        "price": 91.11000061035156,
+        "regime": "range",
+        "generated_at": "2026-10-03T10:55:35.097884+00:00"
+      },
+      {
+        "symbol": "NG=F",
+        "signal": "HOLD",
+        "confidence": 0.5,
+        "price": 3.0350000858306885,
+        "regime": "vol",
+        "generated_at": "2026-10-03T10:55:35.182120+00:00"
+      },
+      {
+        "symbol": "BTC-USD",
+        "signal": "BUY",
+        "confidence": 0.6973,
+        "price": 84622.2890625,
+        "regime": "trend",
+        "generated_at": "2026-10-03T10:55:35.262471+00:00"
+      },
+      {
+        "symbol": "ETH-USD",
+        "signal": "BUY",
+        "confidence": 0.5015,
+        "price": 2683.219970703125,
+        "regime": "range",
+        "generated_at": "2026-10-03T10:55:35.346457+00:00"
+      },
+      {
+        "symbol": "^GSPC",
+        "signal": "SELL",
+        "confidence": 0.8327,
+        "price": 7722.72021484375,
+        "regime": "range",
+        "generated_at": "2026-10-03T10:55:35.422678+00:00"
+      },
+      {
+        "symbol": "^NDX",
+        "signal": "SELL",
+        "confidence": 0.8646,
+        "price": 30807.9296875,
+        "regime": "trend",
+        "generated_at": "2026-10-03T10:55:35.496058+00:00"
+      }
+    ]
   }
 ]
