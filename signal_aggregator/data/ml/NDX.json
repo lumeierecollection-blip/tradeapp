@@ -1,6 +1,6 @@
 {
   "symbol": "^NDX",
-  "trained_at": "2026-10-03T10:55:32.208769+00:00",
+  "trained_at": "2026-10-04T11:37:50.585887+00:00",
   "n_features": 35,
   "feature_cols": [
     "ret_1",
@@ -39,23 +39,23 @@
     "vol_percentile",
     "trend_strength"
   ],
-  "avg_accuracy": 0.45,
+  "avg_accuracy": 0.4667,
   "windows": [
     {
-      "window_start": "2025-10-31",
-      "window_end": "2026-01-28",
-      "accuracy": 0.4333,
+      "window_start": "2025-11-03",
+      "window_end": "2026-01-29",
+      "accuracy": 0.4167,
       "test_size": 60
     },
     {
-      "window_start": "2026-01-29",
-      "window_end": "2026-04-24",
-      "accuracy": 0.5167,
+      "window_start": "2026-01-30",
+      "window_end": "2026-04-27",
+      "accuracy": 0.5833,
       "test_size": 60
     },
     {
-      "window_start": "2026-04-27",
-      "window_end": "2026-07-22",
+      "window_start": "2026-04-28",
+      "window_end": "2026-07-23",
       "accuracy": 0.4,
       "test_size": 60
     }
