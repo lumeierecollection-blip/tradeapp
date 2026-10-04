@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-22T08:33:56.355027+00:00",
+  "generated_at": "2026-10-04T08:15:58.510880+00:00",
   "strategy": "ma_cross",
   "timeframe": "1d",
   "rows": [
@@ -13,7 +13,7 @@
       "trades": 32,
       "total_return": -3.59,
       "win_rate": 50.0,
-      "train_bars": 1074,
+      "train_bars": 1066,
       "test_bars": 503,
       "pass": false
     },
@@ -27,7 +27,7 @@
       "trades": 32,
       "total_return": 28.46,
       "win_rate": 50.0,
-      "train_bars": 1113,
+      "train_bars": 1106,
       "test_bars": 521,
       "pass": true
     },
@@ -41,7 +41,7 @@
       "trades": 34,
       "total_return": -7.77,
       "win_rate": 50.0,
-      "train_bars": 1077,
+      "train_bars": 1070,
       "test_bars": 503,
       "pass": false
     },
@@ -55,7 +55,7 @@
       "trades": 36,
       "total_return": -15.17,
       "win_rate": 50.0,
-      "train_bars": 1077,
+      "train_bars": 1070,
       "test_bars": 503,
       "pass": false
     }

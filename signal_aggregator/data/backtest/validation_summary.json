@@ -1,36 +1,36 @@
 {
-  "generated_at": "2026-09-22T08:34:06.781480+00:00",
+  "generated_at": "2026-10-04T08:16:06.705496+00:00",
   "strategy": "ma_cross",
   "timeframe": "1d",
   "survivors": [
     {
       "symbol": "GC=F",
-      "wf": 0.85,
-      "holdout_23_26": 1.0,
+      "wf": 0.54,
+      "holdout_23_26": 0.91,
       "holdout_21_22": -0.09,
       "siblings_pass_rate": 100.0,
       "verdict": "partial"
     },
     {
       "symbol": "USDJPY=X",
-      "wf": 0.75,
-      "holdout_23_26": 0.63,
+      "wf": -0.65,
+      "holdout_23_26": 0.61,
       "holdout_21_22": 1.7,
       "siblings_pass_rate": 66.7,
       "verdict": "confirmed"
     },
     {
       "symbol": "^GSPC",
-      "wf": 1.38,
-      "holdout_23_26": 0.81,
+      "wf": -0.66,
+      "holdout_23_26": 0.83,
       "holdout_21_22": -0.22,
       "siblings_pass_rate": 100.0,
       "verdict": "partial"
     },
     {
       "symbol": "^NDX",
-      "wf": 0.66,
-      "holdout_23_26": 0.8,
+      "wf": -0.74,
+      "holdout_23_26": 0.85,
       "holdout_21_22": -0.35,
       "siblings_pass_rate": 100.0,
       "verdict": "partial"

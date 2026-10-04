@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-22T08:32:44.077379+00:00",
+  "generated_at": "2026-10-04T08:16:06.666980+00:00",
   "holdout_start": "2023-01-01",
   "strategy": "ma_cross",
   "timeframe": "1d",
@@ -10,10 +10,10 @@
       "symbol": "SI=F",
       "strategy": "ma_cross",
       "timeframe": "1d",
-      "sharpe": 0.58,
+      "sharpe": 0.52,
       "trades": 118,
       "win_rate": 50.0,
-      "total_return": 71.26,
+      "total_return": 58.5,
       "pass": true
     },
     {
@@ -21,10 +21,10 @@
       "symbol": "PL=F",
       "strategy": "ma_cross",
       "timeframe": "1d",
-      "sharpe": 0.63,
+      "sharpe": 0.6,
       "trades": 116,
       "win_rate": 50.0,
-      "total_return": 83.28,
+      "total_return": 75.27,
       "pass": true
     },
     {
@@ -32,10 +32,10 @@
       "symbol": "USDCHF=X",
       "strategy": "ma_cross",
       "timeframe": "1d",
-      "sharpe": -0.09,
-      "trades": 52,
+      "sharpe": -0.03,
+      "trades": 54,
       "win_rate": 50.0,
-      "total_return": -3.1,
+      "total_return": -1.68,
       "pass": false
     },
     {
@@ -54,10 +54,10 @@
       "symbol": "GBPJPY=X",
       "strategy": "ma_cross",
       "timeframe": "1d",
-      "sharpe": 0.92,
+      "sharpe": 0.86,
       "trades": 46,
       "win_rate": 50.0,
-      "total_return": 31.91,
+      "total_return": 29.88,
       "pass": true
     },
     {
@@ -65,10 +65,10 @@
       "symbol": "^NDX",
       "strategy": "ma_cross",
       "timeframe": "1d",
-      "sharpe": 0.84,
+      "sharpe": 0.85,
       "trades": 74,
       "win_rate": 50.0,
-      "total_return": 57.79,
+      "total_return": 59.47,
       "pass": true
     },
     {
@@ -87,10 +87,10 @@
       "symbol": "^RUT",
       "strategy": "ma_cross",
       "timeframe": "1d",
-      "sharpe": 0.55,
+      "sharpe": 0.52,
       "trades": 64,
       "win_rate": 50.0,
-      "total_return": 33.77,
+      "total_return": 31.28,
       "pass": true
     },
     {
@@ -98,10 +98,10 @@
       "symbol": "^GSPC",
       "strategy": "ma_cross",
       "timeframe": "1d",
-      "sharpe": 0.85,
+      "sharpe": 0.83,
       "trades": 76,
       "win_rate": 50.0,
-      "total_return": 37.78,
+      "total_return": 37.03,
       "pass": true
     },
     {
@@ -109,10 +109,10 @@
       "symbol": "^RUT",
       "strategy": "ma_cross",
       "timeframe": "1d",
-      "sharpe": 0.55,
+      "sharpe": 0.52,
       "trades": 64,
       "win_rate": 50.0,
-      "total_return": 33.77,
+      "total_return": 31.28,
       "pass": true
     },
     {
