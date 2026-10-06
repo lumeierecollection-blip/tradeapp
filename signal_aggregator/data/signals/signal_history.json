@@ -708,5 +708,147 @@
         "generated_at": "2026-10-05T13:14:38.099450+00:00"
       }
     ]
+  },
+  {
+    "timestamp": "2026-10-06T12:33:38.624766+00:00",
+    "model": "lightgbm_v1",
+    "signals": [
+      {
+        "symbol": "EURUSD=X",
+        "signal": "BUY",
+        "confidence": 0.9961,
+        "price": 1.126633644104004,
+        "regime": "trend",
+        "generated_at": "2026-10-06T12:33:35.632652+00:00"
+      },
+      {
+        "symbol": "GBPUSD=X",
+        "signal": "BUY",
+        "confidence": 0.8939,
+        "price": 1.327439546585083,
+        "regime": "trend",
+        "generated_at": "2026-10-06T12:33:35.716948+00:00"
+      },
+      {
+        "symbol": "USDJPY=X",
+        "signal": "SELL",
+        "confidence": 0.679,
+        "price": 158.18699645996094,
+        "regime": "range",
+        "generated_at": "2026-10-06T12:33:35.789661+00:00"
+      },
+      {
+        "symbol": "AUDUSD=X",
+        "signal": "BUY",
+        "confidence": 0.9459,
+        "price": 0.6981777548789978,
+        "regime": "trend",
+        "generated_at": "2026-10-06T12:33:35.909409+00:00"
+      },
+      {
+        "symbol": "NZDUSD=X",
+        "signal": "BUY",
+        "confidence": 0.9401,
+        "price": 0.5617346167564392,
+        "regime": "trend",
+        "generated_at": "2026-10-06T12:33:36.072985+00:00"
+      },
+      {
+        "symbol": "GBPJPY=X",
+        "signal": "BUY",
+        "confidence": 0.6922,
+        "price": 209.9709930419922,
+        "regime": "range",
+        "generated_at": "2026-10-06T12:33:36.153383+00:00"
+      },
+      {
+        "symbol": "EURJPY=X",
+        "signal": "BUY",
+        "confidence": 0.9585,
+        "price": 178.16700744628906,
+        "regime": "trend",
+        "generated_at": "2026-10-06T12:33:36.262231+00:00"
+      },
+      {
+        "symbol": "AUDJPY=X",
+        "signal": "BUY",
+        "confidence": 0.8749,
+        "price": 110.41000366210938,
+        "regime": "trend",
+        "generated_at": "2026-10-06T12:33:36.343650+00:00"
+      },
+      {
+        "symbol": "USDCAD=X",
+        "signal": "SELL",
+        "confidence": 0.7767,
+        "price": 1.4253100156784058,
+        "regime": "trend",
+        "generated_at": "2026-10-06T12:33:36.452825+00:00"
+      },
+      {
+        "symbol": "GC=F",
+        "signal": "BUY",
+        "confidence": 0.765,
+        "price": 4206.2998046875,
+        "regime": "range",
+        "generated_at": "2026-10-06T12:33:36.522009+00:00"
+      },
+      {
+        "symbol": "SI=F",
+        "signal": "BUY",
+        "confidence": 0.5447,
+        "price": 61.82500076293945,
+        "regime": "range",
+        "generated_at": "2026-10-06T12:33:36.669422+00:00"
+      },
+      {
+        "symbol": "CL=F",
+        "signal": "BUY",
+        "confidence": 0.9795,
+        "price": 86.88999938964844,
+        "regime": "range",
+        "generated_at": "2026-10-06T12:33:37.768078+00:00"
+      },
+      {
+        "symbol": "NG=F",
+        "signal": "HOLD",
+        "confidence": 0.5,
+        "price": 3.063999891281128,
+        "regime": "vol",
+        "generated_at": "2026-10-06T12:33:37.850228+00:00"
+      },
+      {
+        "symbol": "BTC-USD",
+        "signal": "SELL",
+        "confidence": 0.742,
+        "price": 86186.8125,
+        "regime": "trend",
+        "generated_at": "2026-10-06T12:33:37.940195+00:00"
+      },
+      {
+        "symbol": "ETH-USD",
+        "signal": "BUY",
+        "confidence": 0.6859,
+        "price": 2709.43994140625,
+        "regime": "trend",
+        "generated_at": "2026-10-06T12:33:38.423699+00:00"
+      },
+      {
+        "symbol": "^GSPC",
+        "signal": "SELL",
+        "confidence": 0.523,
+        "price": 7773.9501953125,
+        "regime": "trend",
+        "generated_at": "2026-10-06T12:33:38.503879+00:00"
+      },
+      {
+        "symbol": "^NDX",
+        "signal": "SELL",
+        "confidence": 0.8472,
+        "price": 31076.439453125,
+        "regime": "trend",
+        "generated_at": "2026-10-06T12:33:38.624754+00:00"
+      }
+    ]
   }
 ]

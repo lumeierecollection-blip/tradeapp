@@ -1,6 +1,6 @@
 {
   "symbol": "CL=F",
-  "trained_at": "2026-10-05T13:14:22.832629+00:00",
+  "trained_at": "2026-10-06T12:33:17.536038+00:00",
   "n_features": 35,
   "feature_cols": [
     "ret_1",
