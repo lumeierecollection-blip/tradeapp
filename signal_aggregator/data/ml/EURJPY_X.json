@@ -1,6 +1,6 @@
 {
   "symbol": "EURJPY=X",
-  "trained_at": "2026-10-06T12:33:02.463958+00:00",
+  "trained_at": "2026-10-07T12:26:07.455594+00:00",
   "n_features": 35,
   "feature_cols": [
     "ret_1",
