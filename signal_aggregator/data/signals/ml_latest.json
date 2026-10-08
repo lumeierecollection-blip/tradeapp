@@ -1,142 +1,142 @@
 {
-  "timestamp": "2026-10-07T12:26:37.055132+00:00",
+  "timestamp": "2026-10-08T12:36:10.547918+00:00",
   "model": "lightgbm_v1",
   "signals": [
     {
       "symbol": "EURUSD=X",
-      "signal": "SELL",
-      "confidence": 0.998,
-      "price": 1.1173185110092163,
+      "signal": "HOLD",
+      "confidence": 0.946,
+      "price": 1.1193194389343262,
       "regime": "trend",
-      "generated_at": "2026-10-07T12:26:35.547065+00:00"
+      "generated_at": "2026-10-08T12:36:08.153540+00:00"
     },
     {
       "symbol": "GBPUSD=X",
-      "signal": "SELL",
-      "confidence": 0.9448,
-      "price": 1.3198357820510864,
+      "signal": "BUY",
+      "confidence": 0.602,
+      "price": 1.3206725120544434,
       "regime": "trend",
-      "generated_at": "2026-10-07T12:26:35.636349+00:00"
+      "generated_at": "2026-10-08T12:36:08.260669+00:00"
     },
     {
       "symbol": "USDJPY=X",
       "signal": "BUY",
-      "confidence": 0.9925,
-      "price": 158.26800537109375,
+      "confidence": 0.957,
+      "price": 158.2030029296875,
       "regime": "range",
-      "generated_at": "2026-10-07T12:26:35.725537+00:00"
+      "generated_at": "2026-10-08T12:36:08.411903+00:00"
     },
     {
       "symbol": "AUDUSD=X",
-      "signal": "SELL",
-      "confidence": 0.9047,
-      "price": 0.6948787569999695,
+      "signal": "BUY",
+      "confidence": 0.7622,
+      "price": 0.6947339177131653,
       "regime": "trend",
-      "generated_at": "2026-10-07T12:26:35.816743+00:00"
+      "generated_at": "2026-10-08T12:36:08.531075+00:00"
     },
     {
       "symbol": "NZDUSD=X",
-      "signal": "SELL",
-      "confidence": 0.9799,
-      "price": 0.5588465332984924,
+      "signal": "BUY",
+      "confidence": 0.8726,
+      "price": 0.5592528581619263,
       "regime": "trend",
-      "generated_at": "2026-10-07T12:26:35.953809+00:00"
+      "generated_at": "2026-10-08T12:36:08.709948+00:00"
     },
     {
       "symbol": "GBPJPY=X",
       "signal": "BUY",
-      "confidence": 0.5048,
-      "price": 208.83099365234375,
+      "confidence": 0.5114,
+      "price": 208.93499755859375,
       "regime": "range",
-      "generated_at": "2026-10-07T12:26:36.044354+00:00"
+      "generated_at": "2026-10-08T12:36:08.898688+00:00"
     },
     {
       "symbol": "EURJPY=X",
       "signal": "BUY",
-      "confidence": 0.9381,
-      "price": 176.7270050048828,
+      "confidence": 0.8517,
+      "price": 177.03799438476562,
       "regime": "trend",
-      "generated_at": "2026-10-07T12:26:36.161666+00:00"
+      "generated_at": "2026-10-08T12:36:09.034636+00:00"
     },
     {
       "symbol": "AUDJPY=X",
       "signal": "BUY",
-      "confidence": 0.9315,
-      "price": 109.91699981689453,
+      "confidence": 0.6266,
+      "price": 109.86199951171875,
       "regime": "trend",
-      "generated_at": "2026-10-07T12:26:36.253550+00:00"
+      "generated_at": "2026-10-08T12:36:09.186212+00:00"
     },
     {
       "symbol": "USDCAD=X",
-      "signal": "BUY",
-      "confidence": 0.9454,
-      "price": 1.4263999462127686,
+      "signal": "HOLD",
+      "confidence": 0.8194,
+      "price": 1.4258899688720703,
       "regime": "trend",
-      "generated_at": "2026-10-07T12:26:36.344261+00:00"
+      "generated_at": "2026-10-08T12:36:09.316261+00:00"
     },
     {
       "symbol": "GC=F",
       "signal": "BUY",
-      "confidence": 0.9512,
-      "price": 4143.2001953125,
+      "confidence": 0.7524,
+      "price": 4154.7001953125,
       "regime": "trend",
-      "generated_at": "2026-10-07T12:26:36.428886+00:00"
+      "generated_at": "2026-10-08T12:36:09.463043+00:00"
     },
     {
       "symbol": "SI=F",
       "signal": "BUY",
-      "confidence": 0.5674,
-      "price": 60.3849983215332,
+      "confidence": 0.9748,
+      "price": 59.17499923706055,
       "regime": "trend",
-      "generated_at": "2026-10-07T12:26:36.518559+00:00"
+      "generated_at": "2026-10-08T12:36:09.609903+00:00"
     },
     {
       "symbol": "CL=F",
       "signal": "BUY",
-      "confidence": 0.8351,
-      "price": 89.9000015258789,
+      "confidence": 0.9136,
+      "price": 92.5199966430664,
       "regime": "range",
-      "generated_at": "2026-10-07T12:26:36.613859+00:00"
+      "generated_at": "2026-10-08T12:36:09.766864+00:00"
     },
     {
       "symbol": "NG=F",
-      "signal": "BUY",
-      "confidence": 0.7903,
-      "price": 3.2070000171661377,
-      "regime": "trend",
-      "generated_at": "2026-10-07T12:26:36.710575+00:00"
+      "signal": "HOLD",
+      "confidence": 0.5,
+      "price": 3.2730000019073486,
+      "regime": "vol",
+      "generated_at": "2026-10-08T12:36:09.995793+00:00"
     },
     {
       "symbol": "BTC-USD",
       "signal": "SELL",
-      "confidence": 0.7026,
-      "price": 83451.953125,
+      "confidence": 0.7539,
+      "price": 82281.28125,
       "regime": "range",
-      "generated_at": "2026-10-07T12:26:36.800282+00:00"
+      "generated_at": "2026-10-08T12:36:10.122439+00:00"
     },
     {
       "symbol": "ETH-USD",
       "signal": "SELL",
-      "confidence": 0.7196,
-      "price": 2574.409912109375,
+      "confidence": 0.7133,
+      "price": 2529.610107421875,
       "regime": "range",
-      "generated_at": "2026-10-07T12:26:36.891747+00:00"
+      "generated_at": "2026-10-08T12:36:10.311191+00:00"
     },
     {
       "symbol": "^GSPC",
       "signal": "SELL",
-      "confidence": 0.5071,
-      "price": 7818.93017578125,
+      "confidence": 0.738,
+      "price": 7801.77001953125,
       "regime": "trend",
-      "generated_at": "2026-10-07T12:26:36.974068+00:00"
+      "generated_at": "2026-10-08T12:36:10.431618+00:00"
     },
     {
       "symbol": "^NDX",
       "signal": "SELL",
-      "confidence": 0.8972,
-      "price": 31224.470703125,
+      "confidence": 0.9432,
+      "price": 31160.080078125,
       "regime": "trend",
-      "generated_at": "2026-10-07T12:26:37.055119+00:00"
+      "generated_at": "2026-10-08T12:36:10.547902+00:00"
     }
   ]
 }
