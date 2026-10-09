@@ -1,6 +1,6 @@
 {
   "symbol": "USDJPY=X",
-  "trained_at": "2026-10-08T12:35:27.451223+00:00",
+  "trained_at": "2026-10-09T12:23:18.042638+00:00",
   "n_features": 35,
   "feature_cols": [
     "ret_1",
@@ -39,29 +39,29 @@
     "vol_percentile",
     "trend_strength"
   ],
-  "avg_accuracy": 0.5167,
+  "avg_accuracy": 0.5375,
   "windows": [
     {
-      "window_start": "2025-10-24",
-      "window_end": "2026-01-19",
-      "accuracy": 0.4833,
-      "test_size": 60
-    },
-    {
-      "window_start": "2026-01-20",
-      "window_end": "2026-04-13",
-      "accuracy": 0.55,
-      "test_size": 60
-    },
-    {
-      "window_start": "2026-04-14",
-      "window_end": "2026-07-06",
+      "window_start": "2025-10-27",
+      "window_end": "2026-01-20",
       "accuracy": 0.4667,
       "test_size": 60
     },
     {
-      "window_start": "2026-07-07",
-      "window_end": "2026-09-28",
+      "window_start": "2026-01-21",
+      "window_end": "2026-04-14",
+      "accuracy": 0.5833,
+      "test_size": 60
+    },
+    {
+      "window_start": "2026-04-15",
+      "window_end": "2026-07-07",
+      "accuracy": 0.5333,
+      "test_size": 60
+    },
+    {
+      "window_start": "2026-07-08",
+      "window_end": "2026-09-29",
       "accuracy": 0.5667,
       "test_size": 60
     }

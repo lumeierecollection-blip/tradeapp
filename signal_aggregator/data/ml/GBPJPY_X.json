@@ -1,6 +1,6 @@
 {
   "symbol": "GBPJPY=X",
-  "trained_at": "2026-10-08T12:35:35.520362+00:00",
+  "trained_at": "2026-10-09T12:23:28.753866+00:00",
   "n_features": 35,
   "feature_cols": [
     "ret_1",
@@ -39,30 +39,30 @@
     "vol_percentile",
     "trend_strength"
   ],
-  "avg_accuracy": 0.4459,
+  "avg_accuracy": 0.4375,
   "windows": [
     {
-      "window_start": "2025-10-24",
-      "window_end": "2026-01-19",
-      "accuracy": 0.4,
-      "test_size": 60
-    },
-    {
-      "window_start": "2026-01-20",
-      "window_end": "2026-04-13",
-      "accuracy": 0.6167,
-      "test_size": 60
-    },
-    {
-      "window_start": "2026-04-14",
-      "window_end": "2026-07-06",
-      "accuracy": 0.4,
-      "test_size": 60
-    },
-    {
-      "window_start": "2026-07-07",
-      "window_end": "2026-09-28",
+      "window_start": "2025-10-27",
+      "window_end": "2026-01-20",
       "accuracy": 0.3667,
+      "test_size": 60
+    },
+    {
+      "window_start": "2026-01-21",
+      "window_end": "2026-04-14",
+      "accuracy": 0.6,
+      "test_size": 60
+    },
+    {
+      "window_start": "2026-04-15",
+      "window_end": "2026-07-07",
+      "accuracy": 0.3833,
+      "test_size": 60
+    },
+    {
+      "window_start": "2026-07-08",
+      "window_end": "2026-09-29",
+      "accuracy": 0.4,
       "test_size": 60
     }
   ]
