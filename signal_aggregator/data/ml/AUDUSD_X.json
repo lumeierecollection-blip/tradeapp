@@ -1,6 +1,6 @@
 {
   "symbol": "AUDUSD=X",
-  "trained_at": "2026-10-10T11:42:00.415857+00:00",
+  "trained_at": "2026-10-11T11:55:05.313476+00:00",
   "n_features": 35,
   "feature_cols": [
     "ret_1",
@@ -39,30 +39,30 @@
     "vol_percentile",
     "trend_strength"
   ],
-  "avg_accuracy": 0.6333,
+  "avg_accuracy": 0.65,
   "windows": [
     {
-      "window_start": "2025-10-28",
-      "window_end": "2026-01-21",
-      "accuracy": 0.6167,
+      "window_start": "2025-10-29",
+      "window_end": "2026-01-22",
+      "accuracy": 0.6667,
       "test_size": 60
     },
     {
-      "window_start": "2026-01-22",
-      "window_end": "2026-04-15",
+      "window_start": "2026-01-23",
+      "window_end": "2026-04-16",
       "accuracy": 0.65,
       "test_size": 60
     },
     {
-      "window_start": "2026-04-16",
-      "window_end": "2026-07-08",
+      "window_start": "2026-04-17",
+      "window_end": "2026-07-09",
       "accuracy": 0.6833,
       "test_size": 60
     },
     {
-      "window_start": "2026-07-09",
-      "window_end": "2026-09-30",
-      "accuracy": 0.5833,
+      "window_start": "2026-07-10",
+      "window_end": "2026-10-01",
+      "accuracy": 0.6,
       "test_size": 60
     }
   ]
