@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-04T08:15:55.878143+00:00",
+  "generated_at": "2026-10-11T08:36:04.734892+00:00",
   "holdout_start": "2023-01-01",
   "config": {},
   "rows": [
@@ -7,7 +7,7 @@
       "symbol": "EURUSD=X",
       "strategy": "ma_cross",
       "tf": "1h",
-      "error": "$EURUSD=X: 1h data not available for startTime=1475741691 and endTime=1791101691. The requested range must be within the last 730 days.\n"
+      "error": "$EURUSD=X: 1h data not available for startTime=1476347687 and endTime=1791707687. The requested range must be within the last 730 days.\n"
     },
     {
       "symbol": "EURUSD=X",
@@ -18,98 +18,98 @@
       "trades": 56,
       "max_drawdown": 11.08,
       "test_start": "2023-01-02 00:00:00+00:00",
-      "test_end": "2026-10-02 00:00:00+01:00"
+      "test_end": "2026-10-09 00:00:00+01:00"
     },
     {
       "symbol": "EURUSD=X",
       "strategy": "rsi",
       "tf": "1h",
-      "error": "$EURUSD=X: 1h data not available for startTime=1475741692 and endTime=1791101692. The requested range must be within the last 730 days.\n"
+      "error": "$EURUSD=X: 1h data not available for startTime=1476347688 and endTime=1791707688. The requested range must be within the last 730 days.\n"
     },
     {
       "symbol": "EURUSD=X",
       "strategy": "rsi",
       "tf": "1d",
-      "sharpe": 0.48,
-      "total_return": 10.1,
-      "trades": 44,
+      "sharpe": 0.45,
+      "total_return": 9.42,
+      "trades": 46,
       "max_drawdown": 6.94,
       "test_start": "2023-01-02 00:00:00+00:00",
-      "test_end": "2026-10-02 00:00:00+01:00"
+      "test_end": "2026-10-09 00:00:00+01:00"
     },
     {
       "symbol": "GBPUSD=X",
       "strategy": "ma_cross",
       "tf": "1h",
-      "error": "$GBPUSD=X: 1h data not available for startTime=1475741694 and endTime=1791101694. The requested range must be within the last 730 days.\n"
+      "error": "$GBPUSD=X: 1h data not available for startTime=1476347690 and endTime=1791707690. The requested range must be within the last 730 days.\n"
     },
     {
       "symbol": "GBPUSD=X",
       "strategy": "ma_cross",
       "tf": "1d",
       "sharpe": 0.43,
-      "total_return": 10.62,
+      "total_return": 10.56,
       "trades": 28,
       "max_drawdown": 7.14,
       "test_start": "2023-01-02 00:00:00+00:00",
-      "test_end": "2026-10-02 00:00:00+01:00"
+      "test_end": "2026-10-11 00:00:00+01:00"
     },
     {
       "symbol": "GBPUSD=X",
       "strategy": "rsi",
       "tf": "1h",
-      "error": "$GBPUSD=X: 1h data not available for startTime=1475741696 and endTime=1791101696. The requested range must be within the last 730 days.\n"
+      "error": "$GBPUSD=X: 1h data not available for startTime=1476347692 and endTime=1791707692. The requested range must be within the last 730 days.\n"
     },
     {
       "symbol": "GBPUSD=X",
       "strategy": "rsi",
       "tf": "1d",
       "sharpe": 0.19,
-      "total_return": 3.51,
+      "total_return": 3.46,
       "trades": 32,
       "max_drawdown": 5.85,
       "test_start": "2023-01-02 00:00:00+00:00",
-      "test_end": "2026-10-02 00:00:00+01:00"
+      "test_end": "2026-10-11 00:00:00+01:00"
     },
     {
       "symbol": "USDJPY=X",
       "strategy": "ma_cross",
       "tf": "1h",
-      "error": "$USDJPY=X: 1h data not available for startTime=1475741698 and endTime=1791101698. The requested range must be within the last 730 days.\n"
+      "error": "$USDJPY=X: 1h data not available for startTime=1476347694 and endTime=1791707694. The requested range must be within the last 730 days.\n"
     },
     {
       "symbol": "USDJPY=X",
       "strategy": "ma_cross",
       "tf": "1d",
       "sharpe": 0.61,
-      "total_return": 20.14,
+      "total_return": 20.46,
       "trades": 70,
       "max_drawdown": 13.28,
       "test_start": "2023-01-02 00:00:00+00:00",
-      "test_end": "2026-10-04 00:00:00+01:00"
+      "test_end": "2026-10-09 00:00:00+01:00"
     },
     {
       "symbol": "USDJPY=X",
       "strategy": "rsi",
       "tf": "1h",
-      "error": "$USDJPY=X: 1h data not available for startTime=1475741699 and endTime=1791101699. The requested range must be within the last 730 days.\n"
+      "error": "$USDJPY=X: 1h data not available for startTime=1476347696 and endTime=1791707696. The requested range must be within the last 730 days.\n"
     },
     {
       "symbol": "USDJPY=X",
       "strategy": "rsi",
       "tf": "1d",
       "sharpe": 0.66,
-      "total_return": 20.38,
+      "total_return": 20.69,
       "trades": 32,
       "max_drawdown": 12.58,
       "test_start": "2023-01-02 00:00:00+00:00",
-      "test_end": "2026-10-04 00:00:00+01:00"
+      "test_end": "2026-10-09 00:00:00+01:00"
     },
     {
       "symbol": "AUDUSD=X",
       "strategy": "ma_cross",
       "tf": "1h",
-      "error": "$AUDUSD=X: 1h data not available for startTime=1475741700 and endTime=1791101700. The requested range must be within the last 730 days.\n"
+      "error": "$AUDUSD=X: 1h data not available for startTime=1476347698 and endTime=1791707698. The requested range must be within the last 730 days.\n"
     },
     {
       "symbol": "AUDUSD=X",
@@ -120,64 +120,64 @@
       "trades": 38,
       "max_drawdown": 12.4,
       "test_start": "2023-01-02 00:00:00+00:00",
-      "test_end": "2026-10-04 00:00:00+01:00"
+      "test_end": "2026-10-11 00:00:00+01:00"
     },
     {
       "symbol": "AUDUSD=X",
       "strategy": "rsi",
       "tf": "1h",
-      "error": "$AUDUSD=X: 1h data not available for startTime=1475741702 and endTime=1791101702. The requested range must be within the last 730 days.\n"
+      "error": "$AUDUSD=X: 1h data not available for startTime=1476347700 and endTime=1791707700. The requested range must be within the last 730 days.\n"
     },
     {
       "symbol": "AUDUSD=X",
       "strategy": "rsi",
       "tf": "1d",
-      "sharpe": 0.22,
-      "total_return": 5.25,
+      "sharpe": 0.23,
+      "total_return": 5.71,
       "trades": 32,
       "max_drawdown": 8.59,
       "test_start": "2023-01-02 00:00:00+00:00",
-      "test_end": "2026-10-04 00:00:00+01:00"
+      "test_end": "2026-10-11 00:00:00+01:00"
     },
     {
       "symbol": "GBPJPY=X",
       "strategy": "ma_cross",
       "tf": "1h",
-      "error": "$GBPJPY=X: 1h data not available for startTime=1475741704 and endTime=1791101704. The requested range must be within the last 730 days.\n"
+      "error": "$GBPJPY=X: 1h data not available for startTime=1476347702 and endTime=1791707702. The requested range must be within the last 730 days.\n"
     },
     {
       "symbol": "GBPJPY=X",
       "strategy": "ma_cross",
       "tf": "1d",
-      "sharpe": 0.86,
-      "total_return": 29.88,
-      "trades": 46,
+      "sharpe": 0.87,
+      "total_return": 30.42,
+      "trades": 48,
       "max_drawdown": 6.38,
       "test_start": "2023-01-02 00:00:00+00:00",
-      "test_end": "2026-10-04 00:00:00+01:00"
+      "test_end": "2026-10-09 00:00:00+01:00"
     },
     {
       "symbol": "GBPJPY=X",
       "strategy": "rsi",
       "tf": "1h",
-      "error": "$GBPJPY=X: 1h data not available for startTime=1475741705 and endTime=1791101705. The requested range must be within the last 730 days.\n"
+      "error": "$GBPJPY=X: 1h data not available for startTime=1476347703 and endTime=1791707703. The requested range must be within the last 730 days.\n"
     },
     {
       "symbol": "GBPJPY=X",
       "strategy": "rsi",
       "tf": "1d",
       "sharpe": 0.48,
-      "total_return": 12.01,
+      "total_return": 12.24,
       "trades": 30,
       "max_drawdown": 8.25,
       "test_start": "2023-01-02 00:00:00+00:00",
-      "test_end": "2026-10-04 00:00:00+01:00"
+      "test_end": "2026-10-09 00:00:00+01:00"
     },
     {
       "symbol": "EURJPY=X",
       "strategy": "ma_cross",
       "tf": "1h",
-      "error": "$EURJPY=X: 1h data not available for startTime=1475741707 and endTime=1791101707. The requested range must be within the last 730 days.\n"
+      "error": "$EURJPY=X: 1h data not available for startTime=1476347706 and endTime=1791707706. The requested range must be within the last 730 days.\n"
     },
     {
       "symbol": "EURJPY=X",
@@ -188,64 +188,64 @@
       "trades": 46,
       "max_drawdown": 13.79,
       "test_start": "2023-01-02 00:00:00+00:00",
-      "test_end": "2026-10-04 00:00:00+01:00"
+      "test_end": "2026-10-11 00:00:00+01:00"
     },
     {
       "symbol": "EURJPY=X",
       "strategy": "rsi",
       "tf": "1h",
-      "error": "$EURJPY=X: 1h data not available for startTime=1475741708 and endTime=1791101708. The requested range must be within the last 730 days.\n"
+      "error": "$EURJPY=X: 1h data not available for startTime=1476347707 and endTime=1791707707. The requested range must be within the last 730 days.\n"
     },
     {
       "symbol": "EURJPY=X",
       "strategy": "rsi",
       "tf": "1d",
       "sharpe": -0.54,
-      "total_return": -12.23,
+      "total_return": -12.3,
       "trades": 18,
       "max_drawdown": 15.66,
       "test_start": "2023-01-02 00:00:00+00:00",
-      "test_end": "2026-10-04 00:00:00+01:00"
+      "test_end": "2026-10-11 00:00:00+01:00"
     },
     {
       "symbol": "AUDJPY=X",
       "strategy": "ma_cross",
       "tf": "1h",
-      "error": "$AUDJPY=X: 1h data not available for startTime=1475741710 and endTime=1791101710. The requested range must be within the last 730 days.\n"
+      "error": "$AUDJPY=X: 1h data not available for startTime=1476347710 and endTime=1791707710. The requested range must be within the last 730 days.\n"
     },
     {
       "symbol": "AUDJPY=X",
       "strategy": "ma_cross",
       "tf": "1d",
-      "sharpe": 0.37,
-      "total_return": 12.8,
+      "sharpe": 0.39,
+      "total_return": 13.58,
       "trades": 50,
       "max_drawdown": 18.69,
       "test_start": "2023-01-02 00:00:00+00:00",
-      "test_end": "2026-10-04 00:00:00+01:00"
+      "test_end": "2026-10-09 00:00:00+01:00"
     },
     {
       "symbol": "AUDJPY=X",
       "strategy": "rsi",
       "tf": "1h",
-      "error": "$AUDJPY=X: 1h data not available for startTime=1475741711 and endTime=1791101711. The requested range must be within the last 730 days.\n"
+      "error": "$AUDJPY=X: 1h data not available for startTime=1476347711 and endTime=1791707711. The requested range must be within the last 730 days.\n"
     },
     {
       "symbol": "AUDJPY=X",
       "strategy": "rsi",
       "tf": "1d",
-      "sharpe": 0.14,
-      "total_return": 3.09,
+      "sharpe": 0.16,
+      "total_return": 3.81,
       "trades": 24,
       "max_drawdown": 15.15,
       "test_start": "2023-01-02 00:00:00+00:00",
-      "test_end": "2026-10-04 00:00:00+01:00"
+      "test_end": "2026-10-09 00:00:00+01:00"
     },
     {
       "symbol": "NZDUSD=X",
       "strategy": "ma_cross",
       "tf": "1h",
-      "error": "$NZDUSD=X: 1h data not available for startTime=1475741713 and endTime=1791101713. The requested range must be within the last 730 days.\n"
+      "error": "$NZDUSD=X: 1h data not available for startTime=1476347714 and endTime=1791707714. The requested range must be within the last 730 days.\n"
     },
     {
       "symbol": "NZDUSD=X",
@@ -256,47 +256,47 @@
       "trades": 48,
       "max_drawdown": 24.01,
       "test_start": "2023-01-02 00:00:00+00:00",
-      "test_end": "2026-10-04 00:00:00+01:00"
+      "test_end": "2026-10-11 00:00:00+01:00"
     },
     {
       "symbol": "NZDUSD=X",
       "strategy": "rsi",
       "tf": "1h",
-      "error": "$NZDUSD=X: 1h data not available for startTime=1475741715 and endTime=1791101715. The requested range must be within the last 730 days.\n"
+      "error": "$NZDUSD=X: 1h data not available for startTime=1476347715 and endTime=1791707715. The requested range must be within the last 730 days.\n"
     },
     {
       "symbol": "NZDUSD=X",
       "strategy": "rsi",
       "tf": "1d",
-      "sharpe": -0.09,
-      "total_return": -3.68,
+      "sharpe": -0.1,
+      "total_return": -3.87,
       "trades": 38,
       "max_drawdown": 7.63,
       "test_start": "2023-01-02 00:00:00+00:00",
-      "test_end": "2026-10-04 00:00:00+01:00"
+      "test_end": "2026-10-11 00:00:00+01:00"
     },
     {
       "symbol": "USDCAD=X",
       "strategy": "ma_cross",
       "tf": "1h",
-      "error": "$USDCAD=X: 1h data not available for startTime=1475741716 and endTime=1791101716. The requested range must be within the last 730 days.\n"
+      "error": "$USDCAD=X: 1h data not available for startTime=1476347717 and endTime=1791707717. The requested range must be within the last 730 days.\n"
     },
     {
       "symbol": "USDCAD=X",
       "strategy": "ma_cross",
       "tf": "1d",
       "sharpe": 0.32,
-      "total_return": 5.71,
+      "total_return": 5.76,
       "trades": 56,
       "max_drawdown": 7.08,
       "test_start": "2023-01-02 00:00:00+00:00",
-      "test_end": "2026-10-04 00:00:00+01:00"
+      "test_end": "2026-10-11 00:00:00+01:00"
     },
     {
       "symbol": "USDCAD=X",
       "strategy": "rsi",
       "tf": "1h",
-      "error": "$USDCAD=X: 1h data not available for startTime=1475741718 and endTime=1791101718. The requested range must be within the last 730 days.\n"
+      "error": "$USDCAD=X: 1h data not available for startTime=1476347719 and endTime=1791707719. The requested range must be within the last 730 days.\n"
     },
     {
       "symbol": "USDCAD=X",
@@ -307,47 +307,47 @@
       "trades": 36,
       "max_drawdown": 7.77,
       "test_start": "2023-01-02 00:00:00+00:00",
-      "test_end": "2026-10-04 00:00:00+01:00"
+      "test_end": "2026-10-11 00:00:00+01:00"
     },
     {
       "symbol": "GC=F",
       "strategy": "ma_cross",
       "tf": "1h",
-      "error": "$GC=F: 1h data not available for startTime=1475741719 and endTime=1791101719. The requested range must be within the last 730 days.\n"
+      "error": "$GC=F: 1h data not available for startTime=1476347721 and endTime=1791707721. The requested range must be within the last 730 days.\n"
     },
     {
       "symbol": "GC=F",
       "strategy": "ma_cross",
       "tf": "1d",
-      "sharpe": 0.91,
-      "total_return": 75.31,
+      "sharpe": 0.88,
+      "total_return": 72.57,
       "trades": 78,
       "max_drawdown": 28.59,
       "test_start": "2023-01-03 00:00:00-05:00",
-      "test_end": "2026-10-02 00:00:00-04:00"
+      "test_end": "2026-10-09 00:00:00-04:00"
     },
     {
       "symbol": "GC=F",
       "strategy": "rsi",
       "tf": "1h",
-      "error": "$GC=F: 1h data not available for startTime=1475741721 and endTime=1791101721. The requested range must be within the last 730 days.\n"
+      "error": "$GC=F: 1h data not available for startTime=1476347723 and endTime=1791707723. The requested range must be within the last 730 days.\n"
     },
     {
       "symbol": "GC=F",
       "strategy": "rsi",
       "tf": "1d",
-      "sharpe": 0.45,
-      "total_return": 16.96,
+      "sharpe": 0.48,
+      "total_return": 18.48,
       "trades": 16,
       "max_drawdown": 18.94,
       "test_start": "2023-01-03 00:00:00-05:00",
-      "test_end": "2026-10-02 00:00:00-04:00"
+      "test_end": "2026-10-09 00:00:00-04:00"
     },
     {
       "symbol": "SI=F",
       "strategy": "ma_cross",
       "tf": "1h",
-      "error": "$SI=F: 1h data not available for startTime=1475741723 and endTime=1791101723. The requested range must be within the last 730 days.\n"
+      "error": "$SI=F: 1h data not available for startTime=1476347725 and endTime=1791707725. The requested range must be within the last 730 days.\n"
     },
     {
       "symbol": "SI=F",
@@ -358,217 +358,217 @@
       "trades": 118,
       "max_drawdown": 50.56,
       "test_start": "2023-01-03 00:00:00-05:00",
-      "test_end": "2026-10-02 00:00:00-04:00"
+      "test_end": "2026-10-09 00:00:00-04:00"
     },
     {
       "symbol": "SI=F",
       "strategy": "rsi",
       "tf": "1h",
-      "error": "$SI=F: 1h data not available for startTime=1475741725 and endTime=1791101725. The requested range must be within the last 730 days.\n"
+      "error": "$SI=F: 1h data not available for startTime=1476347727 and endTime=1791707727. The requested range must be within the last 730 days.\n"
     },
     {
       "symbol": "SI=F",
       "strategy": "rsi",
       "tf": "1d",
-      "sharpe": 0.47,
-      "total_return": 37.37,
+      "sharpe": 0.48,
+      "total_return": 38.81,
       "trades": 34,
       "max_drawdown": 39.69,
       "test_start": "2023-01-03 00:00:00-05:00",
-      "test_end": "2026-10-02 00:00:00-04:00"
+      "test_end": "2026-10-09 00:00:00-04:00"
     },
     {
       "symbol": "CL=F",
       "strategy": "ma_cross",
       "tf": "1h",
-      "error": "$CL=F: 1h data not available for startTime=1475741727 and endTime=1791101727. The requested range must be within the last 730 days.\n"
+      "error": "$CL=F: 1h data not available for startTime=1476347729 and endTime=1791707729. The requested range must be within the last 730 days.\n"
     },
     {
       "symbol": "CL=F",
       "strategy": "ma_cross",
       "tf": "1d",
-      "sharpe": -0.26,
-      "total_return": -43.9,
+      "sharpe": -0.25,
+      "total_return": -43.45,
       "trades": 72,
       "max_drawdown": 55.78,
       "test_start": "2023-01-03 00:00:00-05:00",
-      "test_end": "2026-10-02 00:00:00-04:00"
+      "test_end": "2026-10-09 00:00:00-04:00"
     },
     {
       "symbol": "CL=F",
       "strategy": "rsi",
       "tf": "1h",
-      "error": "$CL=F: 1h data not available for startTime=1475741728 and endTime=1791101728. The requested range must be within the last 730 days.\n"
+      "error": "$CL=F: 1h data not available for startTime=1476347731 and endTime=1791707731. The requested range must be within the last 730 days.\n"
     },
     {
       "symbol": "CL=F",
       "strategy": "rsi",
       "tf": "1d",
-      "sharpe": -0.34,
-      "total_return": -32.58,
-      "trades": 34,
+      "sharpe": -0.31,
+      "total_return": -31.16,
+      "trades": 36,
       "max_drawdown": 59.29,
       "test_start": "2023-01-03 00:00:00-05:00",
-      "test_end": "2026-10-02 00:00:00-04:00"
+      "test_end": "2026-10-09 00:00:00-04:00"
     },
     {
       "symbol": "NG=F",
       "strategy": "ma_cross",
       "tf": "1h",
-      "error": "$NG=F: 1h data not available for startTime=1475741730 and endTime=1791101730. The requested range must be within the last 730 days.\n"
+      "error": "$NG=F: 1h data not available for startTime=1476347733 and endTime=1791707733. The requested range must be within the last 730 days.\n"
     },
     {
       "symbol": "NG=F",
       "strategy": "ma_cross",
       "tf": "1d",
-      "sharpe": 0.03,
-      "total_return": -49.77,
+      "sharpe": 0.06,
+      "total_return": -46.71,
       "trades": 70,
       "max_drawdown": 67.37,
       "test_start": "2023-01-03 00:00:00-05:00",
-      "test_end": "2026-10-02 00:00:00-04:00"
+      "test_end": "2026-10-09 00:00:00-04:00"
     },
     {
       "symbol": "NG=F",
       "strategy": "rsi",
       "tf": "1h",
-      "error": "$NG=F: 1h data not available for startTime=1475741731 and endTime=1791101731. The requested range must be within the last 730 days.\n"
+      "error": "$NG=F: 1h data not available for startTime=1476347735 and endTime=1791707735. The requested range must be within the last 730 days.\n"
     },
     {
       "symbol": "NG=F",
       "strategy": "rsi",
       "tf": "1d",
-      "sharpe": 0.98,
-      "total_return": 310.69,
+      "sharpe": 1.0,
+      "total_return": 335.72,
       "trades": 36,
       "max_drawdown": 34.4,
       "test_start": "2023-01-03 00:00:00-05:00",
-      "test_end": "2026-10-02 00:00:00-04:00"
+      "test_end": "2026-10-09 00:00:00-04:00"
     },
     {
       "symbol": "BTC-USD",
       "strategy": "ma_cross",
       "tf": "1h",
-      "error": "$BTC-USD: 1h data not available for startTime=1475741733 and endTime=1791101733. The requested range must be within the last 730 days.\n"
+      "error": "$BTC-USD: 1h data not available for startTime=1476347737 and endTime=1791707737. The requested range must be within the last 730 days.\n"
     },
     {
       "symbol": "BTC-USD",
       "strategy": "ma_cross",
       "tf": "1d",
-      "sharpe": 0.67,
-      "total_return": 140.33,
-      "trades": 82,
+      "sharpe": 0.64,
+      "total_return": 130.98,
+      "trades": 84,
       "max_drawdown": 42.1,
       "test_start": "2023-01-01 00:00:00+00:00",
-      "test_end": "2026-10-04 00:00:00+00:00"
+      "test_end": "2026-10-11 00:00:00+00:00"
     },
     {
       "symbol": "BTC-USD",
       "strategy": "rsi",
       "tf": "1h",
-      "error": "$BTC-USD: 1h data not available for startTime=1475741734 and endTime=1791101734. The requested range must be within the last 730 days.\n"
+      "error": "$BTC-USD: 1h data not available for startTime=1476347738 and endTime=1791707738. The requested range must be within the last 730 days.\n"
     },
     {
       "symbol": "BTC-USD",
       "strategy": "rsi",
       "tf": "1d",
-      "sharpe": 0.58,
-      "total_return": 87.52,
+      "sharpe": 0.56,
+      "total_return": 82.79,
       "trades": 60,
       "max_drawdown": 44.89,
       "test_start": "2023-01-01 00:00:00+00:00",
-      "test_end": "2026-10-04 00:00:00+00:00"
+      "test_end": "2026-10-11 00:00:00+00:00"
     },
     {
       "symbol": "ETH-USD",
       "strategy": "ma_cross",
       "tf": "1h",
-      "error": "$ETH-USD: 1h data not available for startTime=1510185600 and endTime=1791101736. The requested range must be within the last 730 days.\n"
+      "error": "$ETH-USD: 1h data not available for startTime=1510185600 and endTime=1791707741. The requested range must be within the last 730 days.\n"
     },
     {
       "symbol": "ETH-USD",
       "strategy": "ma_cross",
       "tf": "1d",
-      "sharpe": 0.01,
-      "total_return": -35.92,
+      "sharpe": -0.02,
+      "total_return": -40.48,
       "trades": 100,
       "max_drawdown": 67.64,
       "test_start": "2023-01-01 00:00:00+00:00",
-      "test_end": "2026-10-04 00:00:00+00:00"
+      "test_end": "2026-10-11 00:00:00+00:00"
     },
     {
       "symbol": "ETH-USD",
       "strategy": "rsi",
       "tf": "1h",
-      "error": "$ETH-USD: 1h data not available for startTime=1510185600 and endTime=1791101738. The requested range must be within the last 730 days.\n"
+      "error": "$ETH-USD: 1h data not available for startTime=1510185600 and endTime=1791707743. The requested range must be within the last 730 days.\n"
     },
     {
       "symbol": "ETH-USD",
       "strategy": "rsi",
       "tf": "1d",
       "sharpe": 0.37,
-      "total_return": 45.5,
-      "trades": 44,
+      "total_return": 46.16,
+      "trades": 46,
       "max_drawdown": 64.61,
       "test_start": "2023-01-01 00:00:00+00:00",
-      "test_end": "2026-10-04 00:00:00+00:00"
+      "test_end": "2026-10-11 00:00:00+00:00"
     },
     {
       "symbol": "SOL-USD",
       "strategy": "ma_cross",
       "tf": "1h",
-      "error": "$SOL-USD: 1h data not available for startTime=1586476800 and endTime=1791101740. The requested range must be within the last 730 days.\n"
+      "error": "$SOL-USD: 1h data not available for startTime=1586476800 and endTime=1791707745. The requested range must be within the last 730 days.\n"
     },
     {
       "symbol": "SOL-USD",
       "strategy": "ma_cross",
       "tf": "1d",
-      "sharpe": 0.48,
-      "total_return": 84.62,
+      "sharpe": 0.44,
+      "total_return": 66.72,
       "trades": 120,
       "max_drawdown": 75.23,
       "test_start": "2023-01-01 00:00:00+00:00",
-      "test_end": "2026-10-04 00:00:00+00:00"
+      "test_end": "2026-10-11 00:00:00+00:00"
     },
     {
       "symbol": "SOL-USD",
       "strategy": "rsi",
       "tf": "1h",
-      "error": "$SOL-USD: 1h data not available for startTime=1586476800 and endTime=1791101741. The requested range must be within the last 730 days.\n"
+      "error": "$SOL-USD: 1h data not available for startTime=1586476800 and endTime=1791707747. The requested range must be within the last 730 days.\n"
     },
     {
       "symbol": "SOL-USD",
       "strategy": "rsi",
       "tf": "1d",
       "sharpe": 0.43,
-      "total_return": 65.62,
-      "trades": 40,
+      "total_return": 64.48,
+      "trades": 42,
       "max_drawdown": 69.63,
       "test_start": "2023-01-01 00:00:00+00:00",
-      "test_end": "2026-10-04 00:00:00+00:00"
+      "test_end": "2026-10-11 00:00:00+00:00"
     },
     {
       "symbol": "BNB-USD",
       "strategy": "ma_cross",
       "tf": "1h",
-      "error": "$BNB-USD: 1h data not available for startTime=1510185600 and endTime=1791101743. The requested range must be within the last 730 days.\n"
+      "error": "$BNB-USD: 1h data not available for startTime=1510185600 and endTime=1791707749. The requested range must be within the last 730 days.\n"
     },
     {
       "symbol": "BNB-USD",
       "strategy": "ma_cross",
       "tf": "1d",
-      "sharpe": 0.12,
-      "total_return": -11.24,
-      "trades": 96,
+      "sharpe": 0.1,
+      "total_return": -15.35,
+      "trades": 98,
       "max_drawdown": 61.63,
       "test_start": "2023-01-01 00:00:00+00:00",
-      "test_end": "2026-10-04 00:00:00+00:00"
+      "test_end": "2026-10-11 00:00:00+00:00"
     },
     {
       "symbol": "BNB-USD",
       "strategy": "rsi",
       "tf": "1h",
-      "error": "$BNB-USD: 1h data not available for startTime=1510185600 and endTime=1791101744. The requested range must be within the last 730 days.\n"
+      "error": "$BNB-USD: 1h data not available for startTime=1510185600 and endTime=1791707751. The requested range must be within the last 730 days.\n"
     },
     {
       "symbol": "BNB-USD",
@@ -579,64 +579,64 @@
       "trades": 44,
       "max_drawdown": 41.74,
       "test_start": "2023-01-01 00:00:00+00:00",
-      "test_end": "2026-10-04 00:00:00+00:00"
+      "test_end": "2026-10-11 00:00:00+00:00"
     },
     {
       "symbol": "^GSPC",
       "strategy": "ma_cross",
       "tf": "1h",
-      "error": "$^GSPC: 1h data not available for startTime=1475741746 and endTime=1791101746. The requested range must be within the last 730 days.\n"
+      "error": "$^GSPC: 1h data not available for startTime=1476347753 and endTime=1791707753. The requested range must be within the last 730 days.\n"
     },
     {
       "symbol": "^GSPC",
       "strategy": "ma_cross",
       "tf": "1d",
-      "sharpe": 0.83,
-      "total_return": 37.03,
+      "sharpe": 0.85,
+      "total_return": 38.61,
       "trades": 76,
       "max_drawdown": 12.84,
       "test_start": "2023-01-03 00:00:00-05:00",
-      "test_end": "2026-10-02 00:00:00-04:00"
+      "test_end": "2026-10-09 00:00:00-04:00"
     },
     {
       "symbol": "^GSPC",
       "strategy": "rsi",
       "tf": "1h",
-      "error": "$^GSPC: 1h data not available for startTime=1475741748 and endTime=1791101748. The requested range must be within the last 730 days.\n"
+      "error": "$^GSPC: 1h data not available for startTime=1476347755 and endTime=1791707755. The requested range must be within the last 730 days.\n"
     },
     {
       "symbol": "^GSPC",
       "strategy": "rsi",
       "tf": "1d",
-      "sharpe": 0.44,
+      "sharpe": 0.43,
       "total_return": 15.86,
       "trades": 24,
       "max_drawdown": 14.81,
       "test_start": "2023-01-03 00:00:00-05:00",
-      "test_end": "2026-10-02 00:00:00-04:00"
+      "test_end": "2026-10-09 00:00:00-04:00"
     },
     {
       "symbol": "^NDX",
       "strategy": "ma_cross",
       "tf": "1h",
-      "error": "$^NDX: 1h data not available for startTime=1475741750 and endTime=1791101750. The requested range must be within the last 730 days.\n"
+      "error": "$^NDX: 1h data not available for startTime=1476347757 and endTime=1791707757. The requested range must be within the last 730 days.\n"
     },
     {
       "symbol": "^NDX",
       "strategy": "ma_cross",
       "tf": "1d",
       "sharpe": 0.85,
-      "total_return": 59.47,
+      "total_return": 59.86,
       "trades": 74,
       "max_drawdown": 18.18,
       "test_start": "2023-01-03 00:00:00-05:00",
-      "test_end": "2026-10-02 00:00:00-04:00"
+      "test_end": "2026-10-09 00:00:00-04:00"
     },
     {
       "symbol": "^NDX",
       "strategy": "rsi",
       "tf": "1h",
-      "error": "$^NDX: 1h data not available for startTime=1475741751 and endTime=1791101751. The requested range must be within the last 730 days.\n"
+      "error": "$^NDX: 1h data not available for startTime=1476347759 and endTime=1791707759. The requested range must be within the last 730 days.\n"
     },
     {
       "symbol": "^NDX",
@@ -647,13 +647,13 @@
       "trades": 28,
       "max_drawdown": 19.63,
       "test_start": "2023-01-03 00:00:00-05:00",
-      "test_end": "2026-10-02 00:00:00-04:00"
+      "test_end": "2026-10-09 00:00:00-04:00"
     },
     {
       "symbol": "^RUT",
       "strategy": "ma_cross",
       "tf": "1h",
-      "error": "$^RUT: 1h data not available for startTime=1475741753 and endTime=1791101753. The requested range must be within the last 730 days.\n"
+      "error": "$^RUT: 1h data not available for startTime=1476347761 and endTime=1791707761. The requested range must be within the last 730 days.\n"
     },
     {
       "symbol": "^RUT",
@@ -664,24 +664,24 @@
       "trades": 64,
       "max_drawdown": 18.42,
       "test_start": "2023-01-03 00:00:00-05:00",
-      "test_end": "2026-10-02 00:00:00-04:00"
+      "test_end": "2026-10-09 00:00:00-04:00"
     },
     {
       "symbol": "^RUT",
       "strategy": "rsi",
       "tf": "1h",
-      "error": "$^RUT: 1h data not available for startTime=1475741754 and endTime=1791101754. The requested range must be within the last 730 days.\n"
+      "error": "$^RUT: 1h data not available for startTime=1476347763 and endTime=1791707763. The requested range must be within the last 730 days.\n"
     },
     {
       "symbol": "^RUT",
       "strategy": "rsi",
       "tf": "1d",
-      "sharpe": 0.52,
-      "total_return": 25.63,
+      "sharpe": 0.5,
+      "total_return": 24.48,
       "trades": 38,
       "max_drawdown": 22.59,
       "test_start": "2023-01-03 00:00:00-05:00",
-      "test_end": "2026-10-02 00:00:00-04:00"
+      "test_end": "2026-10-09 00:00:00-04:00"
     }
   ]
 }

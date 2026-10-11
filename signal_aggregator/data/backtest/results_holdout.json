@@ -1,15 +1,15 @@
 {
-  "timestamp": "2026-10-04T08:16:06Z",
+  "timestamp": "2026-10-11T08:36:18Z",
   "symbol": "^DJI",
   "strategy": "ma_cross",
   "timeframe": "1d",
   "holdout_start": "2023-01-01",
   "holdout_end": null,
   "regime_filter": false,
-  "train_bars": 1573,
-  "test_bars": 941,
+  "train_bars": 1568,
+  "test_bars": 946,
   "total_return": 35.3,
-  "sharpe_ratio": 0.83,
+  "sharpe_ratio": 0.82,
   "max_drawdown": 15.26,
   "win_rate": 50.0,
   "total_trades": 64,
@@ -955,6 +955,11 @@
     13529.603531833785,
     13529.603531833785,
     13529.603531833785,
+    13529.603531833785,
+    13529.603531833785,
+    13529.603531833785,
+    13529.603531833785,
+    13529.603531833785,
     13529.603531833785
   ],
   "exit_reason_counts": {
@@ -962,5 +967,5 @@
     "target": 18
   },
   "test_start": "2023-01-03 00:00:00-05:00",
-  "test_end": "2026-10-02 00:00:00-04:00"
+  "test_end": "2026-10-09 00:00:00-04:00"
 }

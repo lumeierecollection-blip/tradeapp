@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-04T08:16:06.666980+00:00",
+  "generated_at": "2026-10-11T08:36:18.279277+00:00",
   "holdout_start": "2023-01-01",
   "strategy": "ma_cross",
   "timeframe": "1d",
@@ -21,7 +21,7 @@
       "symbol": "PL=F",
       "strategy": "ma_cross",
       "timeframe": "1d",
-      "sharpe": 0.6,
+      "sharpe": 0.59,
       "trades": 116,
       "win_rate": 50.0,
       "total_return": 75.27,
@@ -35,7 +35,7 @@
       "sharpe": -0.03,
       "trades": 54,
       "win_rate": 50.0,
-      "total_return": -1.68,
+      "total_return": -1.52,
       "pass": false
     },
     {
@@ -54,10 +54,10 @@
       "symbol": "GBPJPY=X",
       "strategy": "ma_cross",
       "timeframe": "1d",
-      "sharpe": 0.86,
-      "trades": 46,
+      "sharpe": 0.87,
+      "trades": 48,
       "win_rate": 50.0,
-      "total_return": 29.88,
+      "total_return": 30.42,
       "pass": true
     },
     {
@@ -68,7 +68,7 @@
       "sharpe": 0.85,
       "trades": 74,
       "win_rate": 50.0,
-      "total_return": 59.47,
+      "total_return": 59.86,
       "pass": true
     },
     {
@@ -76,7 +76,7 @@
       "symbol": "^DJI",
       "strategy": "ma_cross",
       "timeframe": "1d",
-      "sharpe": 0.83,
+      "sharpe": 0.82,
       "trades": 64,
       "win_rate": 50.0,
       "total_return": 35.3,
@@ -98,10 +98,10 @@
       "symbol": "^GSPC",
       "strategy": "ma_cross",
       "timeframe": "1d",
-      "sharpe": 0.83,
+      "sharpe": 0.85,
       "trades": 76,
       "win_rate": 50.0,
-      "total_return": 37.03,
+      "total_return": 38.61,
       "pass": true
     },
     {
@@ -120,7 +120,7 @@
       "symbol": "^DJI",
       "strategy": "ma_cross",
       "timeframe": "1d",
-      "sharpe": 0.83,
+      "sharpe": 0.82,
       "trades": 64,
       "win_rate": 50.0,
       "total_return": 35.3,
