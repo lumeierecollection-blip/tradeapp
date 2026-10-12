@@ -1,6 +1,6 @@
 {
   "symbol": "ETH-USD",
-  "trained_at": "2026-10-11T11:55:34.647568+00:00",
+  "trained_at": "2026-10-12T14:05:10.789052+00:00",
   "n_features": 35,
   "feature_cols": [
     "ret_1",
@@ -39,48 +39,48 @@
     "vol_percentile",
     "trend_strength"
   ],
-  "avg_accuracy": 0.4428,
+  "avg_accuracy": 0.4333,
   "windows": [
     {
-      "window_start": "2025-07-08",
-      "window_end": "2025-09-05",
+      "window_start": "2025-07-11",
+      "window_end": "2025-09-08",
       "accuracy": 0.4333,
       "test_size": 60
     },
     {
-      "window_start": "2025-09-06",
-      "window_end": "2025-11-04",
-      "accuracy": 0.2333,
+      "window_start": "2025-09-09",
+      "window_end": "2025-11-07",
+      "accuracy": 0.2833,
       "test_size": 60
     },
     {
-      "window_start": "2025-11-05",
-      "window_end": "2026-01-03",
-      "accuracy": 0.5167,
-      "test_size": 60
-    },
-    {
-      "window_start": "2026-01-04",
-      "window_end": "2026-03-04",
-      "accuracy": 0.4667,
-      "test_size": 60
-    },
-    {
-      "window_start": "2026-03-05",
-      "window_end": "2026-05-03",
-      "accuracy": 0.5333,
-      "test_size": 60
-    },
-    {
-      "window_start": "2026-05-04",
-      "window_end": "2026-07-02",
-      "accuracy": 0.4333,
-      "test_size": 60
-    },
-    {
-      "window_start": "2026-07-03",
-      "window_end": "2026-08-31",
+      "window_start": "2025-11-08",
+      "window_end": "2026-01-06",
       "accuracy": 0.4833,
+      "test_size": 60
+    },
+    {
+      "window_start": "2026-01-07",
+      "window_end": "2026-03-07",
+      "accuracy": 0.4167,
+      "test_size": 60
+    },
+    {
+      "window_start": "2026-03-08",
+      "window_end": "2026-05-06",
+      "accuracy": 0.45,
+      "test_size": 60
+    },
+    {
+      "window_start": "2026-05-07",
+      "window_end": "2026-07-05",
+      "accuracy": 0.5,
+      "test_size": 60
+    },
+    {
+      "window_start": "2026-07-06",
+      "window_end": "2026-09-03",
+      "accuracy": 0.4667,
       "test_size": 60
     }
   ]
