@@ -1,6 +1,6 @@
 {
   "symbol": "GC=F",
-  "trained_at": "2026-10-13T13:18:18.855589+00:00",
+  "trained_at": "2026-10-14T10:58:19.598909+00:00",
   "n_features": 35,
   "feature_cols": [
     "ret_1",

@@ -1,6 +1,6 @@
 {
   "symbol": "NZDUSD=X",
-  "trained_at": "2026-10-13T13:18:02.646970+00:00",
+  "trained_at": "2026-10-14T10:58:07.419907+00:00",
   "n_features": 35,
   "feature_cols": [
     "ret_1",
