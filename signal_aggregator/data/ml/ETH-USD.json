@@ -1,6 +1,6 @@
 {
   "symbol": "ETH-USD",
-  "trained_at": "2026-10-14T10:58:31.519249+00:00",
+  "trained_at": "2026-10-15T10:40:13.373730+00:00",
   "n_features": 35,
   "feature_cols": [
     "ret_1",
@@ -39,48 +39,48 @@
     "vol_percentile",
     "trend_strength"
   ],
-  "avg_accuracy": 0.4333,
+  "avg_accuracy": 0.4214,
   "windows": [
     {
-      "window_start": "2025-07-11",
-      "window_end": "2025-09-08",
+      "window_start": "2025-07-12",
+      "window_end": "2025-09-09",
+      "accuracy": 0.4,
+      "test_size": 60
+    },
+    {
+      "window_start": "2025-09-10",
+      "window_end": "2025-11-08",
+      "accuracy": 0.3,
+      "test_size": 60
+    },
+    {
+      "window_start": "2025-11-09",
+      "window_end": "2026-01-07",
       "accuracy": 0.4333,
       "test_size": 60
     },
     {
-      "window_start": "2025-09-09",
-      "window_end": "2025-11-07",
-      "accuracy": 0.2833,
-      "test_size": 60
-    },
-    {
-      "window_start": "2025-11-08",
-      "window_end": "2026-01-06",
-      "accuracy": 0.4833,
-      "test_size": 60
-    },
-    {
-      "window_start": "2026-01-07",
-      "window_end": "2026-03-07",
-      "accuracy": 0.4167,
-      "test_size": 60
-    },
-    {
-      "window_start": "2026-03-08",
-      "window_end": "2026-05-06",
-      "accuracy": 0.45,
-      "test_size": 60
-    },
-    {
-      "window_start": "2026-05-07",
-      "window_end": "2026-07-05",
+      "window_start": "2026-01-08",
+      "window_end": "2026-03-08",
       "accuracy": 0.5,
       "test_size": 60
     },
     {
-      "window_start": "2026-07-06",
-      "window_end": "2026-09-03",
-      "accuracy": 0.4667,
+      "window_start": "2026-03-09",
+      "window_end": "2026-05-07",
+      "accuracy": 0.5,
+      "test_size": 60
+    },
+    {
+      "window_start": "2026-05-08",
+      "window_end": "2026-07-06",
+      "accuracy": 0.4,
+      "test_size": 60
+    },
+    {
+      "window_start": "2026-07-07",
+      "window_end": "2026-09-04",
+      "accuracy": 0.4167,
       "test_size": 60
     }
   ]
