@@ -1,6 +1,6 @@
 {
   "symbol": "CL=F",
-  "trained_at": "2026-10-15T10:40:03.498788+00:00",
+  "trained_at": "2026-10-16T10:27:09.591368+00:00",
   "n_features": 35,
   "feature_cols": [
     "ret_1",
@@ -42,20 +42,20 @@
   "avg_accuracy": 0.4889,
   "windows": [
     {
-      "window_start": "2025-11-10",
-      "window_end": "2026-02-05",
-      "accuracy": 0.5667,
+      "window_start": "2025-11-11",
+      "window_end": "2026-02-06",
+      "accuracy": 0.55,
       "test_size": 60
     },
     {
-      "window_start": "2026-02-06",
-      "window_end": "2026-05-04",
-      "accuracy": 0.45,
+      "window_start": "2026-02-09",
+      "window_end": "2026-05-05",
+      "accuracy": 0.4667,
       "test_size": 60
     },
     {
-      "window_start": "2026-05-05",
-      "window_end": "2026-07-30",
+      "window_start": "2026-05-06",
+      "window_end": "2026-07-31",
       "accuracy": 0.45,
       "test_size": 60
     }

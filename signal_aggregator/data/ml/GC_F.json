@@ -1,6 +1,6 @@
 {
   "symbol": "GC=F",
-  "trained_at": "2026-10-15T10:39:57.710450+00:00",
+  "trained_at": "2026-10-16T10:27:04.643505+00:00",
   "n_features": 35,
   "feature_cols": [
     "ret_1",
@@ -39,24 +39,24 @@
     "vol_percentile",
     "trend_strength"
   ],
-  "avg_accuracy": 0.5055,
+  "avg_accuracy": 0.4778,
   "windows": [
     {
-      "window_start": "2025-11-10",
-      "window_end": "2026-02-05",
-      "accuracy": 0.4333,
+      "window_start": "2025-11-11",
+      "window_end": "2026-02-06",
+      "accuracy": 0.3667,
       "test_size": 60
     },
     {
-      "window_start": "2026-02-06",
-      "window_end": "2026-05-04",
-      "accuracy": 0.5333,
+      "window_start": "2026-02-09",
+      "window_end": "2026-05-05",
+      "accuracy": 0.5667,
       "test_size": 60
     },
     {
-      "window_start": "2026-05-05",
-      "window_end": "2026-07-30",
-      "accuracy": 0.55,
+      "window_start": "2026-05-06",
+      "window_end": "2026-07-31",
+      "accuracy": 0.5,
       "test_size": 60
     }
   ]

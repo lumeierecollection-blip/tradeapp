@@ -1,6 +1,6 @@
 {
   "symbol": "USDCAD=X",
-  "trained_at": "2026-10-15T10:39:55.144229+00:00",
+  "trained_at": "2026-10-16T10:27:02.141355+00:00",
   "n_features": 35,
   "feature_cols": [
     "ret_1",
@@ -39,30 +39,30 @@
     "vol_percentile",
     "trend_strength"
   ],
-  "avg_accuracy": 0.5458,
+  "avg_accuracy": 0.5375,
   "windows": [
     {
-      "window_start": "2025-10-31",
-      "window_end": "2026-01-26",
+      "window_start": "2025-11-03",
+      "window_end": "2026-01-27",
       "accuracy": 0.55,
       "test_size": 60
     },
     {
-      "window_start": "2026-01-27",
-      "window_end": "2026-04-20",
-      "accuracy": 0.45,
+      "window_start": "2026-01-28",
+      "window_end": "2026-04-21",
+      "accuracy": 0.3833,
       "test_size": 60
     },
     {
-      "window_start": "2026-04-21",
-      "window_end": "2026-07-13",
-      "accuracy": 0.55,
+      "window_start": "2026-04-22",
+      "window_end": "2026-07-14",
+      "accuracy": 0.6,
       "test_size": 60
     },
     {
-      "window_start": "2026-07-14",
-      "window_end": "2026-10-08",
-      "accuracy": 0.6333,
+      "window_start": "2026-07-15",
+      "window_end": "2026-10-09",
+      "accuracy": 0.6167,
       "test_size": 60
     }
   ]

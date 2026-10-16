@@ -1,6 +1,6 @@
 {
   "symbol": "AUDJPY=X",
-  "trained_at": "2026-10-15T10:39:52.125300+00:00",
+  "trained_at": "2026-10-16T10:26:59.352617+00:00",
   "n_features": 35,
   "feature_cols": [
     "ret_1",
@@ -39,30 +39,30 @@
     "vol_percentile",
     "trend_strength"
   ],
-  "avg_accuracy": 0.4625,
+  "avg_accuracy": 0.4792,
   "windows": [
     {
-      "window_start": "2025-10-31",
-      "window_end": "2026-01-26",
-      "accuracy": 0.4167,
+      "window_start": "2025-11-03",
+      "window_end": "2026-01-27",
+      "accuracy": 0.4,
       "test_size": 60
     },
     {
-      "window_start": "2026-01-27",
-      "window_end": "2026-04-20",
-      "accuracy": 0.6,
+      "window_start": "2026-01-28",
+      "window_end": "2026-04-21",
+      "accuracy": 0.6167,
       "test_size": 60
     },
     {
-      "window_start": "2026-04-21",
-      "window_end": "2026-07-13",
+      "window_start": "2026-04-22",
+      "window_end": "2026-07-14",
       "accuracy": 0.4667,
       "test_size": 60
     },
     {
-      "window_start": "2026-07-14",
-      "window_end": "2026-10-05",
-      "accuracy": 0.3667,
+      "window_start": "2026-07-15",
+      "window_end": "2026-10-06",
+      "accuracy": 0.4333,
       "test_size": 60
     }
   ]

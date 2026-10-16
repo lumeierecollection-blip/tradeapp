@@ -1,6 +1,6 @@
 {
   "symbol": "NZDUSD=X",
-  "trained_at": "2026-10-15T10:39:42.565709+00:00",
+  "trained_at": "2026-10-16T10:26:51.162121+00:00",
   "n_features": 35,
   "feature_cols": [
     "ret_1",
@@ -39,30 +39,30 @@
     "vol_percentile",
     "trend_strength"
   ],
-  "avg_accuracy": 0.6542,
+  "avg_accuracy": 0.6416,
   "windows": [
     {
-      "window_start": "2025-10-31",
-      "window_end": "2026-01-26",
+      "window_start": "2025-11-03",
+      "window_end": "2026-01-27",
       "accuracy": 0.5667,
       "test_size": 60
     },
     {
-      "window_start": "2026-01-27",
-      "window_end": "2026-04-20",
-      "accuracy": 0.7167,
+      "window_start": "2026-01-28",
+      "window_end": "2026-04-21",
+      "accuracy": 0.6833,
       "test_size": 60
     },
     {
-      "window_start": "2026-04-21",
-      "window_end": "2026-07-13",
+      "window_start": "2026-04-22",
+      "window_end": "2026-07-14",
       "accuracy": 0.7333,
       "test_size": 60
     },
     {
-      "window_start": "2026-07-14",
-      "window_end": "2026-10-05",
-      "accuracy": 0.6,
+      "window_start": "2026-07-15",
+      "window_end": "2026-10-06",
+      "accuracy": 0.5833,
       "test_size": 60
     }
   ]
