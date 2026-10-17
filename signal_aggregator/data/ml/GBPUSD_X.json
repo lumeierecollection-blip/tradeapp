@@ -1,6 +1,6 @@
 {
   "symbol": "GBPUSD=X",
-  "trained_at": "2026-10-16T10:26:42.775712+00:00",
+  "trained_at": "2026-10-17T09:58:20.969396+00:00",
   "n_features": 35,
   "feature_cols": [
     "ret_1",
@@ -39,30 +39,30 @@
     "vol_percentile",
     "trend_strength"
   ],
-  "avg_accuracy": 0.6,
+  "avg_accuracy": 0.6166,
   "windows": [
     {
-      "window_start": "2025-11-03",
-      "window_end": "2026-01-27",
+      "window_start": "2025-11-04",
+      "window_end": "2026-01-28",
       "accuracy": 0.5667,
       "test_size": 60
     },
     {
-      "window_start": "2026-01-28",
-      "window_end": "2026-04-21",
-      "accuracy": 0.6833,
+      "window_start": "2026-01-29",
+      "window_end": "2026-04-22",
+      "accuracy": 0.7333,
       "test_size": 60
     },
     {
-      "window_start": "2026-04-22",
-      "window_end": "2026-07-14",
-      "accuracy": 0.5,
+      "window_start": "2026-04-23",
+      "window_end": "2026-07-15",
+      "accuracy": 0.5333,
       "test_size": 60
     },
     {
-      "window_start": "2026-07-15",
-      "window_end": "2026-10-06",
-      "accuracy": 0.65,
+      "window_start": "2026-07-16",
+      "window_end": "2026-10-07",
+      "accuracy": 0.6333,
       "test_size": 60
     }
   ]
