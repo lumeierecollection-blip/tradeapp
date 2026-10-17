@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-10-16T22:41:06Z",
+  "timestamp": "2026-10-17T03:32:15Z",
   "signals": [
     {
       "symbol": "EURUSD=X",
@@ -21,15 +21,15 @@
     },
     {
       "symbol": "GBPUSD=X",
-      "signal": "SELL",
-      "confidence": 0.35,
-      "price": 1.3329,
+      "signal": "HOLD",
+      "confidence": 0.65,
+      "price": 1.333,
       "strategies": {
-        "ma_cross": "SELL",
+        "ma_cross": "BUY",
         "rsi_bollinger": "HOLD",
         "vwap_bollinger": "HOLD"
       },
-      "filtered_reason": null,
+      "filtered_reason": "counter-trend, filtered",
       "sentiment": {
         "label": "neutral",
         "score": 0.5,
@@ -239,7 +239,7 @@
       "symbol": "BTC-USD",
       "signal": "HOLD",
       "confidence": 0.5,
-      "price": 81659.5078,
+      "price": 81494.4219,
       "strategies": {
         "ma_cross": "SELL",
         "rsi_bollinger": "HOLD",
@@ -257,7 +257,7 @@
       "symbol": "ETH-USD",
       "signal": "HOLD",
       "confidence": 0.5,
-      "price": 2420.3999,
+      "price": 2425.1899,
       "strategies": {
         "ma_cross": "SELL",
         "rsi_bollinger": "HOLD",
@@ -275,7 +275,7 @@
       "symbol": "SOL-USD",
       "signal": "HOLD",
       "confidence": 0.65,
-      "price": 104.31,
+      "price": 104.84,
       "strategies": {
         "ma_cross": "SELL",
         "rsi_bollinger": "BUY",
@@ -293,7 +293,7 @@
       "symbol": "BNB-USD",
       "signal": "HOLD",
       "confidence": 0.5,
-      "price": 721.56,
+      "price": 720.97,
       "strategies": {
         "ma_cross": "SELL",
         "rsi_bollinger": "HOLD",
